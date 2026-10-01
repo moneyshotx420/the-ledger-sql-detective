@@ -1,0 +1,1871 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Ledger Casebook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Special+Elite&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --night:#0e1115; --slate:#171c23; --slate2:#1f262f; --slate3:#29313c; --line:#343f4c;
+  --fog:#d6dce2; --dim:#8f9aa7; --manila:#dcc08a; --manila2:#c7a466; --manila3:#b08e52;
+  --paper:#f3ecdb; --paper2:#e6dbc2; --ink:#26211c; --ink2:#5b5147;
+  --cork:#8d6841; --cork2:#7a5936; --red:#b3261e; --red2:#d64a3f; --lamp:#e8b04b;
+  --blueink:#2b527d; --ok:#7fbf8e; --okbg:#1c2b22;
+  --display:'Big Shoulders Display','Oswald',Impact,'Arial Narrow',sans-serif;
+  --type:'Special Elite','Courier New',Courier,monospace;
+  --sans:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;min-height:100%}
+body{
+  background:
+    radial-gradient(ellipse 60% 40% at 82% -8%, rgba(232,176,75,.13), transparent 70%),
+    radial-gradient(ellipse 50% 50% at 0% 100%, rgba(43,82,125,.18), transparent 70%),
+    var(--night);
+  color:var(--fog);font:15px/1.5 var(--sans);-webkit-font-smoothing:antialiased;
+}
+#rain{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+#app{position:relative;z-index:1;min-height:100vh}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--lamp);outline-offset:2px}
+code,kbd,pre{font-family:var(--mono)}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;
+  padding:10px 16px;background:rgba(14,17,21,.86);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.brand{background:none;border:0;padding:0;display:flex;flex-direction:column;align-items:flex-start;line-height:1}
+.brand b{font:900 24px/1 var(--display);letter-spacing:.06em;color:var(--paper)}
+.brand small{font:500 10px/1.2 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-top:3px}
+.rankbox{display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 220px;max-width:360px}
+.rank-name{font:800 16px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--lamp);white-space:nowrap}
+.xpbar{flex:1;height:8px;background:var(--slate3);border-radius:8px;overflow:hidden;min-width:60px}
+.xpbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--manila3),var(--lamp));transition:width .6s ease}
+.xp-text{font:500 12px/1 var(--mono);color:var(--dim);white-space:nowrap;font-variant-numeric:tabular-nums}
+.chips{display:flex;gap:8px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--slate);
+  font:500 12px/1 var(--sans);white-space:nowrap;font-variant-numeric:tabular-nums}
+.chip b{font-weight:600}
+.chip.hot{border-color:var(--lamp);color:var(--lamp);box-shadow:0 0 14px rgba(232,176,75,.35)}
+.chip.hot .flame{animation:flick .8s infinite alternate}
+.flame{width:9px;height:12px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:currentColor;display:inline-block;opacity:.85}
+@keyframes flick{from{transform:scaleY(1) rotate(-4deg)}to{transform:scaleY(1.2) rotate(4deg)}}
+.chip.cred-low{border-color:var(--red2);color:var(--red2)}
+.nav{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.navbtn{background:var(--slate);border:1px solid var(--line);border-radius:8px;padding:7px 11px;font:500 13px/1 var(--sans);color:var(--fog)}
+.navbtn:hover{border-color:var(--manila2);color:var(--paper)}
+
+/* ---------- home ---------- */
+.wrap{max-width:1280px;margin:0 auto;padding-inline:16px;padding-block:20px 60px}
+.hero{padding-block:34px 26px;display:grid;gap:14px;max-width:760px}
+.eyebrow{font:600 11px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--manila)}
+.hero h1{margin:0;font:900 clamp(64px,13vw,150px)/.82 var(--display);letter-spacing:.02em;color:var(--paper);
+  text-shadow:0 0 40px rgba(232,176,75,.15)}
+.hero h1 span{color:var(--red2)}
+.lede{margin:0;font:17px/1.55 var(--type);color:var(--paper2);max-width:58ch}
+.hero-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.engine-note{font:500 12px/1.4 var(--mono);color:var(--dim)}
+.engine-note.err{color:var(--red2)}
+.cases{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:30px 18px;padding-top:22px}
+.tile{position:relative;background:var(--manila);color:var(--ink);border-radius:2px 8px 8px 8px;padding:18px 16px 16px;
+  box-shadow:0 14px 30px rgba(0,0,0,.45);display:flex;flex-direction:column;gap:8px;min-height:230px;text-align:left;border:0;
+  transition:transform .2s ease, box-shadow .2s ease}
+.tile::before{content:attr(data-tab);position:absolute;top:-22px;left:0;background:inherit;padding:4px 14px 2px;border-radius:7px 7px 0 0;
+  font:600 11px/1.4 var(--sans);letter-spacing:.14em;color:var(--ink2)}
+.tile:not(.sealed):hover{transform:translateY(-4px) rotate(-.4deg);box-shadow:0 20px 36px rgba(0,0,0,.55)}
+.tile h3{margin:0;font:800 30px/.95 var(--display);letter-spacing:.02em;text-transform:uppercase}
+.tile .tag{font:14px/1.4 var(--type);color:var(--ink2);flex:1}
+.tile .skills{display:flex;flex-wrap:wrap;gap:4px}
+.tile .skills span{font:500 11px/1 var(--mono);background:rgba(38,33,28,.1);padding:4px 6px;border-radius:4px}
+.tile .foot{display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px dashed rgba(38,33,28,.3);padding-top:8px}
+.tile .status{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase}
+.tile.sealed{background:#6d6150;color:#2a251f;cursor:not-allowed;filter:saturate(.6)}
+.tile.sealed::after{content:'SEALED';position:absolute;right:12px;top:40%;transform:rotate(-14deg);font:900 34px/1 var(--display);
+  letter-spacing:.1em;color:rgba(120,20,15,.55);border:3px solid rgba(120,20,15,.5);padding:2px 10px}
+.tile.closed-t::after{content:'CLOSED';position:absolute;right:10px;top:12px;transform:rotate(10deg);font:900 20px/1 var(--display);
+  letter-spacing:.1em;color:rgba(179,38,30,.8);border:2px solid rgba(179,38,30,.7);padding:2px 8px}
+.stars{display:inline-flex;gap:2px;font-size:16px;letter-spacing:0}
+.stars .on{color:#a3690c}.stars .off{color:rgba(38,33,28,.25)}
+.dark .stars .on{color:var(--lamp)} .dark .stars .off{color:var(--slate3)}
+
+/* ---------- case screen ---------- */
+.case-head{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 16px;padding-block:6px 16px}
+.backbtn{background:none;border:1px solid var(--line);border-radius:8px;padding:7px 11px;font:500 13px/1 var(--sans);color:var(--dim)}
+.backbtn:hover{color:var(--paper);border-color:var(--manila2)}
+.case-head h1{margin:0;font:900 clamp(34px,6vw,56px)/.9 var(--display);letter-spacing:.02em;text-transform:uppercase;color:var(--paper)}
+.case-head .case-no{font:600 11px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--manila)}
+.case-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:20px}
+@media (min-width:1000px){.case-grid{grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);align-items:start}
+  .wall{position:sticky;top:76px}}
+.desk,.wall{display:flex;flex-direction:column;gap:14px;min-width:0}
+
+.partner{display:flex;gap:12px;align-items:flex-start}
+.avatar{flex:0 0 58px;width:58px;height:58px;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.bubble{position:relative;flex:1;background:var(--slate2);border:1px solid var(--line);border-radius:4px 12px 12px 12px;padding:10px 14px;
+  font:15px/1.45 var(--type);color:var(--paper);min-height:58px}
+.bubble .who{display:block;font:600 10px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--manila);margin-bottom:6px}
+.bubble.pop{animation:pop .35s ease}
+@keyframes pop{0%{transform:translateY(4px);opacity:.3}100%{transform:none;opacity:1}}
+
+.stepcard{background:var(--paper);color:var(--ink);border-radius:3px;padding:18px 18px 16px;box-shadow:0 10px 26px rgba(0,0,0,.4);position:relative}
+.stepcard::after{content:'';position:absolute;inset:auto 0 -6px 0;height:6px;background:repeating-linear-gradient(90deg,var(--paper) 0 8px,transparent 8px 12px);opacity:.5}
+.step-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.dots{display:flex;gap:6px;align-items:center}
+.dot{width:22px;height:6px;border-radius:3px;background:var(--paper2)}
+.dot.done{background:var(--ink2)} .dot.now{background:var(--red)} .dot.acc{width:10px;height:10px;border-radius:50%}
+.concept{font:600 11px/1 var(--mono);letter-spacing:.06em;background:var(--ink);color:var(--paper);padding:5px 8px;border-radius:3px}
+.stepcard h2{margin:2px 0 8px;font:800 30px/1 var(--display);letter-spacing:.02em;text-transform:uppercase;text-wrap:balance}
+.lesson{margin:0 0 10px;font:15px/1.55 var(--sans);color:var(--ink);max-width:65ch}
+.example{background:#ebe2cc;border-left:3px solid var(--ink2);padding:8px 12px;border-radius:2px;margin-bottom:12px;overflow-x:auto}
+.example .lbl{font:600 10px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--ink2);margin-bottom:5px}
+.example pre{margin:0;font:13.5px/1.5 var(--mono);color:var(--ink);white-space:pre-wrap}
+.example pre .k{color:#8a1c14;font-weight:600}.example pre .f{color:#6b3fa0}.example pre .s{color:#2f6b3a}.example pre .n{color:#1d5a8a}.example pre .t{color:#6a4a1c}.example pre .c{color:#8a8070}
+.task{margin:0;font:16px/1.5 var(--type);color:var(--ink)}
+.task b{font-family:var(--sans);font-weight:600;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-right:6px}
+.accused-line{margin-top:10px;font:15px/1.4 var(--type)}
+.accused-line b{background:var(--ink);color:var(--paper);padding:2px 8px;border-radius:2px}
+
+/* editor */
+.editor-shell{background:#12161c;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.editor-shell:focus-within{border-color:var(--manila2);box-shadow:0 0 0 3px rgba(220,192,138,.12)}
+.editor-bar{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 12px;border-bottom:1px solid var(--line);
+  font:500 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.editor{position:relative;min-height:112px}
+.editor pre,.editor textarea{position:absolute;inset:0;margin:0;border:0;padding:12px 14px;font:14.5px/1.6 var(--mono);letter-spacing:0;
+  white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal;tab-size:2;overflow:hidden}
+.editor pre{pointer-events:none;color:#d8dee6}
+.editor textarea{resize:none;background:transparent;color:transparent;-webkit-text-fill-color:transparent;caret-color:var(--lamp);outline:none;width:100%;height:100%}
+.editor textarea::selection{background:rgba(232,176,75,.3)}
+.editor textarea::placeholder{color:#56606d;-webkit-text-fill-color:#56606d}
+.editor pre .k{color:#f0a85a;font-weight:500}.editor pre .f{color:#c39bf0}.editor pre .s{color:#9fd39a}.editor pre .n{color:#7fc4f5}
+.editor pre .t{color:#f3d58c}.editor pre .c{color:#6d7885;font-style:italic}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{border:1px solid transparent;border-radius:8px;padding:10px 16px;font:600 14px/1 var(--sans);display:inline-flex;align-items:center;gap:8px}
+.btn-run{background:var(--lamp);color:#1a1409}
+.btn-run:hover{background:#f2c066}
+.btn-run kbd{font:500 10px/1 var(--mono);background:rgba(0,0,0,.14);padding:3px 5px;border-radius:4px}
+.btn-ghost{background:var(--slate2);border-color:var(--line);color:var(--fog)}
+.btn-ghost:hover{border-color:var(--manila2)}
+.btn-red{background:var(--red);color:#fff}
+.btn-red:hover{background:var(--red2)}
+.btn-ink{background:var(--ink);color:var(--paper)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.xp-float{position:fixed;z-index:80;font:900 28px/1 var(--display);color:var(--lamp);pointer-events:none;text-shadow:0 2px 12px rgba(0,0,0,.6);
+  animation:floatUp 1.3s ease-out forwards}
+@keyframes floatUp{0%{opacity:0;transform:translateY(10px) scale(.8)}15%{opacity:1;transform:translateY(0) scale(1.1)}100%{opacity:0;transform:translateY(-60px) scale(1)}}
+
+.hints{display:flex;flex-direction:column;gap:6px}
+.hint{background:var(--slate2);border:1px dashed var(--manila3);border-radius:8px;padding:8px 12px;font:14px/1.45 var(--type);color:var(--paper2)}
+.hint .tier{font:600 10px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--manila);margin-right:6px}
+.hint code{font-size:13px;color:#f3d58c;white-space:pre-wrap}
+.hint button{margin-left:8px;background:none;border:1px solid var(--line);border-radius:6px;padding:3px 7px;font:500 11px/1 var(--sans);color:var(--dim)}
+
+/* feedback */
+.fb{border-radius:8px;padding:12px 14px;border:1px solid var(--line);background:var(--slate);display:grid;gap:8px}
+.fb-title{font:800 20px/1 var(--display);letter-spacing:.06em;text-transform:uppercase}
+.fb.ok{border-color:#3f6b4c;background:var(--okbg)} .fb.ok .fb-title{color:var(--ok)}
+.fb.miss .fb-title{color:var(--lamp)}
+.fb.herring{border-color:#7a2a24;background:#2a1715} .fb.herring .fb-title{color:var(--red2)}
+.fb.err{border-color:#7a2a24} .fb.err .fb-title{color:var(--red2)}
+.fb p{margin:0;font:14px/1.5 var(--sans)}
+.fb .raw{font:12px/1.4 var(--mono);color:var(--dim)}
+.xp-lines{display:flex;flex-wrap:wrap;gap:6px}
+.xp-lines span{font:500 12px/1 var(--mono);padding:4px 7px;border-radius:4px;background:rgba(127,191,142,.12);color:var(--ok)}
+.xp-lines span.neg{background:rgba(214,74,63,.14);color:var(--red2)}
+.xp-total{font:900 26px/1 var(--display);color:var(--lamp);letter-spacing:.03em}
+.xp-total small{font:500 12px/1 var(--mono);color:var(--dim);margin-left:8px;letter-spacing:0}
+.shape{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.shape div{background:var(--slate2);border-radius:6px;padding:8px 10px}
+.shape span{display:block;font:600 10px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
+.shape b{font:600 15px/1.2 var(--mono);font-variant-numeric:tabular-nums}
+.shape b.bad{color:var(--red2)} .shape b.good{color:var(--ok)}
+.colchips{display:flex;flex-wrap:wrap;gap:5px;align-items:center;font:13px/1 var(--sans);color:var(--dim)}
+.colchips code{font-size:12px;padding:4px 7px;border-radius:4px;background:var(--slate2)}
+.colchips code.good{color:var(--ok)} .colchips code.bad{color:var(--red2);text-decoration:line-through}
+.fb ul{margin:0;padding-left:18px;font:14px/1.5 var(--sans)}
+
+/* results */
+.results{background:var(--paper);color:var(--ink);border-radius:6px;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.35)}
+.results-cap{display:flex;justify-content:space-between;gap:8px;padding:7px 12px;background:var(--paper2);font:600 11px/1.2 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
+.results-scroll{max-height:340px;overflow:auto}
+.results table{border-collapse:collapse;width:100%;font:13px/1.4 var(--mono);font-variant-numeric:tabular-nums}
+.results th{position:sticky;top:0;background:#e9dfc7;text-align:left;padding:7px 10px;font-weight:600;border-bottom:1px solid #cdbf9f;white-space:nowrap}
+.results td{padding:6px 10px;border-bottom:1px solid #e3d9c1;vertical-align:top;max-width:460px}
+.results tr:nth-child(even) td{background:#f7f2e5}
+.results tr.extra td{background:#f5d3cc!important;color:#7a1d15}
+.results td.null{color:#a89d8a;font-style:italic}
+.results .empty{padding:18px 12px;font:14px/1.4 var(--type);color:var(--ink2)}
+
+/* lineup */
+.wall h3{margin:0;display:flex;justify-content:space-between;align-items:baseline;font:800 20px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--paper)}
+.wall h3 small{font:500 12px/1 var(--mono);letter-spacing:0;color:var(--dim);text-transform:none}
+.lineup{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.suspect{position:relative;background:var(--slate2);border:1px solid var(--line);border-radius:6px;padding:6px 6px 8px;text-align:left;display:flex;flex-direction:column;gap:4px;
+  transition:transform .15s ease, border-color .15s ease}
+.suspect:hover{border-color:var(--manila3)}
+.suspect .photo{position:relative;aspect-ratio:5/6;max-width:100%;border-radius:3px;overflow:hidden;background:#d8d2c4}
+.suspect .photo svg{display:block;width:100%;height:100%}
+.suspect .nm{font:600 13px/1.15 var(--sans);color:var(--paper)}
+.suspect .meta{font:11px/1.25 var(--mono);color:var(--dim)}
+.suspect .sstamp{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-16deg) scale(2.4);opacity:0;
+  font:900 clamp(13px,2.2vw,20px)/1 var(--display);letter-spacing:.08em;padding:3px 6px;border:3px solid;white-space:nowrap;transition:none}
+.suspect.cleared .photo svg{filter:grayscale(1) contrast(.8) brightness(1.05);opacity:.7}
+.suspect.cleared .sstamp{color:var(--blueink);border-color:var(--blueink);opacity:.9;transform:translate(-50%,-50%) rotate(-16deg) scale(1);background:rgba(243,236,219,.55)}
+.suspect.cleared.fresh .sstamp{animation:stampIn .45s cubic-bezier(.2,.8,.3,1.2)}
+.suspect.charged .sstamp{color:var(--red);border-color:var(--red);opacity:.95;transform:translate(-50%,-50%) rotate(-10deg) scale(1);background:rgba(243,236,219,.6)}
+.suspect.charged.fresh .sstamp{animation:stampIn .45s cubic-bezier(.2,.8,.3,1.2)}
+@keyframes stampIn{0%{opacity:0;transform:translate(-50%,-50%) rotate(-24deg) scale(2.6)}70%{opacity:1;transform:translate(-50%,-50%) rotate(-14deg) scale(.92)}100%{opacity:.92;transform:translate(-50%,-50%) rotate(-16deg) scale(1)}}
+.suspect.selectable{border-color:var(--manila3)}
+.suspect.selected{border-color:var(--red2);box-shadow:0 0 0 2px var(--red2);transform:translateY(-3px)}
+
+/* evidence board */
+.board{position:relative;background:
+  radial-gradient(circle at 20% 30%, rgba(0,0,0,.12) 0 2px, transparent 3px) 0 0/23px 19px,
+  radial-gradient(circle at 70% 60%, rgba(255,255,255,.06) 0 1.5px, transparent 2.5px) 0 0/17px 21px,
+  linear-gradient(135deg,var(--cork),var(--cork2));
+  border:10px solid #3b2a1a;border-radius:4px;box-shadow:inset 0 0 40px rgba(0,0,0,.45),0 12px 30px rgba(0,0,0,.5);min-height:320px;overflow:hidden}
+.board svg.strings{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
+.board svg.strings path{fill:none;stroke:var(--red);stroke-width:2.2;filter:drop-shadow(0 2px 1px rgba(0,0,0,.4))}
+.board svg.strings path.new{stroke-dasharray:600;stroke-dashoffset:600;animation:drawStr 1s .5s ease forwards}
+@keyframes drawStr{to{stroke-dashoffset:0}}
+.clue{position:absolute;perspective:900px;z-index:2}
+.clue .inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.3,.7,.2,1)}
+.clue.instant .inner{transition:none}
+.clue.revealed .inner{transform:rotateY(180deg)}
+.clue .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:2px;box-shadow:0 6px 12px rgba(0,0,0,.4);overflow:hidden}
+.clue .back{background:repeating-linear-gradient(45deg,#cfb27a 0 10px,#c8aa70 10px 20px);display:grid;place-items:center;text-align:center;color:rgba(38,33,28,.6);
+  font:800 17px/1.1 var(--display);letter-spacing:.1em;border:1px dashed rgba(38,33,28,.35)}
+.clue .back small{display:block;font:11px/1.3 var(--type);letter-spacing:0;margin-top:4px}
+.clue .front{transform:rotateY(180deg);background:var(--paper);color:var(--ink);padding:18px 11px 10px;display:flex;flex-direction:column;gap:5px}
+.clue .front .cno{font:600 9.5px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--red)}
+.clue .front h4{margin:0;font:800 17px/1 var(--display);letter-spacing:.03em;text-transform:uppercase}
+.clue .front p{margin:0;font:12.5px/1.35 var(--type);color:var(--ink)}
+.clue.culprit .front{background:#f7e3dc;border:2px solid var(--red)}
+.clue.culprit .front h4{color:var(--red)}
+.pin{position:absolute;left:50%;top:4px;width:13px;height:13px;margin-left:-6.5px;border-radius:50%;z-index:4;
+  background:radial-gradient(circle at 35% 35%,#ff8a7a,var(--red) 55%,#5a0f0a);box-shadow:0 2px 3px rgba(0,0,0,.5)}
+.board-empty{position:absolute;inset:auto 0 12px 0;text-align:center;font:13px/1.4 var(--type);color:rgba(243,236,219,.7)}
+
+/* overlays */
+.overlay{position:fixed;inset:0;z-index:60;background:rgba(6,8,11,.8);display:grid;place-items:center;padding:16px;overflow:auto}
+.overlay.front{z-index:70}
+.folder{position:relative;width:min(660px,100%);perspective:1800px;margin-top:26px}
+.folder-inside{background:var(--manila2);border-radius:2px 10px 10px 10px;padding:14px;box-shadow:0 30px 60px rgba(0,0,0,.6)}
+.folder-inside::before{content:'';position:absolute;top:-22px;left:0;width:150px;height:24px;background:var(--manila2);border-radius:8px 8px 0 0}
+.paper{position:relative;background:var(--paper);color:var(--ink);padding:22px 22px 18px;min-height:380px;max-height:calc(100vh - 110px);overflow:auto;
+  box-shadow:inset 0 0 30px rgba(120,90,40,.12)}
+.paper-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font:600 10px/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--ink2);
+  border-bottom:1px solid var(--paper2);padding-bottom:10px;margin-bottom:12px}
+.paper h2{margin:0 0 12px;font:900 40px/.95 var(--display);letter-spacing:.02em;text-transform:uppercase;text-wrap:balance}
+.typed p{margin:0 0 7px;font:16.5px/1.5 var(--type);min-height:1.5em}
+.typed p.q{padding-left:12px;border-left:3px solid var(--red)}
+.paper-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.skip-note{font:12px/1 var(--sans);color:var(--ink2);margin-top:8px}
+.folder-cover{position:absolute;inset:0;z-index:5;background:linear-gradient(160deg,#e3c992,var(--manila) 40%,#d2b273);border-radius:2px 10px 10px 10px;
+  transform-origin:left center;transition:transform 1s cubic-bezier(.55,.05,.3,1),opacity .35s .75s;backface-visibility:hidden;
+  box-shadow:0 30px 60px rgba(0,0,0,.6);display:flex;flex-direction:column;justify-content:center;gap:12px;padding:30px;color:var(--ink)}
+.folder-cover::before{content:attr(data-tab);position:absolute;top:-22px;left:0;width:150px;height:24px;background:#e3c992;border-radius:8px 8px 0 0;
+  font:600 11px/24px var(--sans);letter-spacing:.16em;padding-left:14px;color:var(--ink2)}
+.folder.open .folder-cover{transform:rotateY(-165deg);opacity:0;pointer-events:none}
+.cover-eyebrow{font:600 11px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--ink2)}
+.folder-cover h2{margin:0;font:900 clamp(40px,9vw,64px)/.9 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.cover-skills{font:14px/1.4 var(--type);color:var(--ink2)}
+.conf{align-self:flex-start;font:900 22px/1 var(--display);letter-spacing:.2em;color:rgba(179,38,30,.75);border:3px solid rgba(179,38,30,.6);padding:4px 10px;transform:rotate(-6deg);margin-block:6px}
+.big-stamp{position:absolute;right:18px;top:70px;z-index:6;pointer-events:none;opacity:0;font:900 clamp(40px,9vw,64px)/.9 var(--display);letter-spacing:.06em;color:rgba(179,38,30,.85);
+  border:6px double rgba(179,38,30,.8);padding:6px 14px;transform:rotate(-12deg);mix-blend-mode:multiply;text-align:center}
+.big-stamp.slam{animation:slam .5s cubic-bezier(.2,.9,.3,1.15) forwards}
+@keyframes slam{0%{opacity:0;transform:rotate(-24deg) scale(3.2)}62%{opacity:1;transform:rotate(-12deg) scale(.9)}100%{opacity:1;transform:rotate(-12deg) scale(1)}}
+.close-summary{display:grid;gap:10px;margin:6px 0 14px;padding:12px;background:#ebe2cc;border-radius:3px}
+.close-summary .row{display:flex;justify-content:space-between;gap:10px;font:14px/1.3 var(--sans)}
+.crit{display:flex;gap:8px;align-items:center;font:14px/1.3 var(--sans)}
+.crit .st{font-size:18px}.crit .st.on{color:#a3690c}.crit .st.off{color:#c9bda2}
+.shake{animation:shake .5s cubic-bezier(.36,.07,.19,.97)}
+@keyframes shake{10%,90%{transform:translate(-2px,1px)}20%,80%{transform:translate(4px,-2px)}30%,50%,70%{transform:translate(-7px,3px)}40%,60%{transform:translate(7px,-3px)}}
+.shake-s{animation:shakeS .35s ease}
+@keyframes shakeS{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+.promo{width:min(440px,100%);background:var(--slate);border:1px solid var(--lamp);border-radius:12px;padding:28px 24px;text-align:center;display:grid;gap:10px;
+  box-shadow:0 0 60px rgba(232,176,75,.25);animation:promoIn .6s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes promoIn{from{transform:scale(.7);opacity:0}to{transform:none;opacity:1}}
+.promo .eyebrow{justify-self:center}
+.promo h2{margin:0;font:900 64px/.9 var(--display);text-transform:uppercase;color:var(--paper);letter-spacing:.03em}
+.promo .rk{font:800 30px/1 var(--display);color:var(--lamp);letter-spacing:.08em;text-transform:uppercase}
+.promo p{margin:0;font:16px/1.5 var(--type);color:var(--paper2)}
+.insignia{justify-self:center;width:110px;height:110px}
+
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,100%);z-index:65;background:var(--slate);border-left:1px solid var(--line);
+  display:flex;flex-direction:column;box-shadow:-20px 0 50px rgba(0,0,0,.5);animation:slideIn .28s ease}
+@keyframes slideIn{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+.drawer-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:16px;padding-top:calc(16px + env(safe-area-inset-top,0px));border-bottom:1px solid var(--line)}
+.drawer-head h2{margin:0;font:900 30px/1 var(--display);text-transform:uppercase;letter-spacing:.04em;color:var(--paper)}
+.drawer-body{overflow:auto;padding:16px;display:grid;gap:12px;align-content:start;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+.drawer-note{margin:0;font:14px/1.45 var(--type);color:var(--paper2)}
+.tcard{background:var(--paper);color:var(--ink);border-radius:3px;padding:12px 14px;position:relative}
+.tcard::before{content:'';position:absolute;left:0;right:0;top:0;height:4px;background:var(--red);opacity:.6}
+.tcard-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}
+.tcard h3{margin:0;font:600 15px/1.2 var(--mono)}
+.tcard .cnt{font:500 11px/1 var(--mono);color:var(--ink2)}
+.tcard p{margin:0 0 8px;font:13px/1.4 var(--type);color:var(--ink2)}
+.cols{display:flex;flex-wrap:wrap;gap:4px}
+.cols span{font:12px/1 var(--mono);background:#e9dfc7;padding:4px 6px;border-radius:3px}
+.cols span i{font-style:normal;color:var(--ink2);font-size:10px;margin-left:4px}
+.peek{margin-top:8px;background:var(--ink);color:var(--paper);border:0;border-radius:5px;padding:6px 10px;font:500 12px/1 var(--sans)}
+.nb-entry{background:var(--slate2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:grid;gap:6px}
+.nb-entry .nb-t{display:flex;justify-content:space-between;gap:8px;font:600 13px/1.3 var(--sans);color:var(--paper)}
+.nb-entry .nb-t span{font:500 11px/1.3 var(--mono);color:var(--manila)}
+.nb-entry pre{margin:0;font:12.5px/1.45 var(--mono);white-space:pre-wrap;color:#d8dee6}
+.nb-entry button{justify-self:start;background:var(--slate3);border:1px solid var(--line);border-radius:6px;padding:5px 9px;font:500 12px/1 var(--sans)}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.badge{background:var(--slate2);border:1px solid var(--line);border-radius:10px;padding:12px;display:grid;gap:6px;justify-items:center;text-align:center}
+.badge .medal{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;font:900 20px/1 var(--display);color:#1a1409;
+  background:radial-gradient(circle at 35% 30%,#ffe3a3,var(--lamp) 55%,#8a5d12);box-shadow:0 0 0 3px rgba(232,176,75,.25)}
+.badge.locked .medal{background:var(--slate3);color:var(--dim);box-shadow:none}
+.badge b{font:600 13px/1.2 var(--sans);color:var(--paper)}
+.badge.locked b{color:var(--dim)}
+.badge small{font:12px/1.35 var(--sans);color:var(--dim)}
+
+.toasts{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:90;display:grid;gap:8px;justify-items:end;pointer-events:none}
+.toast{background:var(--slate2);border:1px solid var(--lamp);color:var(--paper);border-radius:8px;padding:10px 14px;font:14px/1.35 var(--sans);max-width:320px;
+  box-shadow:0 10px 30px rgba(0,0,0,.5);animation:toastIn .3s ease}
+.toast b{color:var(--lamp)}
+@keyframes toastIn{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+
+/* free records-room tip on every lead */
+.tip{margin-top:12px;background:#ebe2cc;border:1px dashed var(--ink2);border-radius:3px;padding:9px 12px;display:grid;gap:6px}
+.tip-lbl{font:600 10px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--red)}
+.tip-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
+.tblchip{background:var(--ink);color:var(--paper);border:0;border-radius:4px;padding:5px 9px;font:600 13px/1 var(--mono)}
+.tblchip:hover{background:#3d352d}
+.tcols{font:12.5px/1.4 var(--mono);color:var(--ink2)}
+.tip-note{font:13px/1.35 var(--type);color:var(--ink2)}
+.peekbox{margin-top:10px;overflow-x:auto;border-top:1px dashed #cdbf9f;padding-top:8px}
+.peekbox table{border-collapse:collapse;width:100%;font:12px/1.4 var(--mono)}
+.peekbox th{text-align:left;background:#e9dfc7;padding:5px 8px;white-space:nowrap}
+.peekbox td{padding:4px 8px;border-bottom:1px solid #e3d9c1;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.peekbox .peek{margin-top:8px}
+.folder-close{position:absolute;top:-14px;right:-8px;z-index:9;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--slate);color:var(--paper);font:600 18px/1 var(--sans);display:grid;place-items:center}
+.folder-close:hover{border-color:var(--lamp);color:var(--lamp)}
+.navbtn[aria-pressed="true"]{color:var(--dim)}
+
+@media (max-width:620px){
+  .topbar{position:relative;top:0}
+  .brand b{font-size:20px}
+  .nav{margin-left:0;width:100%}
+  .navbtn{flex:1 1 auto;padding:8px 6px;font-size:12px}
+  .editor pre,.editor textarea{font-size:16px}
+  .rankbox{flex-basis:100%;max-width:none}
+  .stepcard h2{font-size:26px}
+  .lineup{gap:6px}
+  .suspect{padding:4px 4px 6px}
+  .suspect .nm{font-size:11.5px}
+  .suspect .meta{font-size:10px}
+  .paper{padding:16px}
+  .paper h2{font-size:32px}
+  .big-stamp{right:8px;top:54px}
+  .shape{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<canvas id="rain" aria-hidden="true"></canvas>
+<div id="app">
+  <header class="topbar">
+    <button class="brand" id="homeBtn" aria-label="Back to case files"><b>THE LEDGER</b><small>Greyhaven P.D. · Records</small></button>
+    <div class="rankbox" title="Rank and experience">
+      <span class="rank-name" id="rankName">Rookie</span>
+      <div class="xpbar" aria-hidden="true"><i id="xpFill"></i></div>
+      <span class="xp-text" id="xpText">0 XP</span>
+    </div>
+    <div class="chips">
+      <span class="chip" id="streakChip" title="Hot lead: consecutive correct queries multiply your XP"><span class="flame"></span><span id="streakText">Hot lead ×1.0</span></span>
+      <span class="chip" id="credChip" title="Credibility. Wrong accusations cost 20.">Cred <b id="credVal">100</b></span>
+    </div>
+    <nav class="nav">
+      <button class="navbtn" id="navSchema">Records room</button>
+      <button class="navbtn" id="navNotebook">Notebook</button>
+      <button class="navbtn" id="navBadges">Badges</button>
+      <button class="navbtn" id="navMusic" aria-pressed="false" title="Background music">Music on</button>
+      <button class="navbtn" id="navMute" aria-pressed="false" title="Mute or unmute all sound">Sound on</button>
+    </nav>
+  </header>
+
+  <main class="wrap" id="homeScreen">
+    <section class="hero">
+      <p class="eyebrow">Greyhaven Police · Records Division</p>
+      <h1>The Ledger<span>.</span></h1>
+      <p class="lede">A rain-soaked port. Thefts, fake invoices, one disappearance. Every thread ends at a mastermind nobody has seen. You have a keyboard and the city's records. Query your way to the truth.</p>
+      <div class="hero-stats" id="heroStats"></div>
+      <div class="engine-note" id="engineNote">Warming up the records room…</div>
+    </section>
+    <section class="cases" id="caseList" aria-label="Case files"></section>
+  </main>
+
+  <main class="wrap" id="caseScreen" hidden>
+    <div class="case-head">
+      <button class="backbtn" id="backBtn">← Case files</button>
+      <div>
+        <div class="case-no" id="caseNo">Case 01</div>
+        <h1 id="caseTitle">The Missing Crate</h1>
+      </div>
+    </div>
+    <div class="case-grid">
+      <section class="desk" aria-label="Your desk">
+        <div class="partner">
+          <div class="avatar" id="partnerAvatar"></div>
+          <div class="bubble" id="bubble" aria-live="polite"><span class="who">Sgt. Calloway</span><span id="bubbleText"></span></div>
+        </div>
+        <div class="stepcard" id="stepCard"></div>
+        <div class="editor-shell">
+          <div class="editor-bar"><span>Query</span><span id="editorHint">Ctrl+Enter to run</span></div>
+          <div class="editor" id="editorBox">
+            <pre id="hl" aria-hidden="true"></pre>
+            <textarea id="sql" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="SQL query" placeholder="SELECT … FROM …"></textarea>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-run" id="runBtn">Run query <kbd>Ctrl+Enter</kbd></button>
+          <button class="btn btn-red" id="accuseBtn" hidden>Accuse</button>
+          <button class="btn btn-ghost" id="hintBtn">Ask Calloway</button>
+          <button class="btn btn-ghost" id="clearBtn">Clear</button>
+        </div>
+        <div class="hints" id="hints"></div>
+        <div id="feedback"></div>
+        <div id="feedbackLate"></div>
+        <div class="results" id="results" hidden></div>
+      </section>
+      <section class="wall" aria-label="Evidence wall">
+        <h3>Suspect lineup <small id="lineupNote"></small></h3>
+        <div class="lineup" id="lineup"></div>
+        <h3>Evidence board <small id="boardCount"></small></h3>
+        <div class="board" id="board"></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="overlay" id="folderOv" hidden>
+  <div class="folder" id="folder">
+    <button class="folder-close" id="folderClose" aria-label="Close the file" title="Close (Esc)">×</button>
+    <div class="folder-inside">
+      <div class="paper" id="paper">
+        <div class="paper-head"><span id="fCaseNo">Case 01</span><span>Greyhaven P.D. · Records Division</span></div>
+        <h2 id="fTitle"></h2>
+        <div id="fTop"></div>
+        <div class="typed" id="fBody"></div>
+        <div class="skip-note" id="fSkip">Tap the page to skip ahead.</div>
+        <div class="paper-actions" id="fActions"></div>
+        <div class="big-stamp" id="bigStamp">CASE<br>CLOSED</div>
+      </div>
+    </div>
+    <div class="folder-cover" id="fCover" data-tab="CASE 01">
+      <div class="cover-eyebrow">Greyhaven Police · Case file</div>
+      <h2 id="fcTitle"></h2>
+      <div class="cover-skills" id="fcSkills"></div>
+      <div class="conf">CONFIDENTIAL</div>
+      <div><button class="btn btn-ink" id="openFileBtn">Open the file</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay front" id="promoOv" hidden>
+  <div class="promo" role="dialog" aria-labelledby="promoH">
+    <div class="eyebrow">By order of the Commissioner</div>
+    <svg class="insignia" id="insignia" viewBox="0 0 100 100" aria-hidden="true"></svg>
+    <h2 id="promoH">Promoted</h2>
+    <div class="rk" id="promoRank">Constable</div>
+    <p id="promoLine"></p>
+    <div><button class="btn btn-run" id="promoOk">Back to work</button></div>
+  </div>
+</div>
+
+<aside class="drawer" id="drawer" hidden aria-labelledby="drawerTitle">
+  <div class="drawer-head"><h2 id="drawerTitle">Records room</h2><button class="navbtn" id="drawerClose">Close</button></div>
+  <div class="drawer-body" id="drawerBody"></div>
+</aside>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-asm.js"></script>
+<script>
+"use strict";
+/* =========================================================
+   helpers
+   ========================================================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pad = n => String(n).padStart(2, '0');
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+function rng(seed){ return function(){ seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+  t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+/* =========================================================
+   THE CITY RECORDS  (seeded, so every player gets the same city)
+   ========================================================= */
+const PLOT = [
+  {id:7,  name:'Otto Brandt',   occupation:'Night Guard',        phone:'555-0107', account:'ACC-1007'},
+  {id:12, name:'Vera Kline',    occupation:'Warehouse Foreman',  phone:'555-0111', account:'ACC-1012'},
+  {id:17, name:'Silas Moreau',  occupation:'Night Clerk',        phone:'555-0193', account:'ACC-1093'},
+  {id:23, name:'Dex Harlan',    occupation:'Dock Hand',          phone:'555-0123', account:'ACC-1023'},
+  {id:31, name:'Rosa Moreau',   occupation:'Florist',            phone:'555-0150', account:'ACC-1031'},
+  {id:44, name:'Ivo Rask',      occupation:'Freight Broker',     phone:'555-0166', account:'ACC-3317'},
+  {id:52, name:'Hollis Crane',  occupation:'Pawnbroker',         phone:'555-0171', account:'ACC-1052'},
+  {id:60, name:'Edith Marlowe', occupation:'Harbour Accountant', phone:'555-0140', account:'ACC-1060'},
+  {id:71, name:'Augustin Pell', occupation:'Harbourmaster',      phone:'555-0181', account:'ACC-1071'},
+  {id:88, name:'Lena Voss',     occupation:'Customs Officer',    phone:'555-0188', account:'ACC-1088'},
+];
+const SCHEMA = {
+  people:['id INTEGER PRIMARY KEY','name TEXT','address_id INTEGER','occupation TEXT','phone TEXT','account TEXT'],
+  addresses:['id INTEGER PRIMARY KEY','street TEXT','district TEXT'],
+  vehicles:['plate TEXT PRIMARY KEY','make TEXT','colour TEXT','owner_id INTEGER'],
+  phone_calls:['id INTEGER PRIMARY KEY','caller TEXT','receiver TEXT','timestamp TEXT','duration INTEGER'],
+  bank_transactions:['id INTEGER PRIMARY KEY','from_account TEXT','to_account TEXT','amount REAL','date TEXT'],
+  cctv_sightings:['id INTEGER PRIMARY KEY','person_id INTEGER','location TEXT','timestamp TEXT'],
+  crime_reports:['id INTEGER PRIMARY KEY','date TEXT','type TEXT','location TEXT','description TEXT'],
+  interviews:['id INTEGER PRIMARY KEY','person_id INTEGER','transcript TEXT'],
+  warehouse_inventory:['item_code TEXT PRIMARY KEY','description TEXT','warehouse TEXT','quantity INTEGER','status TEXT'],
+  shipments:['id INTEGER PRIMARY KEY','item_code TEXT','vessel TEXT','origin TEXT','destination TEXT','ship_date TEXT','status TEXT'],
+  invoices:['id TEXT PRIMARY KEY','vendor TEXT','client TEXT','description TEXT','amount REAL','date TEXT','signed_by TEXT'],
+};
+const TABLE_INFO = {
+  people:'Everyone on file, with phone number and bank account.',
+  addresses:'Street addresses and districts.',
+  vehicles:'Registered vehicles and who owns them.',
+  phone_calls:'Every call the exchange logged. Duration is in seconds.',
+  bank_transactions:'Money moving between accounts.',
+  cctv_sightings:"Camera sightings. Timestamps look like '2026-03-14 23:12'.",
+  crime_reports:'Every report filed at the station this month.',
+  interviews:'Witness and suspect transcripts.',
+  warehouse_inventory:'Crates on the docks and their status.',
+  shipments:'What sailed where, and on which vessel.',
+  invoices:'Bills paid by the port and the council.',
+};
+const TABLES = Object.keys(SCHEMA);
+
+function buildData(){
+  const R = rng(314159);
+  const pick = a => a[Math.floor(R() * a.length)];
+  const int = (a, b) => a + Math.floor(R() * (b - a + 1));
+  const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(R() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const ts = (d, h, m) => `2026-03-${pad(d)} ${pad(h)}:${pad(m)}`;
+  const day = d => `2026-03-${pad(d)}`;
+  const T = {};
+
+  const STREETS = {'Anchor Lane':'Docklands','Brine Street':'Docklands','Hawser Street':'Docklands','Quay Road':'Docklands','Wharf Street':'Docklands',
+    'Cooper Row':'Old Town','Keel Lane':'Old Town','Mast Road':'Old Town','Pilot Street':'Old Town','Lantern Street':'Lantern Quarter','Wick Lane':'Lantern Quarter',
+    'Gull Terrace':'Hillcrest','Oyster Court':'Hillcrest','Saltpan Lane':'Saltmarsh','Tidegate Road':'Saltmarsh','Rope Walk':'Canal Row','Net Mender Way':'Canal Row','Ferry Walk':'Canal Row'};
+  const SN = Object.keys(STREETS);
+  T.addresses = [];
+  for (let i = 1; i <= 80; i++) { const st = pick(SN); T.addresses.push([i, `${int(1,180)} ${st}`, STREETS[st]]); }
+
+  const FIRST = ['Agnes','Albert','Ada','Bram','Clara','Cyril','Delia','Edmund','Elsie','Felix','Freya','Gideon','Greta','Hugo','Ines','Jasper','Juno','Kasimir','Lotte','Magnus',
+    'Maud','Nils','Odette','Pieter','Quentin','Ruth','Sven','Tilda','Ulric','Violet','Walter','Wren','Yusuf','Zelda','Arlo','Bianca','Cormac','Dagny','Emil','Fenna','Hester','Ivar','Joss','Kit','Leopold','Mina','Oskar','Petra','Rafe','Saskia','Teodor','Una'];
+  const LAST = ['Abernathy','Bell','Castellan','Dunmore','Ekberg','Fairweather','Gallo','Holm','Ingram','Jessop','Kowal','Lindqvist','Marsh','Nygaard','Okafor','Pryce','Quill','Rowntree',
+    'Salt','Thorne','Underhill','Vance','Whitlock','Yarrow','Zabel','Achterberg','Brodie','Duarte','Esposito','Finch','Hartig','Imrie','Jansen','Keel','Lowe','Mercer','Novak','Orme'];
+  const OCC = ['Dock Hand','Fishmonger','Teacher','Barkeep','Crane Operator','Nurse','Taxi Driver','Accountant','Sailor','Clerk','Mechanic','Baker','Journalist','Lawyer',
+    'Pharmacist','Welder','Ferry Pilot','Librarian','Locksmith','Net Mender','Tram Driver','Cook','Stevedore','Shopkeeper','Painter','Postman','Radio Operator','Seamstress'];
+  const plotById = Object.fromEntries(PLOT.map(p => [p.id, p]));
+  const usedNames = new Set(PLOT.map(p => p.name));
+  const phones = new Set(PLOT.map(p => p.phone));
+  const accts = new Set(PLOT.map(p => p.account).concat(['ACC-9000', 'ACC-0001']));
+  const people = [];
+  for (let id = 1; id <= 120; id++) {
+    if (plotById[id]) { people.push(Object.assign({}, plotById[id], {address_id:int(1,80)})); continue; }
+    let name; do { name = pick(FIRST) + ' ' + pick(LAST); } while (usedNames.has(name)); usedNames.add(name);
+    let ph; do { ph = '555-0' + int(100, 999); } while (phones.has(ph)); phones.add(ph);
+    let ac; do { ac = 'ACC-' + int(1100, 8999); } while (accts.has(ac)); accts.add(ac);
+    people.push({id, name, address_id:int(1,80), occupation:pick(OCC), phone:ph, account:ac});
+  }
+  T.people = people.map(p => [p.id, p.name, p.address_id, p.occupation, p.phone, p.account]);
+  const randoms = people.filter(p => !plotById[p.id]);
+  const P = id => plotById[id];
+
+  // vehicles
+  const MAKES = ['Bedford','Ford','Volvo','Saab','Peugeot','Morris','Citroën','Fiat','Austin','Opel'];
+  const COLOURS = ['Grey','Black','Red','Blue','Green','White','Silver','Maroon'];
+  const plates = new Set(); T.vehicles = [];
+  const L = 'ABCDEFGHJKLMNPRSTVWXYZ';
+  while (T.vehicles.length < 72) {
+    const pl = `GH-${int(10,99)} ${L[int(0,21)]}${L[int(0,21)]}${L[int(0,21)]}`; if (plates.has(pl)) continue; plates.add(pl);
+    T.vehicles.push([pl, pick(MAKES), pick(COLOURS), pick(people).id]);
+  }
+
+  // phone calls
+  const calls = []; const silas = '555-0193';
+  [[8,22,41,38],[10,23,5,44],[11,22,17,35],[12,23,30,47],[13,22,52,41],[14,22,58,41]].forEach(([d,h,m,s]) => calls.push(['555-0166', silas, ts(d,h,m), s]));
+  [[2,19,10,1320],[6,20,45,980],[12,18,30,1640],[17,19,55,1340]].forEach(([d,h,m,s]) => calls.push(['555-0150', silas, ts(d,h,m), s]));
+  [[3,9,12,140],[9,14,30,95],[15,8,5,185]].forEach(([d,h,m,s]) => calls.push(['555-0111', silas, ts(d,h,m), s]));
+  [[5,12,0,62],[13,16,20,80]].forEach(([d,h,m,s]) => calls.push(['555-0171', silas, ts(d,h,m), s]));
+  calls.push([randoms[3].phone, silas, ts(4,11,11), 210], [randoms[9].phone, silas, ts(16,10,2), 30]);
+  calls.push([silas,'555-0150',ts(7,20,0),600],[silas,'555-0150',ts(18,21,10),420],[silas,'555-0171',ts(11,13,5),50],[silas,'555-0111',ts(16,7,55),120],[silas,randoms[20].phone,ts(19,12,30),75]);
+  const pool = people.filter(p => p.id !== 17).map(p => p.phone);
+  for (let i = 0; i < 125; i++) {
+    const a = pick(pool); let b; do { b = pick(pool); } while (b === a);
+    calls.push([a, b, ts(int(1,20), int(7,23), int(0,59)), int(15, 1500)]);
+  }
+  calls.sort((x, y) => x[2] < y[2] ? -1 : x[2] > y[2] ? 1 : 0);
+  T.phone_calls = calls.map((c, i) => [i + 1, ...c]);
+
+  // bank
+  const bank = [];
+  const payees = shuffle(randoms.slice()).slice(0, 22).concat([P(7), P(12), P(23)]);
+  [1, 15].forEach(d => payees.forEach(p => bank.push(['ACC-0001', p.account, int(110, 190) * 10, day(d)])));
+  bank.push(['ACC-0001','ACC-1093',1400,day(1)],['ACC-0001','ACC-1093',1400,day(15)]);
+  [5,10,16].forEach(d => bank.push(['ACC-9000','ACC-3317',4000,day(d)]));
+  [9,11,13,15].forEach(d => bank.push(['ACC-3317','ACC-1093',1250,day(d)]));
+  bank.push(['ACC-1031','ACC-1093',60,day(7)],[randoms[3].account,'ACC-1093',45.5,day(4)],[randoms[9].account,'ACC-1093',120,day(18)]);
+  bank.push(['ACC-1093','ACC-1052',200,day(10)],['ACC-1093','ACC-1052',200,day(16)]);
+  const apool = people.map(p => p.account).filter(a => a !== 'ACC-1093' && a !== 'ACC-3317');
+  for (let i = 0; i < 72; i++) {
+    const a = pick(apool); let b; do { b = pick(apool); } while (b === a);
+    bank.push([a, b, Math.round((5 + R() * 900) * 100) / 100, day(int(1, 20))]);
+  }
+  bank.sort((x, y) => x[3] < y[3] ? -1 : x[3] > y[3] ? 1 : 0);
+  T.bank_transactions = bank.map((b, i) => [i + 1, ...b]);
+
+  // cctv
+  const LOCS = ['Warehouse 9','Dock Gate','Harbour Bar','Fish Market','Central Station','Lantern Street','Pier 4','Customs House','Old Lighthouse','Tram Depot','Warehouse 4'];
+  const cams = [];
+  const camPool = randoms.slice(2);
+  for (let i = 0; i < 108; i++) {
+    const loc = pick(LOCS); let d = int(10, 19); if (loc === 'Warehouse 9' && d === 14) d = 13;
+    cams.push([pick(camPool).id, loc, ts(d, int(6, 23), int(0, 59))]);
+  }
+  cams.push(
+    [23,'Warehouse 9',ts(14,8,5)],[randoms[0].id,'Warehouse 9',ts(14,9,30)],[12,'Warehouse 9',ts(14,13,15)],[randoms[1].id,'Warehouse 9',ts(14,16,40)],
+    [12,'Warehouse 9',ts(14,21,58)],[17,'Warehouse 9',ts(14,23,12)],[17,'Warehouse 9',ts(14,23,49)],
+    [7,'Dock Gate',ts(14,21,4)],[7,'Dock Gate',ts(14,22,15)],[7,'Dock Gate',ts(14,23,40)],[12,'Harbour Bar',ts(14,22,35)],[23,'Harbour Bar',ts(14,22,50)],
+    [17,'Tram Depot',ts(14,22,51)],[23,'Warehouse 9',ts(20,23,31)],[17,'Warehouse 9',ts(12,23,5)],[12,'Warehouse 9',ts(13,13,2)],
+    [44,'Customs House',ts(14,15,20)],[31,'Fish Market',ts(12,7,40)],[52,'Lantern Street',ts(13,17,5)],[60,'Customs House',ts(19,18,45)]);
+  cams.sort((x, y) => x[2] < y[2] ? -1 : x[2] > y[2] ? 1 : 0);
+  T.cctv_sightings = cams.map((c, i) => [i + 1, ...c]);
+
+  // crime reports
+  const TYPES = {
+    'Theft':['Bicycle taken from the railings.','Wallet lifted on a crowded tram.','Crate of oranges missing from a stall.','Brass fittings stripped from a moored boat.','Handbag snatched. Suspect ran north.','Lead flashing taken from a chapel roof.'],
+    'Pickpocketing':['Pocket watch gone after a busy platform.','Tourist lost a purse near the ferry queue.','Three wallets reported in one hour.'],
+    'Vandalism':['Window smashed. Nothing taken.','Graffiti: a fish wearing a crown.','Tyres slashed on three cars.','Bench thrown into the canal.'],
+    'Assault':['Bar fight over a darts score.','Two sailors, one broken nose.','Shoving match in the taxi queue.'],
+    'Noise complaint':['Accordion practice past midnight.','Foghorn sounded for a full minute. No ship.','Dog howling at the tram bell.'],
+    'Fraud':['Counterfeit tram tickets sold at the station.','Fake raffle for a lighthouse restoration.','Short-weight scales at a fish stall.'],
+    'Burglary':['Back door forced. Cash box gone.','Flat entered through a ground-floor window.','Shed broken into. Tools missing.'],
+    'Lost property':['Lost dog. Answers to Admiral.','Suitcase left on the 23:10 tram.','Umbrella with a silver duck handle.'],
+  };
+  const TK = Object.keys(TYPES);
+  const RLOCS = ['Fish Market','Central Station','Lantern Street','Pier 4','Customs House','Old Lighthouse','Tram Depot','Warehouse 4','Harbour Bar','Canal Row','Saltmarsh Park','Dock Gate'];
+  const reps = [];
+  for (let i = 0; i < 74; i++) { const t = pick(TK); reps.push([day(int(1, 22)), t, pick(RLOCS), pick(TYPES[t])]); }
+  reps.push(
+    [day(2),'Vandalism','Warehouse 9','Graffiti on the north wall. A seagull wearing a crown.'],
+    [day(14),'Theft','Warehouse 9','Crate C-7734 (marine engine parts) missing. Lock intact, no forced entry. Taken between 23:00 and midnight.'],
+    [day(19),'Noise complaint','Warehouse 9','Forklift reversing alarm at 3am. Again.'],
+    [day(15),'Theft','Pier 4','Grey Bedford van reported stolen overnight. Found abandoned by noon.'],
+    [day(18),'Fraud','Customs House','Invoice INV-0417 for harbour dredging paid twice. Vendor: Tidewater Holdings.'],
+    [day(21),'Missing person','Lantern Street','Edith Marlowe, harbour accountant. Not seen since 20 March.']);
+  reps.sort((x, y) => x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0);
+  T.crime_reports = reps.map((r, i) => [i + 1, ...r]);
+
+  // interviews
+  const LINES = [
+    "I sell whelks at the Fish Market. Didn't see a thing. Never do.",
+    "Lost my keys somewhere between the tram and the pub. That's all I know.",
+    "I heard shouting on Canal Row. Could've been gulls. Could've been my neighbours.",
+    "I was at the Harbour Bar. Two whiskeys. Maybe three.",
+    "Some joker keyed my car on Wick Lane. Scratched a fish into the door.",
+    "The tram was late again. That's a crime, if you ask me.",
+    "My landlord's a crook, but not your kind of crook.",
+    "I found a wallet on the ferry. Handed it in. Nobody believes me.",
+    "There's a man who feeds pigeons by the lighthouse. He sees everything. Says nothing.",
+    "I work the night ferry. Fog so thick you could lean on it.",
+    "A monkey escaped from a sailor's cage at Pier 4. Took two hours to catch.",
+    "I don't trust the Customs House. Never have.",
+    "My brother-in-law says he saw a ghost at the Tram Depot. He says a lot of things.",
+    "Our Christmas turkey went missing from the cold store. In March. Don't ask.",
+    "I closed the bakery at six. Walked home. Went to bed.",
+    "The accordion player on Lantern Street needs arresting. For the music.",
+    "Somebody stole the brass bell off my boat. Who steals a bell?",
+    "I heard the foghorn go off at midnight. No ship in the bay.",
+    "The fish market scales are rigged. Everybody knows. Nobody cares.",
+    "A jockey from the races bought a round for the whole bar. Paid in coins.",
+    "Saw two men arguing by the Dock Gate. Couldn't hear about what.",
+    "I'm a nurse. I see the results of Saturday nights, not the causes.",
+    "The radio said rain. The radio always says rain.",
+    "My cat brings me things. Yesterday a glove. Today a bus ticket.",
+    "Someone painted a crown on the lighthouse door. Again.",
+    "I drive the 23:10 tram. A man left a suitcase on it. Nobody came back for it.",
+    "There's always a light on in the Customs House. Even at 3am.",
+    "I repair nets. I hear gossip. That's the whole job.",
+    "The pawnshop on Brine Street buys anything. No questions.",
+    "I've lived on Saltpan Lane forty years. It was quieter before the containers.",
+    "Kids throw stones at the tram. I throw them back.",
+    "My neighbour's parrot swears in three languages.",
+    "I saw a van with no lights on Quay Road. Thought it was odd. Went home.",
+    "I teach at the harbour school. The children know more than the police.",
+    "Somebody's been stealing milk bottles off doorsteps. Small crime. Still mine.",
+    "I clean the offices at the Port Authority. They leave the bins full of paper.",
+    "Nothing happens in Hillcrest. That's why we moved there.",
+    "I tune pianos. The one at the Harbour Bar is beyond saving.",
+    "A man in a good coat asked me the way to Tidewater's office. I didn't know it had one.",
+    "My husband snores. That's the only noise I heard.",
+    "The ferry pilot was drunk again. We still arrived. Mostly.",
+    "The donkey at the Saltmarsh fair bit a councillor. Best day of the year.",
+    "I sell umbrellas. Business is good.",
+    "The butcher shorted me on sausages. I want it on record.",
+    "I heard someone whistling on Rope Walk at 2am. Same tune every night.",
+  ];
+  const ints = LINES.map(l => [pick(camPool).id, l]);
+  ints.push(
+    [12,"Warehouse 9? Only three keys exist. Mine, Otto's, and the night clerk's. Silas. I locked up just before ten and went for a drink."],
+    [7,"I was in the gate booth all night. My key never left my belt."],
+    [23,"I work mornings. Never had a key to 9. Don't want one."],
+    [17,"Quiet night. Did my rounds. Nothing to report. Can I go now?"],
+    [44,"Silas who? Never heard of him. Never called him in my life."],
+    [31,"My brother's been jumpy all month. Always on the phone to someone."],
+    [52,"Silas owes me a little. Everyone owes me a little."],
+    [71,"The port's books? Ask Edith Marlowe. She's the only one who understands them."],
+    [88,"Tidewater crates never get opened at customs. Orders from upstairs."],
+    [randoms[5].id,"Edith said the books didn't balance. Then she said she'd found out who balances them."]);
+  shuffle(ints);
+  T.interviews = ints.map((r, i) => [i + 1, ...r]);
+
+  // warehouse inventory
+  const GOODS = ['Marine engine parts','Hemp rope, 200m','Canned sardines','Tinned peaches','Bicycle tyres','Paraffin lamps','Ship chandlery','Copper wire','Coffee beans',
+    'Wool bales','Machine bearings','Radio valves','Grey paint, 40 tins','Glass bottles','Tea chests','Tar barrels','Sailcloth'];
+  const WH = ['Warehouse 2','Warehouse 4','Warehouse 7','Warehouse 9','Warehouse 11'];
+  const codes = new Set(['C-7734','C-7735','C-7736']); T.warehouse_inventory = [];
+  T.warehouse_inventory.push(['C-7734','Marine engine parts','Warehouse 9',1,'MISSING'],['C-7735','Marine engine parts','Warehouse 9',1,'SHIPPED'],['C-7736','Marine engine parts','Warehouse 9',1,'SHIPPED']);
+  while (T.warehouse_inventory.length < 80) {
+    const c = 'C-' + int(1000, 9999); if (codes.has(c)) continue; codes.add(c);
+    T.warehouse_inventory.push([c, pick(GOODS), pick(WH), int(1, 400), R() < .75 ? 'IN STOCK' : 'SHIPPED']);
+  }
+  // shipments
+  const VESSELS = ['MV Kestrel','SS Marguerite','MV Northern Lark','Tug Brutus','MV Saltbride','SS Oriel'];
+  const PORTS = ['Rotterdam','Lisbon','Hull','Bergen','Antwerp','Gdańsk','Cork'];
+  const shipped = T.warehouse_inventory.filter(r => r[4] === 'SHIPPED' && !r[0].startsWith('C-773')).map(r => r[0]);
+  const sh = [['C-7735','MV Saltbride','Greyhaven','Antwerp',day(15),'Held at customs'],['C-7736','MV Saltbride','Greyhaven','Antwerp',day(15),'Delivered']];
+  for (let i = 0; i < 58; i++) {
+    const out = R() < .6;
+    sh.push([pick(shipped.length ? shipped : ['C-1000']), pick(VESSELS), out ? 'Greyhaven' : pick(PORTS), out ? pick(PORTS) : 'Greyhaven', day(int(1, 20)), pick(['Delivered','Delivered','In transit','Held at customs'])]);
+  }
+  sh.sort((x, y) => x[4] < y[4] ? -1 : 1);
+  T.shipments = sh.map((s, i) => [i + 1, ...s]);
+  // invoices
+  const VENDORS = ['Greyhaven Rope Co.','Harlow Marine Supply','North Pier Catering','Salt & Sons Haulage','Beacon Electrical','Castellan Paints','Keel & Mercer Joinery'];
+  const CLIENTS = ['Port Authority','Harbour Board','Customs House','Greyhaven Council'];
+  const JOBS = ['Rope and rigging','Dock lighting repairs','Canteen supplies','Haulage, east quay','Paint, grey, 60 tins','Crane servicing','Pier timber'];
+  const SIGN = ['A. Pryce','M. Holm','E. Marlowe','T. Vance','R. Salt','G. Imrie'];
+  const inv = [];
+  for (let i = 0; i < 53; i++) inv.push([pick(VENDORS), pick(CLIENTS), pick(JOBS), Math.round((150 + R() * 4800) * 100) / 100, day(int(1, 20)), pick(SIGN)]);
+  [[2,12000],[6,9500],[9,12000],[11,15000],[14,12000],[17,9500],[18,12000]].forEach(([d, a]) => inv.push(['Tidewater Holdings','Port Authority','Harbour dredging',a,day(d),'L.']));
+  inv.sort((x, y) => x[4] < y[4] ? -1 : 1);
+  T.invoices = inv.map((v, i) => ['INV-0' + (400 + i), ...v]);
+  return T;
+}
+
+let db = null, SQLREADY = false, PEOPLE = {};
+function buildDB(SQL){
+  db = new SQL.Database();
+  const T = buildData();
+  db.exec('BEGIN');
+  for (const t of TABLES) {
+    db.exec(`CREATE TABLE ${t} (${SCHEMA[t].join(', ')})`);
+    const n = SCHEMA[t].length;
+    const st = db.prepare(`INSERT INTO ${t} VALUES (${Array(n).fill('?').join(',')})`);
+    T[t].forEach(r => st.run(r));
+    st.free();
+  }
+  db.exec('COMMIT');
+  T.people.forEach(r => PEOPLE[r[0]] = {id:r[0], name:r[1], occupation:r[3], phone:r[4], account:r[5]});
+}
+
+/* =========================================================
+   CASES
+   ========================================================= */
+const CASES = [
+{
+  id:'c1', num:1, title:'The Missing Crate', skills:['SELECT','WHERE','LIKE','ORDER BY','LIMIT'],
+  tagline:'A crate walks out of a locked warehouse. Nobody broke in.',
+  briefing:[
+    "Greyhaven. Tuesday. Raining, obviously.",
+    "Last night a crate walked out of Warehouse 9 on the east docks.",
+    "Crate C-7734. Marine engine parts. Insured for more than you'll earn. Ever.",
+    "No broken glass. No forced lock. No witnesses who'll admit it.",
+    "I'm Sergeant Calloway. You're the rookie. The records room is ours.",
+    "Everything starts with paperwork. So do we.",
+  ],
+  suspects:[7,12,17,23], culprit:17, culpritLinks:[2,4],
+  notes:{7:"Otto Brandt. Night guard. Says he never left the gate booth.",12:"Vera Kline. Foreman. Runs Warehouse 9 like a ship.",17:"Silas Moreau. Night clerk. Twitchy. Owes money around town.",23:"Dex Harlan. Dock hand. Big hands, small alibi."},
+  intro:"Four people work that warehouse. One of them knows where the crate went.",
+  steps:[
+    { id:'s1', concept:'SELECT', title:'Open the files',
+      lesson:"SELECT names the columns you want. FROM names the table they live in. Separate columns with commas.",
+      example:"SELECT name, occupation FROM people;",
+      task:"Pull the date, type and location of every crime report.",
+      expected:"SELECT date, type, location FROM crime_reports",
+      hints:["One drawer, three columns. Name the columns you want, then say which table they come from.","SELECT … FROM crime_reports","SELECT date, type, ___ FROM crime_reports;"],
+      clue:{title:'The pile', text:'Eighty reports this month. One of them is ours.', links:[]},
+      win:"Eighty reports. Greyhaven's been busy. Let's narrow it down." },
+    { id:'s2', concept:'WHERE', title:'Narrow the search',
+      lesson:"WHERE keeps only the rows that pass a test. Text goes in single quotes, and = means an exact match.",
+      example:"SELECT name FROM people WHERE occupation = 'Baker';",
+      task:"Show the date, type and description of every report at 'Warehouse 9'.",
+      expected:"SELECT date, type, description FROM crime_reports WHERE location = 'Warehouse 9'",
+      herrings:[{sql:"SELECT date, type, description FROM crime_reports WHERE type = 'Theft'", msg:"That's every theft in the city, including a stolen van and some oranges. We care where it happened. Filter on location."}],
+      hints:["Filter on where it happened, not what happened.","WHERE location = 'Warehouse 9'","SELECT date, type, description FROM crime_reports WHERE location = ___;"],
+      clue:{title:'Theft, 14 March', text:'Crate C-7734 gone between 23:00 and midnight. Lock intact. Whoever did it had a key.', links:[0]},
+      win:"Lock intact. Our thief didn't break in. They let themselves in." },
+    { id:'s3', concept:'LIKE', title:'Witness statements',
+      lesson:"LIKE searches inside text. % stands for any run of characters, so 'M%' means starts with M and '%rain%' means rain appears anywhere.",
+      example:"SELECT name FROM people WHERE name LIKE 'M%';",
+      task:"Search the interview transcripts for anyone who mentions a key. Show person_id and transcript.",
+      expected:"SELECT person_id, transcript FROM interviews WHERE transcript LIKE '%key%'",
+      herrings:[{sql:"SELECT person_id, transcript FROM interviews WHERE transcript LIKE 'key'", msg:"Zero rows. Without % signs, LIKE wants the entire transcript to be the word key. Nobody talks like that. Wrap it: '%key%'."}],
+      hints:["Transcripts are long. You want the word key anywhere inside them.","LIKE '%key%'","SELECT person_id, transcript FROM interviews WHERE transcript LIKE ___;"],
+      clue:{title:'Three keys', text:"Vera: only three keys to Warehouse 9. Hers, Otto's, and the night clerk's. Silas.", links:[1]},
+      clears:[{id:23, why:"Dex never had a key."}],
+      win:"Whiskey, monkeys, a turkey. And one useful foreman. Three keys, and Dex isn't holding one." },
+    { id:'s4', concept:'ORDER BY', title:'Roll the tape',
+      lesson:"ORDER BY sorts your rows, smallest or earliest first. Add DESC to flip it. Combine filters with AND.",
+      example:"SELECT name, occupation FROM people ORDER BY name;",
+      task:"List CCTV sightings at 'Warehouse 9' on 14 March, earliest first. Show person_id and timestamp. Tip: timestamp LIKE '2026-03-14%' grabs one day.",
+      expected:"SELECT person_id, timestamp FROM cctv_sightings WHERE location = 'Warehouse 9' AND timestamp LIKE '2026-03-14%' ORDER BY timestamp",
+      ordered:true,
+      herrings:[{sql:"SELECT person_id, timestamp FROM cctv_sightings WHERE location = 'Warehouse 9' ORDER BY timestamp", msg:"That's every day on the tape. We only care about the 14th. Add the date with AND."}],
+      hints:["Two conditions: the place and the day. Then sort.","WHERE location = … AND timestamp LIKE '2026-03-14%' ORDER BY timestamp","SELECT person_id, timestamp FROM cctv_sightings WHERE location = 'Warehouse 9' AND ___ ORDER BY ___;"],
+      clue:{title:'Camera, Warehouse 9', text:'Seven sightings on the 14th. Day shift, then Vera, then the night crew.', links:[2]},
+      clears:[{id:7, why:"Otto never enters Warehouse 9. The gate camera has him in his booth."}],
+      win:"Otto's not in frame. Gate camera has him in the booth all night, reading the racing pages." },
+    { id:'s5', concept:'LIMIT', title:'The last faces',
+      lesson:"LIMIT cuts the list down to the first N rows. Sort with DESC first and you get the latest N.",
+      example:"SELECT date, type FROM crime_reports ORDER BY date DESC LIMIT 5;",
+      task:"Same sightings. Show only the last 3 of the night, latest first.",
+      expected:"SELECT person_id, timestamp FROM cctv_sightings WHERE location = 'Warehouse 9' AND timestamp LIKE '2026-03-14%' ORDER BY timestamp DESC LIMIT 3",
+      ordered:true,
+      herrings:[
+        {sql:"SELECT person_id, timestamp FROM cctv_sightings WHERE location = 'Warehouse 9' AND timestamp LIKE '2026-03-14%' ORDER BY timestamp LIMIT 3", msg:"That's the morning shift. You grabbed the first three. Flip the sort with DESC."},
+        {sql:"SELECT person_id, timestamp FROM cctv_sightings WHERE location = 'Warehouse 9' ORDER BY timestamp DESC LIMIT 3", msg:"Dex, on the 20th? That's six days after the theft. You dropped the date filter."}],
+      hints:["Reuse your last query. Flip the order, then cut it short.","ORDER BY timestamp DESC LIMIT 3","… ORDER BY timestamp DESC LIMIT ___;"],
+      clue:{title:'Last faces', text:'23:12 and 23:49: Silas Moreau (#17). Vera left at 21:58, before the window opened.', links:[3,1]},
+      clears:[{id:12, why:"Vera left at 21:58. The theft window opened at 23:00."}],
+      win:"One key-holder inside during the window. Twice." },
+  ],
+  accusation:{text:"Pick your thief from the lineup. Then back it up: write a query whose results point at them and nobody else.",
+    tables:['cctv_sightings', 'people'], evidence:/cctv_sightings/i,
+    needs:"Back it with the camera tape (cctv_sightings), not just a name lookup.",
+    proof:"SELECT person_id FROM cctv_sightings WHERE location = 'Warehouse 9' AND timestamp > '2026-03-14 23:00' AND timestamp < '2026-03-15'",
+    hints:["The cameras don't blink. Warehouse 9, 14 March, after 23:00.","SELECT person_id FROM cctv_sightings WHERE location = 'Warehouse 9' AND timestamp > ___;"]},
+  wrong:{7:"Otto? The gate camera has him in his booth all night. The DA sends regards. Sarcastic ones.",
+         12:"Vera clocked out at 21:58 and was at the Harbour Bar by 22:35. Your own tape says so.",
+         23:"Dex doesn't even have a key. He was at the Harbour Bar. Try again, with evidence."},
+  twist:[
+    "Silas folds in eleven minutes. A station record.",
+    "\"I only opened the door. A voice on the phone told me when.\"",
+    "\"Money told me why.\"",
+    "He won't name the voice. Says it would cost him more than prison.",
+    "Last thing he says before his lawyer arrives:",
+    "\"The Ledger always balances his books.\"",
+    "Calloway: \"Get me his phone records, rookie. And his bank.\"",
+  ],
+},
+{
+  id:'c2', num:2, title:'The Broken Alibi', skills:['COUNT','GROUP BY','HAVING','AVG','SUM'],
+  tagline:'Somebody called Silas. Somebody paid him. Somebody is lying.',
+  briefing:[
+    "Silas' phone line: 555-0193. His bank account: ACC-1093.",
+    "Somebody called him. Somebody paid him.",
+    "Four people in his orbit. One of them is the voice.",
+    "Ivo Rask, freight broker, swears he's never met the man.",
+    "Alibis are stories. Records are arithmetic.",
+    "Time to count.",
+  ],
+  suspects:[44,31,12,52], culprit:44, culpritLinks:[3,4],
+  notes:{44:"Ivo Rask. Freight broker. Says he's never heard of Silas.",31:"Rosa Moreau. Silas' sister. Florist. Worried sick, apparently.",12:"Vera Kline. The foreman again. Cleared of the theft, not of everything.",52:"Hollis Crane. Pawnbroker and part-time loan shark. Silas owes him."},
+  intro:"Silas' calls and payments are in the records. Let's make them add up.",
+  steps:[
+    { id:'s1', concept:'COUNT', title:'Count the calls',
+      lesson:"COUNT(*) counts rows instead of showing them. Add WHERE to count only the rows that matter.",
+      example:"SELECT COUNT(*) FROM vehicles WHERE colour = 'Red';",
+      task:"How many calls did Silas' line (555-0193) receive? Each call has a caller and a receiver.",
+      expected:"SELECT COUNT(*) FROM phone_calls WHERE receiver = '555-0193'",
+      herrings:[
+        {sql:"SELECT COUNT(*) FROM phone_calls WHERE caller = '555-0193'", msg:"Those are calls Silas made. We want the calls he got. receiver, not caller."},
+        {sql:"SELECT COUNT(*) FROM phone_calls", msg:"That's every call in Greyhaven. Filter to Silas' line first."}],
+      hints:["Count rows where Silas is on the receiving end.","SELECT COUNT(*) … WHERE receiver = '555-0193'","SELECT COUNT(*) FROM phone_calls WHERE ___ = '555-0193';"],
+      clue:{title:'17 calls', text:'Seventeen calls to Silas this month. Popular man, for a night clerk.', links:[]},
+      win:"Seventeen. A night clerk with a social life. Suspicious already." },
+    { id:'s2', concept:'GROUP BY', title:'Who keeps calling?',
+      lesson:"GROUP BY sorts rows into piles, one pile per value. COUNT(*) then counts each pile separately.",
+      example:"SELECT colour, COUNT(*) FROM vehicles GROUP BY colour;",
+      task:"Count the calls to Silas' line, per caller.",
+      expected:"SELECT caller, COUNT(*) FROM phone_calls WHERE receiver = '555-0193' GROUP BY caller",
+      herrings:[{sql:"SELECT caller, COUNT(*) FROM phone_calls GROUP BY caller", msg:"That's every caller in the city. WHERE goes before GROUP BY. Filter to Silas' line, then group."}],
+      hints:["Keep your filter from last time. Then pile the calls up by who made them.","GROUP BY caller","SELECT caller, COUNT(*) FROM phone_calls WHERE receiver = '555-0193' GROUP BY ___;"],
+      clue:{title:'Six numbers', text:'Six different numbers call Silas. 555-0166 rang six times.', links:[0]},
+      win:"Six numbers. One of them keeps coming back." },
+    { id:'s3', concept:'HAVING', title:'The regulars',
+      lesson:"WHERE filters rows before grouping. HAVING filters the piles afterwards, so it can test COUNT, SUM or AVG.",
+      example:"SELECT colour, COUNT(*) FROM vehicles GROUP BY colour HAVING COUNT(*) > 8;",
+      task:"Keep only the callers who rang Silas at least 3 times.",
+      expected:"SELECT caller, COUNT(*) FROM phone_calls WHERE receiver = '555-0193' GROUP BY caller HAVING COUNT(*) >= 3",
+      herrings:[{sql:"SELECT caller, COUNT(*) FROM phone_calls WHERE receiver = '555-0193' GROUP BY caller HAVING COUNT(*) > 3", msg:"At least 3 means >= 3. With > 3 you just let the foreman slip out of frame."}],
+      hints:["Filter the groups, not the rows.","HAVING COUNT(*) >= 3","… GROUP BY caller HAVING ___ >= 3;"],
+      clue:{title:'The regulars', text:'Three regulars: 555-0150 (Rosa), 555-0111 (Vera) and 555-0166. Nobody knows that one.', links:[1]},
+      clears:[{id:52, why:"Hollis rang twice. Debt reminders, not orders."}],
+      win:"Rosa's the sister. Vera's the boss. 555-0166 isn't in anybody's address book." },
+    { id:'s4', concept:'AVG', title:'Short calls',
+      lesson:"AVG(column) gives the mean. With GROUP BY you get one average per pile.",
+      example:"SELECT to_account, AVG(amount) FROM bank_transactions GROUP BY to_account;",
+      task:"For those same 3+ callers, show each caller's average call duration in seconds.",
+      expected:"SELECT caller, AVG(duration) FROM phone_calls WHERE receiver = '555-0193' GROUP BY caller HAVING COUNT(*) >= 3",
+      herrings:[{sql:"SELECT caller, AVG(duration) FROM phone_calls WHERE receiver = '555-0193' GROUP BY caller", msg:"Right maths, too many callers. Keep the HAVING from last time."}],
+      hints:["Same query as before. Swap what you're measuring.","AVG(duration)","SELECT caller, AVG(___) FROM phone_calls WHERE receiver = '555-0193' GROUP BY caller HAVING COUNT(*) >= 3;"],
+      clue:{title:'41 seconds', text:'555-0166 averages 41 seconds a call. Rosa averages 22 minutes.', links:[2]},
+      clears:[{id:31, why:"Twenty-two-minute calls. That's a sister, not a handler."}],
+      win:"Forty-one seconds. Nobody asks after your mother in forty-one seconds. Those are orders." },
+    { id:'s5', concept:'SUM', title:'Follow the money',
+      lesson:"SUM(column) adds a column up. Group by the sender to see who paid what in total.",
+      example:"SELECT date, SUM(amount) FROM bank_transactions GROUP BY date;",
+      task:"Money paid into Silas' account (ACC-1093): total per sender, keeping only senders who paid more than 1000.",
+      expected:"SELECT from_account, SUM(amount) FROM bank_transactions WHERE to_account = 'ACC-1093' GROUP BY from_account HAVING SUM(amount) > 1000",
+      herrings:[
+        {sql:"SELECT from_account, SUM(amount) FROM bank_transactions GROUP BY from_account HAVING SUM(amount) > 1000", msg:"That's the whole city's money. We only care what landed in ACC-1093."},
+        {sql:"SELECT from_account, SUM(amount) FROM bank_transactions WHERE to_account = 'ACC-1093' GROUP BY from_account", msg:"Close. Now drop the small change. HAVING SUM(amount) > 1000."}],
+      hints:["Filter to Silas' account, group by who sent it, then keep the big totals.","HAVING SUM(amount) > 1000","SELECT from_account, SUM(amount) FROM bank_transactions WHERE to_account = 'ACC-1093' GROUP BY from_account HAVING ___;"],
+      clue:{title:'5,000 in fours', text:'ACC-3317 paid Silas 5,000 in four neat drops. ACC-0001 is just port payroll.', links:[3]},
+      clears:[{id:12, why:"Vera's account never paid Silas a penny."}],
+      win:"Five thousand. In four drops. Somebody's paying by the job." },
+  ],
+  accusation:{text:"Name the voice on the phone. Back it with a query that ties them to 555-0166 or ACC-3317.",
+    tables:['people', 'phone_calls', 'bank_transactions'], evidence:/0166|3317|phone_calls|bank_transactions/i,
+    needs:"Tie them to the number 555-0166 or the account ACC-3317 that your evidence turned up.",
+    proof:"SELECT name FROM people WHERE phone = '555-0166'",
+    hints:["The people table holds everyone's phone number and bank account.","SELECT name FROM people WHERE phone = ___;"]},
+  wrong:{31:"His sister? Twenty-minute calls about her cat. The DA wants to know if you're serious.",
+         12:"Vera called about shift rotas and never paid him a penny. Wrong tree, rookie.",
+         52:"Hollis is a crook. Just not this crook. The money flows to him, not from him."},
+  twist:[
+    "Ivo Rask. \"Never called him in my life.\" Six times in a week, Ivo.",
+    "He cracks faster than Silas did.",
+    "\"I'm a post box. Money comes in, I pass it on. I never see a face.\"",
+    "Every penny in ACC-3317 came from one account: ACC-9000.",
+    "Registered to Tidewater Holdings. Director: none listed.",
+    "One more thing. Harbour camera, 00:10, 15 March.",
+    "A grey van leaving the east docks. No lights.",
+    "Calloway: \"The crate had wheels, rookie. Let's find them.\"",
+  ],
+},
+{ id:'c3', num:3, title:'The Getaway Car', skills:['INNER JOIN','LEFT JOIN'], sealed:true, tagline:'A grey van, a stolen plate, and four tables that only make sense together.' },
+{ id:'c4', num:4, title:'The Paper Trail', skills:['Subqueries','CASE WHEN','Date ranges'], sealed:true, tagline:'Tidewater Holdings bills the port for dredging nobody ever did.' },
+{ id:'c5', num:5, title:'The Ledger', skills:['CTEs','Window functions'], sealed:true, tagline:'Someone balances every book in Greyhaven. Time for an audit.' },
+];
+const caseById = id => CASES.find(c => c.id === id);
+
+const RANKS = [
+  {name:'Rookie', xp:0, line:''},
+  {name:'Constable', xp:600, line:"They gave you a whistle. Try not to blow it."},
+  {name:'Detective', xp:2400, line:"Plain clothes now. Try to look like you own them."},
+  {name:'Inspector', xp:4500, line:"You get an office with a window. It faces a wall."},
+  {name:'Chief Inspector', xp:7500, line:"The whole records room answers to you now."},
+];
+const BADGES = [
+  {id:'first_lead', name:'First Lead', mark:'1', desc:'Solve your first query.'},
+  {id:'hot_lead', name:'Hot Lead', mark:'5×', desc:'Reach a 5-query streak.'},
+  {id:'quick_draw', name:'Quick Draw', mark:'30s', desc:'Solve a step in under 30 seconds.'},
+  {id:'herring', name:'Red Herring Hunter', mark:'RH', desc:'Take the bait, then crack the step anyway.'},
+  {id:'clean_accusation', name:'Clean Accusation', mark:'CA', desc:'Close a case with no wrong accusations.'},
+  {id:'by_the_book', name:'By the Book', mark:'BB', desc:'Close a case without a single hint.'},
+  {id:'perfect', name:'Perfect Record', mark:'★★★', desc:'Earn 3 stars on a case.'},
+  {id:'no_stone', name:'No Stone Unturned', mark:'11', desc:'Query all 11 tables in the records room.'},
+  {id:'case_cracker', name:'Case Cracker', mark:'I', desc:'Close Case 1.'},
+  {id:'count_on_me', name:'Count On Me', mark:'Σ', desc:'Close Case 2 with aggregates.'},
+  {id:'join_master', name:'Join Master', mark:'⋈', desc:'Close Case 3. (Case file sealed.)'},
+  {id:'paper_pusher', name:'Paper Pusher', mark:'( )', desc:'Close Case 4. (Case file sealed.)'},
+  {id:'unmasked', name:'Unmasked', mark:'L.', desc:'Unmask The Ledger. (Case file sealed.)'},
+];
+
+/* =========================================================
+   save state
+   ========================================================= */
+const SAVE_KEY = 'ledger-casebook-v1';
+const freshSave = () => ({xp:0, cred:100, streak:0, bestStreak:0, badges:[], cases:{}, notebook:[], tables:[], ever:[], muted:false, music:true});
+function freshCase(best){ return {step:0, cleared:[], hints:0, wrongAcc:0, closed:false, started:false, bestStars:best || 0, stepHints:0, stepFails:0, stepErrors:0, herring:false, queries:{}, draft:''}; }
+let S = (() => {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (raw) {
+      const s = Object.assign(freshSave(), JSON.parse(raw));
+      if (!s.cases || typeof s.cases !== 'object') s.cases = {};
+      Object.keys(s.cases).forEach(k => { s.cases[k] = Object.assign(freshCase(), s.cases[k]); });   // heal saves that miss newer fields
+      ['badges', 'notebook', 'tables', 'ever'].forEach(k => { if (!Array.isArray(s[k])) s[k] = []; });
+      s.streak = 0;   // a hot-lead streak lasts one sitting
+      return s;
+    }
+  } catch (e) {}
+  return freshSave();
+})();
+let saveTimer = null;
+function save(){ try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {} }
+function saveSoon(){ clearTimeout(saveTimer); saveTimer = setTimeout(save, 400); }
+function CS(cid){ if (!S.cases[cid]) S.cases[cid] = freshCase(); return S.cases[cid]; }
+
+/* =========================================================
+   sound (Web Audio, synthesised; starts after first click)
+   ========================================================= */
+const Sound = {
+  ctx:null, nb:null, lastClack:0,
+  init(){ if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
+    try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { this.ctx = null; } },
+  on(){ return this.ctx && !S.muted; },
+  buf(){ if (this.nb) return this.nb; const c = this.ctx, b = c.createBuffer(1, c.sampleRate * .6, c.sampleRate), d = b.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; return this.nb = b; },
+  noise(dur, type, freq, gain, q, at){ const c = this.ctx, t = c.currentTime + (at || 0); const s = c.createBufferSource(); s.buffer = this.buf();
+    const f = c.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.Q.value = q || 1; const g = c.createGain();
+    g.gain.setValueAtTime(gain, t); g.gain.exponentialRampToValueAtTime(.0005, t + dur); s.connect(f); f.connect(g); g.connect(c.destination); s.start(t); s.stop(t + dur + .05); },
+  tone(freq, dur, type, gain, at, slide){ const c = this.ctx, t = c.currentTime + (at || 0); const o = c.createOscillator(), g = c.createGain(); o.type = type || 'sine';
+    o.frequency.setValueAtTime(freq, t); if (slide) o.frequency.exponentialRampToValueAtTime(slide, t + dur); g.gain.setValueAtTime(.0001, t);
+    g.gain.exponentialRampToValueAtTime(gain, t + .01); g.gain.exponentialRampToValueAtTime(.0005, t + dur); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + .05); },
+  clack(vol){ if (!this.on()) return; const now = performance.now(); if (now - this.lastClack < 35) return; this.lastClack = now;
+    const v = vol || 1; this.noise(.035, 'bandpass', 1700 + Math.random() * 1500, .32 * v, 2.2); this.tone(80 + Math.random() * 40, .03, 'square', .025 * v); },
+  shuffle(){ if (!this.on()) return; for (let i = 0; i < 5; i++) this.noise(.14, 'highpass', 1800 + i * 350, .07, .7, i * .06); },
+  thud(){ if (!this.on()) return; this.tone(150, .45, 'sine', .9, 0, 36); this.noise(.3, 'lowpass', 380, .7, .7); this.noise(.06, 'bandpass', 900, .3, 1); },
+  pin(){ if (!this.on()) return; this.tone(1500, .06, 'triangle', .1); this.noise(.04, 'highpass', 3000, .08, 1, .01); },
+  ding(){ if (!this.on()) return; this.tone(660, .35, 'triangle', .16); this.tone(990, .55, 'triangle', .11, .09); },
+  buzz(){ if (!this.on()) return; this.tone(120, .16, 'sawtooth', .05); this.tone(96, .22, 'sawtooth', .045, .1); },
+  flip(){ if (!this.on()) return; this.noise(.18, 'bandpass', 1200, .12, .8); },
+  fanfare(){ if (!this.on()) return; [523, 659, 784, 1046].forEach((f, i) => this.tone(f, .5, 'triangle', .13, i * .13)); },
+};
+/* ---------- background music: a slow noir loop, synthesised live ---------- */
+const Music = (() => {
+  const E = 60 / 64 / 2;                                   // eighth note at 64 bpm
+  const CH = {
+    Am9:   {bass:[45, 52, 48, 43], pad:[57, 60, 64, 67, 71], mel:[69, 71, 72, 76, 79, 81, 83]},
+    Dm9:   {bass:[38, 45, 41, 36], pad:[53, 57, 60, 64],     mel:[69, 72, 74, 76, 77, 81]},
+    Bm7b5: {bass:[47, 53, 50, 45], pad:[59, 62, 65, 69],     mel:[69, 71, 74, 77, 79, 81]},
+    E7b9:  {bass:[40, 47, 44, 38], pad:[56, 59, 62, 65],     mel:[68, 71, 74, 76, 77, 80]},
+    Fmaj7: {bass:[41, 48, 45, 40], pad:[53, 57, 60, 64],     mel:[69, 72, 74, 76, 77, 79]},
+  };
+  // eight bars, two chords per bar
+  const PROG = ['Am9','Am9','Dm9','Dm9','Bm7b5','E7b9','Am9','Am9','Fmaj7','Fmaj7','Dm9','Dm9','Bm7b5','E7b9','Am9','E7b9'];
+  const hz = m => 440 * Math.pow(2, (m - 69) / 12);
+  const m = {playing:false, timer:null, nextT:0, n:0, mel:2, bus:null, send:null, rain:null, rainBuf:null, level:.7};
+
+  function build(c){
+    m.bus = c.createGain(); m.bus.gain.value = 0;
+    const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 4800; m.bus.connect(lp); lp.connect(c.destination);
+    const dly = c.createDelay(1); dly.delayTime.value = E * 1.5;
+    const fbk = c.createGain(); fbk.gain.value = .36; const dlp = c.createBiquadFilter(); dlp.type = 'lowpass'; dlp.frequency.value = 1900;
+    const wet = c.createGain(); wet.gain.value = .55;
+    m.send = c.createGain(); m.send.connect(dly); dly.connect(dlp); dlp.connect(fbk); fbk.connect(dly); dlp.connect(wet); wet.connect(m.bus);
+    const len = c.sampleRate * 4; m.rainBuf = c.createBuffer(1, len, c.sampleRate); const d = m.rainBuf.getChannelData(0);
+    let last = 0; for (let i = 0; i < len; i++) { const w = Math.random() * 2 - 1; last = (last + .08 * w) / 1.08; d[i] = w * .6 + last * 6; }   // hissy rain
+  }
+  function osc(c, t, f, dur, type, gain, attack, dests){
+    const o = c.createOscillator(), g = c.createGain(); o.type = type; o.frequency.value = f;
+    g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(gain, t + attack); g.gain.exponentialRampToValueAtTime(.0004, t + dur);
+    o.connect(g); dests.forEach(d => g.connect(d)); o.start(t); o.stop(t + dur + .05);
+  }
+  function hush(c, t, dur, kind, freq, q, gain){
+    const s = c.createBufferSource(); s.buffer = Sound.buf(); const f = c.createBiquadFilter(); f.type = kind; f.frequency.value = freq; f.Q.value = q; const g = c.createGain();
+    g.gain.setValueAtTime(gain, t); g.gain.exponentialRampToValueAtTime(.0004, t + dur); s.connect(f); f.connect(g); g.connect(m.bus); s.start(t); s.stop(t + dur + .05);
+  }
+  function step(c, n, t0){
+    const bar = Math.floor(n / 8), ci = Math.floor(n / 4), w = n % 4, ch = CH[PROG[ci]];
+    const t = t0 + (n % 2 ? E * .16 : 0);                 // swing the off-beats
+    if (w === 0) {                                         // chord pad swells with each change
+      ch.pad.forEach((p, i) => { osc(c, t + i * .02, hz(p), E * 4.6, 'triangle', .012, .45, [m.bus]); osc(c, t, hz(p) * 1.003, E * 4.6, 'sine', .008, .45, [m.bus]); });
+      osc(c, t, hz(ch.bass[0]), E * 3.6, 'triangle', .13, .012, [m.bus]);                      // bass on the one
+    } else if (w === 2) {
+      osc(c, t, hz(ch.bass[1 + (Math.random() < .35 ? 2 : 0)]), E * 1.8, 'triangle', .1, .012, [m.bus]);   // walk to the next tone
+    }
+    if ((w === 0 && Math.random() < .55) || (w === 3 && Math.random() < .3)) {            // electric piano comp, a little behind the beat
+      ch.pad.slice(1).forEach((p, i) => { const tt = t + .03 + i * .014;
+        osc(c, tt, hz(p + 12), 1.1, 'sine', .02, .006, [m.bus, m.send]); osc(c, tt, hz(p + 24), .35, 'sine', .006, .004, [m.bus]); });
+    }
+    const rest = bar % 4 === 3 && n % 8 > 3;               // breathe at the end of each phrase
+    if (!rest && Math.random() < (n % 8 === 0 ? .6 : n % 2 ? .1 : .24)) {                   // vibraphone melody
+      m.mel = Math.max(0, Math.min(ch.mel.length - 1, m.mel + Math.round((Math.random() - .5) * 4)));
+      const f = hz(ch.mel[m.mel] + (Math.random() < .15 ? 12 : 0));
+      osc(c, t, f, 1.6, 'sine', .05, .008, [m.bus, m.send]); osc(c, t, f * 4, .4, 'sine', .008, .004, [m.bus]);
+    }
+    hush(c, t, .06, 'highpass', 7000, .7, n % 2 ? .01 : .018);                                // brush on every eighth
+    if (n % 8 === 2 || n % 8 === 6) hush(c, t, .22, 'bandpass', 2600, .5, .035);              // snare brush on 2 and 4
+  }
+  function tick(){
+    const c = Sound.ctx; if (!c || !m.playing) return;
+    if (m.nextT < c.currentTime - .2) m.nextT = c.currentTime + .05;
+    while (m.nextT < c.currentTime + .7) { step(c, m.n, m.nextT); m.n = (m.n + 1) % 64; m.nextT += E; }
+  }
+  return {
+    get playing(){ return m.playing; },
+    get bus(){ return m.bus; },                            // read-only handle, for tests and debugging
+    start(){
+      const c = Sound.ctx; if (!c || m.playing) return; if (!m.bus) build(c);
+      m.playing = true; m.nextT = c.currentTime + .15; m.n = 0;
+      m.bus.gain.cancelScheduledValues(c.currentTime); m.bus.gain.setTargetAtTime(m.level, c.currentTime, 1.4);
+      m.rain = c.createBufferSource(); m.rain.buffer = m.rainBuf; m.rain.loop = true;
+      const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1500; bp.Q.value = .35; const g = c.createGain(); g.gain.value = .05;
+      m.rain.connect(bp); bp.connect(g); g.connect(m.bus); m.rain.start();
+      m.timer = setInterval(tick, 120); tick();
+    },
+    stop(){
+      const c = Sound.ctx; if (!m.playing) return; m.playing = false; clearInterval(m.timer);
+      if (c && m.bus) m.bus.gain.setTargetAtTime(0, c.currentTime, .25);
+      const r = m.rain; m.rain = null; if (r) setTimeout(() => { try { r.stop(); } catch (e) {} }, 1500);
+    },
+    sync(){ (Sound.ctx && S.music && !S.muted && !document.hidden) ? this.start() : this.stop(); },
+  };
+})();
+['pointerdown', 'keydown'].forEach(ev => document.addEventListener(ev, () => { Sound.init(); Music.sync(); }, {passive:true}));
+document.addEventListener('visibilitychange', () => { if (!Sound.ctx) return; if (document.hidden) Sound.ctx.suspend(); else { Sound.ctx.resume(); Music.sync(); } });
+
+/* =========================================================
+   rain
+   ========================================================= */
+(function rain(){
+  const cv = $('#rain'), cx = cv.getContext('2d'); let W, H, dpr, drops = [];
+  function size(){ dpr = Math.min(2, window.devicePixelRatio || 1); W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr;
+    drops = Array.from({length:Math.round(innerWidth / 7)}, () => ({x:Math.random() * W * 1.2, y:Math.random() * H, l:(12 + Math.random() * 20) * dpr, v:(10 + Math.random() * 10) * dpr, a:.06 + Math.random() * .16})); }
+  function draw(step){ cx.clearRect(0, 0, W, H); cx.lineWidth = dpr; cx.lineCap = 'round';
+    for (const d of drops) { cx.strokeStyle = `rgba(170,192,214,${d.a})`; cx.beginPath(); cx.moveTo(d.x, d.y); cx.lineTo(d.x - d.l * .2, d.y + d.l); cx.stroke();
+      if (step) { d.y += d.v; d.x -= d.v * .2; if (d.y > H) { d.y = -d.l; d.x = Math.random() * W * 1.2; } } } }
+  function frame(){ if (!document.hidden) draw(true); requestAnimationFrame(frame); }
+  size(); addEventListener('resize', () => { size(); if (RM) draw(false); });
+  if (RM) draw(false); else requestAnimationFrame(frame);
+})();
+
+/* =========================================================
+   SQL engine helpers
+   ========================================================= */
+function strip(sql){ return sql.replace(/'(?:[^']|'')*'?/g, "''").replace(/--[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, ''); }
+function isReadOnly(sql){ const s = strip(sql);
+  return !/\b(insert|update|delete|drop|create|alter|attach|detach|pragma|vacuum|reindex|begin|commit|rollback|savepoint|release)\b/i.test(s) && !/\breplace\s+into\b/i.test(s); }
+// recursion and giant blobs can lock the tab (there is no query timeout in the browser build), and nothing in the game needs them
+function isRunaway(sql){ return /\b(recursive|randomblob|zeroblob)\b/i.test(strip(sql)); }
+function noteTables(list){ let added = false; list.forEach(t => { if (!S.tables.includes(t)) { S.tables.push(t); added = true; } });
+  if (added) { save(); if (S.tables.length >= TABLES.length) award('no_stone'); } }
+function runSQL(sql){
+  const stmt = db.prepare(sql);
+  try { const columns = stmt.getColumnNames(), values = []; while (stmt.step()) { values.push(stmt.get()); if (values.length > 5000) break; } return {columns, values}; }
+  finally { stmt.free(); }
+}
+const EXPCACHE = {};
+function expectedFor(key, sql){ if (!EXPCACHE[key]) EXPCACHE[key] = runSQL(sql); return EXPCACHE[key]; }
+function norm(v){
+  if (v === null || v === undefined) return '∅';
+  if (typeof v === 'number') return String(Math.round(v * 100) / 100);
+  const s = String(v).trim(); if (/^-?\d+(\.\d+)?$/.test(s)) return String(Math.round(parseFloat(s) * 100) / 100);
+  return s.toLowerCase();
+}
+// Compare result sets. Column names are ignored; extra columns are allowed. Row order only matters when `ordered`.
+function matchResult(user, exp, ordered){
+  if (user.values.length !== exp.values.length) return null;
+  const k = exp.columns.length, m = user.columns.length; if (m < k) return null;
+  const sig = (res, j) => res.values.map(r => norm(r[j])).sort().join('\u0001');
+  const eS = exp.columns.map((_, j) => sig(exp, j)), uS = user.columns.map((_, j) => sig(user, j));
+  const cands = eS.map(s => uS.map((u, i) => u === s ? i : -1).filter(i => i >= 0));
+  if (cands.some(c => !c.length)) return null;
+  const eRows = exp.values.map(r => r.map(norm).join('\u0002')); const eCmp = ordered ? eRows : eRows.slice().sort();
+  let found = null; const used = new Set(), map = [];
+  (function bt(j){
+    if (found) return;
+    if (j === k) { const rows = user.values.map(r => map.map(i => norm(r[i])).join('\u0002')); const cmp = ordered ? rows : rows.slice().sort();
+      if (cmp.every((x, i) => x === eCmp[i])) found = map.slice(); return; }
+    for (const i of cands[j]) if (!used.has(i)) { used.add(i); map.push(i); bt(j + 1); map.pop(); used.delete(i); }
+  })(0);
+  return found;
+}
+function diffResult(user, exp, ordered){
+  const k = exp.columns.length, m = user.columns.length; const nm = s => String(s).toLowerCase().replace(/\s+/g, '');
+  const used = new Set(), map = new Array(k).fill(-1);
+  exp.columns.forEach((c, j) => { const i = user.columns.findIndex((u, ii) => !used.has(ii) && nm(u) === nm(c)); if (i >= 0) { map[j] = i; used.add(i); } });
+  exp.columns.forEach((c, j) => { if (map[j] >= 0) return; const ev = new Set(exp.values.map(r => norm(r[j]))); let best = -1, bs = 0;
+    for (let i = 0; i < m; i++) { if (used.has(i)) continue; const seen = new Set(); let s = 0; user.values.forEach(r => { const v = norm(r[i]); if (ev.has(v) && !seen.has(v)) { s++; seen.add(v); } }); if (s > bs) { bs = s; best = i; } }
+    if (best >= 0) { map[j] = best; used.add(best); } });
+  const mapped = map.map((i, j) => [j, i]).filter(p => p[1] >= 0);
+  const extra = new Set(); let missing = 0;
+  if (mapped.length) {
+    const bag = new Map(); exp.values.forEach(r => { const key = mapped.map(([j]) => norm(r[j])).join('\u0002'); bag.set(key, (bag.get(key) || 0) + 1); });
+    user.values.forEach((r, ri) => { const key = mapped.map(([, i]) => norm(r[i])).join('\u0002'); const n = bag.get(key) || 0; if (n > 0) bag.set(key, n - 1); else extra.add(ri); });
+    bag.forEach(n => missing += n);
+  } else missing = exp.values.length;
+  return {map, extra, missing, orderOnly: !!ordered && !!matchResult(user, exp, false)};
+}
+function translateError(msg){
+  let m;
+  if ((m = msg.match(/no such table: (\S+)/i))) return `There's no drawer marked "${m[1]}" in the records room. Check the spelling, or open the Records Room.`;
+  if ((m = msg.match(/no such column: (\S+)/i))) return `"${m[1]}" isn't a column on that table. If you meant a piece of text, wrap it in single quotes: '${m[1]}'.`;
+  if (/misuse of aggregate/i.test(msg)) return "COUNT, SUM and AVG can't go in WHERE. WHERE runs before anything is counted. Filter groups with HAVING instead.";
+  if (/GROUP BY clause is required before HAVING|HAVING clause on a non-aggregate/i.test(msg)) return "HAVING filters groups, so it needs a GROUP BY in front of it.";
+  if ((m = msg.match(/ambiguous column name: (\S+)/i))) return `Two tables both have "${m[1]}". Say which one you mean, like table.${m[1]}.`;
+  if ((m = msg.match(/no such function: (\S+)/i))) return `SQLite has never heard of ${m[1]}(). Check the spelling.`;
+  if ((m = msg.match(/wrong number of arguments to function (\S+)/i))) return `${m[1]}() got the wrong number of things inside its brackets.`;
+  if ((m = msg.match(/near "(.+?)": syntax error/i))) return `You lost me at "${m[1]}". Missing comma, stray quote, or a keyword in the wrong order?`;
+  if (/incomplete input/i.test(msg)) return "You stopped mid-sentence. An unclosed quote or bracket, probably.";
+  if ((m = msg.match(/unrecognized token: "?(.+?)"?$/i))) return `I can't read ${m[1]}. Text goes in 'single quotes', and quotes come in pairs.`;
+  return "The records clerk threw it back. Read the note below, fix the query, try again.";
+}
+function tablesIn(sql){ const words = new Set((strip(sql).toLowerCase().match(/[a-z_]+/g) || [])); return TABLES.filter(t => words.has(t)); }
+
+/* =========================================================
+   syntax highlighting
+   ========================================================= */
+const KW = new Set('SELECT FROM WHERE AND OR NOT ORDER BY GROUP HAVING LIMIT OFFSET AS ON JOIN INNER LEFT RIGHT OUTER CROSS FULL IN IS NULL LIKE BETWEEN DISTINCT ASC DESC CASE WHEN THEN ELSE END WITH UNION ALL EXISTS OVER PARTITION ROWS RANGE PRECEDING FOLLOWING CURRENT ROW GLOB'.split(' '));
+const FN = new Set('COUNT SUM AVG MIN MAX ROUND DATE TIME DATETIME STRFTIME JULIANDAY LOWER UPPER LENGTH SUBSTR TRIM REPLACE INSTR COALESCE IFNULL ABS CAST ROW_NUMBER RANK DENSE_RANK LAG LEAD NTILE FIRST_VALUE LAST_VALUE TOTAL GROUP_CONCAT'.split(' '));
+const TBL = new Set(TABLES);
+function highlight(src){
+  let out = '', last = 0, m; const re = /--[^\n]*|'(?:[^']|'')*'?|\b\d+(?:\.\d+)?\b|[A-Za-z_][A-Za-z0-9_]*/g;
+  while ((m = re.exec(src))) {
+    out += esc(src.slice(last, m.index)); const t = m[0]; let cls = '';
+    if (t.startsWith('--')) cls = 'c'; else if (t[0] === "'") cls = 's'; else if (/^\d/.test(t)) cls = 'n';
+    else { const u = t.toUpperCase(); if (FN.has(u) && /^\s*\(/.test(src.slice(re.lastIndex))) cls = 'f'; else if (KW.has(u)) cls = 'k'; else if (TBL.has(t.toLowerCase())) cls = 't'; }
+    out += cls ? `<span class="${cls}">${esc(t)}</span>` : esc(t); last = re.lastIndex;
+  }
+  return out + esc(src.slice(last));
+}
+const ed = $('#sql'), hl = $('#hl'), edBox = $('#editorBox');
+function syncEditor(){
+  hl.innerHTML = highlight(ed.value) + '\n';
+  ed.style.height = 'auto'; const h = Math.max(112, ed.scrollHeight); edBox.style.height = h + 'px'; ed.style.height = h + 'px';
+}
+ed.addEventListener('input', () => { syncEditor(); if (cur.cid) { CS(cur.cid).draft = ed.value; saveSoon(); } });
+addEventListener('resize', syncEditor);
+ed.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); runQuery(); return; }
+  if (e.key === 'Tab' && !e.shiftKey) { e.preventDefault(); const s = ed.selectionStart, en = ed.selectionEnd; ed.value = ed.value.slice(0, s) + '  ' + ed.value.slice(en); ed.selectionStart = ed.selectionEnd = s + 2; syncEditor(); return; }
+  if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Enter') Sound.clack(.55);
+});
+function setEditor(v, noFocus){ ed.value = v; syncEditor(); if (!noFocus) ed.focus(); }
+
+/* =========================================================
+   portraits
+   ========================================================= */
+function mugshot(id){
+  const r = rng(id * 7919 + 13);
+  const skin = ['#cdb89a','#b89c7c','#a38466','#8c6f55','#d9c6a8','#6f5641'][Math.floor(r() * 6)];
+  const hair = ['#2a2420','#4a3a2c','#6b5a48','#9a948a','#1c1a18','#7a5a3a'][Math.floor(r() * 6)];
+  const coat = ['#3a3f47','#4a3f33','#2f3a3a','#51463a','#2b2b30'][Math.floor(r() * 5)];
+  const style = id === 12 || id === 31 || id === 60 || id === 88 ? 1 : Math.floor(r() * 4) === 1 ? 0 : Math.floor(r() * 4);
+  let lines = ''; for (let y = 16; y <= 100; y += 12) lines += `<line x1="0" x2="100" y1="${y}" y2="${y}" stroke="#b9b1a0" stroke-width=".6"/><text x="3" y="${y - 2}" font-size="5" fill="#9b927f" font-family="monospace">${(7 - (y - 16) / 12).toFixed(0)}'</text>`;
+  const hairs = [
+    `<path d="M32 54 C31 30 69 30 68 54 C64 41 36 41 32 54Z" fill="${hair}"/>`,
+    `<path d="M31 60 C27 28 73 28 69 60 L72 88 L63 84 L64 50 C58 42 42 42 36 50 L37 84 L28 88Z" fill="${hair}"/>`,
+    `<ellipse cx="50" cy="39" rx="29" ry="5" fill="#1d1b19"/><path d="M34 39 C34 22 66 22 66 39Z" fill="#1d1b19"/><rect x="34" y="34" width="32" height="3" fill="#6a2a22"/>`,
+    `<path d="M35 64 C37 84 63 84 65 64 C61 76 39 76 35 64Z" fill="${hair}"/><path d="M34 50 C35 36 65 36 66 50 C62 44 38 44 34 50Z" fill="${hair}" opacity=".6"/>`,
+  ];
+  const glasses = r() < .3 ? `<g fill="none" stroke="#1d1b19" stroke-width="1.4"><circle cx="43" cy="56" r="5"/><circle cx="57" cy="56" r="5"/><path d="M48 56h4"/></g>` : '';
+  return `<svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="100" height="120" fill="#d8d2c4"/>${lines}
+    <path d="M8 120 C12 96 34 88 50 88 C66 88 88 96 92 120Z" fill="${coat}"/><path d="M40 88 L50 104 L60 88Z" fill="#e8e2d4"/>
+    <rect x="43" y="72" width="14" height="18" fill="${skin}"/><ellipse cx="50" cy="56" rx="17" ry="21" fill="${skin}"/>
+    <ellipse cx="43" cy="56" rx="1.8" ry="1.4" fill="#1d1b19"/><ellipse cx="57" cy="56" rx="1.8" ry="1.4" fill="#1d1b19"/>
+    <path d="M44 67 Q50 ${68 + r() * 2} 56 67" stroke="#4b3426" stroke-width="1.3" fill="none"/>${hairs[style]}${glasses}
+    <rect x="26" y="104" width="48" height="12" fill="#161412"/><text x="50" y="113" text-anchor="middle" font-size="8" fill="#e8e2d4" font-family="monospace">GH-${String(id).padStart(4, '0')}</text></svg>`;
+}
+const PARTNER_SVG = `<svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" fill="#26303b"/><circle cx="50" cy="12" r="16" fill="#e8b04b" opacity=".12"/>
+  <path d="M6 64c2-15 13-21 26-21s24 6 26 21z" fill="#5b4a36"/><path d="M22 44l10 14 10-14" fill="#3a2f24"/><path d="M29 44h6v8h-6z" fill="#c9b08e"/>
+  <path d="M21 30 Q18 44 24 47 L25 30Z" fill="#3b2b20"/><path d="M43 30 Q46 44 40 47 L39 30Z" fill="#3b2b20"/>
+  <ellipse cx="32" cy="33" rx="10" ry="12" fill="#c9b08e"/><path d="M26 32h4M34 32h4" stroke="#1c1a18" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M29 39.5q3 1 6-.8" stroke="#6b3a2c" stroke-width="1.2" fill="none"/>
+  <path d="M12 26 Q32 20 52 26 L52 28 Q32 23 12 28Z" fill="#1c1a18"/><path d="M21 25 Q22 11 32 11 Q42 11 43 25Z" fill="#1c1a18"/><rect x="21" y="21.5" width="22" height="2.6" fill="#7a2a22"/></svg>`;
+$('#partnerAvatar').innerHTML = PARTNER_SVG;
+
+/* =========================================================
+   top bar, toasts, badges, XP
+   ========================================================= */
+const rankIdx = xp => { let i = 0; RANKS.forEach((r, j) => { if (xp >= r.xp) i = j; }); return i; };
+const streakMult = n => n <= 1 ? 1 : Math.min(2, 1 + .2 * (n - 1));
+function renderTop(){
+  const i = rankIdx(S.xp), cur = RANKS[i], nxt = RANKS[i + 1];
+  $('#rankName').textContent = cur.name;
+  $('#xpFill').style.width = nxt ? `${Math.round((S.xp - cur.xp) / (nxt.xp - cur.xp) * 100)}%` : '100%';
+  $('#xpText').textContent = nxt ? `${S.xp} / ${nxt.xp} XP` : `${S.xp} XP`;
+  const m = streakMult(S.streak);
+  $('#streakText').textContent = S.streak >= 2 ? `Hot lead ×${m.toFixed(1)} · ${S.streak}` : `Hot lead ×${m.toFixed(1)}`;
+  $('#streakChip').classList.toggle('hot', S.streak >= 2);
+  $('#credVal').textContent = S.cred; $('#credChip').classList.toggle('cred-low', S.cred < 60);
+  $('#navMute').textContent = S.muted ? 'Sound off' : 'Sound on'; $('#navMute').setAttribute('aria-pressed', String(S.muted));
+  $('#navMusic').textContent = S.music ? 'Music on' : 'Music off'; $('#navMusic').setAttribute('aria-pressed', String(!S.music));
+}
+function toast(html, ms){ const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = html; $('#toasts').appendChild(t); setTimeout(() => t.remove(), ms || 3600); }
+function award(id){ if (S.badges.includes(id)) return; const b = BADGES.find(x => x.id === id); if (!b) return; S.badges.push(id); save(); Sound.fanfare(); toast(`Badge earned: <b>${esc(b.name)}</b><br>${esc(b.desc)}`, 4200); }
+const promoQueue = [];
+function addXP(n){ const before = rankIdx(S.xp); S.xp = Math.max(0, S.xp + n); const after = rankIdx(S.xp); save(); renderTop(); if (after > before) { promoQueue.push(after); setTimeout(showPromotion, 900); } }
+function floatXP(n){ if (!n) return; const b = $('#runBtn').getBoundingClientRect(); const f = document.createElement('div'); f.className = 'xp-float'; f.textContent = `+${n} XP`;
+  f.style.left = (b.left + 10) + 'px'; f.style.top = (b.top - 30) + 'px'; document.body.appendChild(f); setTimeout(() => f.remove(), 1400); }
+function breakStreak(){ if (S.streak >= 3) toast(`Hot lead lost at <b>${S.streak}</b>. Back to ×1.0.`); S.streak = 0; save(); renderTop(); }
+
+/* =========================================================
+   screens
+   ========================================================= */
+let cur = {cid:null, stepStart:0, pending:false, accusing:null, freshClears:[], freshClue:-1, freshCulprit:false};
+function unlocked(c){ if (c.sealed) return false; if (c.num === 1) return true; const prev = CASES.find(x => x.num === c.num - 1); return !!(prev && S.cases[prev.id] && (S.cases[prev.id].closed || S.cases[prev.id].bestStars > 0)); }
+function starsHTML(n){ return `<span class="stars" aria-label="${n} of 3 stars">${[1,2,3].map(i => `<span class="${i <= n ? 'on' : 'off'}">★</span>`).join('')}</span>`; }
+
+function showHome(){
+  $('#caseScreen').hidden = true; $('#homeScreen').hidden = false; cur.cid = null;
+  const closed = CASES.filter(c => S.cases[c.id] && S.cases[c.id].bestStars > 0).length;
+  const totalStars = CASES.reduce((a, c) => a + (S.cases[c.id] ? S.cases[c.id].bestStars : 0), 0);
+  $('#heroStats').innerHTML = `<span class="chip">Rank <b>${RANKS[rankIdx(S.xp)].name}</b></span><span class="chip"><b>${S.xp}</b> XP</span>
+    <span class="chip">Cases closed <b>${closed}/5</b></span><span class="chip">Stars <b>${totalStars}/15</b></span><span class="chip">Badges <b>${S.badges.length}/${BADGES.length}</b></span>`;
+  $('#caseList').innerHTML = CASES.map(c => {
+    const cs = S.cases[c.id], open = unlocked(c);
+    let status = 'New case', btn = 'Open file';
+    if (c.sealed) { status = 'In development'; btn = ''; }
+    else if (!open) { status = `Close Case ${c.num - 1} first`; btn = ''; }
+    else if (cs && cs.closed) { status = 'Closed'; btn = 'Review'; }
+    else if (cs && cs.bestStars) { status = 'Replaying'; btn = 'Continue'; }
+    else if (cs && cs.started) { status = cs.step >= c.steps.length ? 'Accusation pending' : `Lead ${cs.step + 1} of ${c.steps.length}`; btn = 'Continue'; }
+    const stars = cs ? cs.bestStars : 0;
+    return `<button class="tile ${c.sealed || !open ? 'sealed' : ''} ${cs && cs.bestStars ? 'closed-t' : ''}" data-case="${c.id}" data-tab="CASE ${pad(c.num)}" ${c.sealed || !open ? 'aria-disabled="true"' : ''}>
+      <h3>${esc(c.title)}</h3><div class="tag">${esc(c.tagline)}</div>
+      <div class="skills">${c.skills.map(s => `<span>${esc(s)}</span>`).join('')}</div>
+      <div class="foot"><span class="status">${esc(status)}</span>${c.sealed ? '' : starsHTML(stars)}</div>
+      ${btn && SQLREADY ? `<span class="btn btn-ink" style="align-self:flex-start;padding:8px 12px;font-size:13px">${btn}</span>` : ''}</button>`;
+  }).join('');
+}
+$('#caseList').addEventListener('click', e => {
+  const t = e.target.closest('.tile'); if (!t || t.classList.contains('sealed')) { if (t) { Sound.buzz(); t.classList.add('shake-s'); setTimeout(() => t.classList.remove('shake-s'), 400); } return; }
+  if (!SQLREADY) { toast('The records room is still warming up. One moment.'); return; }
+  const c = caseById(t.dataset.case), cs = CS(c.id);
+  Sound.shuffle();
+  if (!cs.started) openBriefing(c); else enterCase(c.id);
+});
+
+function enterCase(cid){
+  cur.cid = cid; cur.pending = false; cur.accusing = null; cur.freshClears = []; cur.freshClue = -1; cur.freshCulprit = false;
+  $('#homeScreen').hidden = true; $('#caseScreen').hidden = false; window.scrollTo(0, 0);
+  const c = caseById(cid), cs = CS(cid);
+  $('#caseNo').textContent = `Case ${pad(c.num)} · ${c.skills.join(' · ')}`; $('#caseTitle').textContent = c.title;
+  fb(''); $('#results').hidden = true;
+  setEditor(cs.draft || '', true);
+  renderStep(); renderLineup(); renderBoard();
+  if (cs.closed) say("Case closed. The records room stays open. Poke around, or replay for a better score.");
+  else if (cs.step >= c.steps.length) say(c.accusation.text);
+  else say(cs.step === 0 ? c.intro : pickLine(RESUME));
+}
+const RESUME = ["Back already? Good. The coffee's worse than the case.","Where were we. Right. Somebody's lying.","Pick it up where you left it, rookie."];
+const MISS = ["Not our result. The records say otherwise.","Close doesn't hold up in court.","That's a result. It's just not our result.","Look at the shape of it. Rows, columns. Something's off.","The numbers don't lie. They don't flatter either."];
+const pickLine = a => a[Math.floor(Math.random() * a.length)];
+function say(text){ const b = $('#bubble'); $('#bubbleText').textContent = text; b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); }
+
+/* ---------- free tip: which drawer to open ---------- */
+const colsOf = t => SCHEMA[t].map(x => x.split(' ')[0]);
+function tipHTML(tables, note){
+  return `<div class="tip"><span class="tip-lbl">Records room tip · free</span>
+    ${tables.map(t => `<div class="tip-row"><button class="tblchip" data-peek="${t}" title="Peek at the first rows">${t}</button><span class="tcols">${colsOf(t).join(', ')}</span></div>`).join('')}
+    <span class="tip-note">${esc(note || 'Tap a table name to peek at its first rows.')}</span></div>`;
+}
+function previewTable(t){
+  if (!db || !TABLES.includes(t)) return;
+  noteTables([t]); renderResults(runSQL(`SELECT * FROM ${t} LIMIT 5`), null, `peek at ${t}, first 5 rows`);
+  $('#results').scrollIntoView({behavior: RM ? 'auto' : 'smooth', block:'nearest'});
+}
+$('#stepCard').addEventListener('click', e => { const b = e.target.closest('[data-peek]'); if (b) { Sound.shuffle(); previewTable(b.dataset.peek); } });
+
+/* ---------- step card ---------- */
+function renderStep(){
+  const c = caseById(cur.cid), cs = CS(cur.cid), n = c.steps.length;
+  const dots = c.steps.map((s, i) => `<span class="dot ${i < cs.step ? 'done' : i === cs.step && !cs.closed ? 'now' : ''}" title="${esc(s.concept)}"></span>`).join('') +
+    `<span class="dot acc ${cs.closed ? 'done' : cs.step >= n ? 'now' : ''}" title="Accusation"></span>`;
+  const card = $('#stepCard');
+  $('#accuseBtn').hidden = true; $('#hintBtn').hidden = false; $('#hints').innerHTML = '';
+  if (cs.closed) {
+    const culprit = PEOPLE[c.culprit];
+    card.innerHTML = `<div class="step-top"><div class="dots">${dots}</div><span class="concept">CLOSED</span></div>
+      <h2>Case closed</h2><p class="lesson">Charged: <b>${esc(culprit.name)}</b>. Best score ${starsHTML(cs.bestStars)}</p>
+      <p class="task"><b>Free play</b>Every table is open. Run whatever you like. Your solved queries are in the notebook.</p>
+      <div class="actions" style="margin-top:12px">${nextCase(c) ? `<button class="btn btn-ink" id="goNext">Next case: ${esc(nextCase(c).title)}</button>` : ''}
+      <button class="btn btn-ghost" style="background:#ebe2cc;color:var(--ink);border-color:#cdbf9f" id="replayBtn">Replay for ${cs.bestStars < 3 ? '3 stars' : 'fun'}</button></div>`;
+    $('#hintBtn').hidden = true;
+    const g = $('#goNext'); if (g) g.onclick = () => goNextCase(c);
+    $('#replayBtn').onclick = () => replayCase(c);
+    return;
+  }
+  if (cs.step >= n) {
+    card.innerHTML = `<div class="step-top"><div class="dots">${dots}</div><span class="concept">ACCUSATION</span></div>
+      <h2>Name the culprit</h2><p class="lesson">${esc(c.accusation.text)}</p>
+      <p class="task"><b>How</b>Tap a suspect in the lineup, write your evidence query, then press Accuse. A wrong name costs 20 credibility.</p>
+      ${tipHTML(c.accusation.tables, c.accusation.needs)}
+      <div class="accused-line">Accusing: <b id="accName">${cur.accusing ? esc(PEOPLE[cur.accusing].name) : 'nobody yet'}</b></div>`;
+    $('#accuseBtn').hidden = false; renderHints(); renderLineup(); return;
+  }
+  const st = c.steps[cs.step];
+  card.innerHTML = `<div class="step-top"><div class="dots">${dots}</div><span class="concept">${esc(st.concept)}</span></div>
+    <h2>${esc(st.title)}</h2><p class="lesson">${esc(st.lesson)}</p>
+    <div class="example"><div class="lbl">Example</div><pre>${highlight(st.example)}</pre></div>
+    <p class="task"><b>Your move</b>${esc(st.task)}</p>
+    ${tipHTML(st.tables || tablesIn(st.expected))}`;
+  cur.stepStart = Date.now(); renderHints();
+}
+const nextCase = c => CASES.find(x => x.num === c.num + 1);
+function goNextCase(c){ const n = nextCase(c); if (!n || n.sealed) { toast(`<b>${esc(n ? n.title : 'Next case')}</b> is still sealed. See you soon.`); showHome(); return; }
+  const cs = CS(n.id); Sound.shuffle(); if (!cs.started) openBriefing(n); else enterCase(n.id); }
+function replayCase(c){ const best = CS(c.id).bestStars; S.cases[c.id] = freshCase(best); S.cases[c.id].started = true; save(); Sound.shuffle(); enterCase(c.id); say("From the top. Same city, same liars. Do it cleaner this time."); }
+
+/* ---------- hints ---------- */
+const HINT_COST = [10, 20, 30]; const TIERS = ['Nudge', 'Keyword', 'Partial query'];
+function currentHints(){ const c = caseById(cur.cid), cs = CS(cur.cid); if (cs.closed) return []; return cs.step >= c.steps.length ? c.accusation.hints : c.steps[cs.step].hints; }
+function renderHints(){
+  const cs = CS(cur.cid), hs = currentHints(), shown = Math.min(cs.stepHints, hs.length);
+  const tiers = hs.length === 2 ? ['Nudge', 'Partial query'] : TIERS;
+  $('#hints').innerHTML = hs.slice(0, shown).map((h, i) => `<div class="hint"><span class="tier">${tiers[i]}</span>${i === 0 ? esc(h) : `<code>${esc(h)}</code>`}${i === hs.length - 1 && i > 0 ? ` <button data-paste="${esc(h)}">Paste into editor</button>` : ''}</div>`).join('');
+  const b = $('#hintBtn');
+  if (shown >= hs.length) { b.disabled = true; b.textContent = 'No more hints'; }
+  else { b.disabled = false; b.textContent = `Ask Calloway (${tiers[shown].toLowerCase()}, −${HINT_COST[shown]} XP)`; }
+}
+$('#hints').addEventListener('click', e => { const b = e.target.closest('[data-paste]'); if (b) setEditor(b.dataset.paste); });
+$('#hintBtn').addEventListener('click', () => {
+  const cs = CS(cur.cid), hs = currentHints(); if (cs.stepHints >= hs.length) return;
+  cs.stepHints++; cs.hints++; save(); Sound.shuffle();
+  const lines = ["Fine. But I'm writing this down.", "You owe me a coffee.", "Here. Don't tell the Inspector."];
+  say(`${lines[Math.min(cs.stepHints - 1, 2)]} ${hs[cs.stepHints - 1]}`); renderHints();
+});
+
+/* ---------- lineup ---------- */
+function renderLineup(){
+  const c = caseById(cur.cid), cs = CS(cur.cid), accusing = !cs.closed && cs.step >= c.steps.length;
+  $('#lineupNote').textContent = cs.closed ? 'charged' : `${c.suspects.length - cs.cleared.length} still in frame`;
+  $('#lineup').innerHTML = c.suspects.map(id => {
+    const p = PEOPLE[id], cleared = cs.cleared.includes(id), charged = cs.closed && id === c.culprit;
+    const fresh = cur.freshClears.includes(id) || (charged && cur.freshCulprit);
+    return `<button class="suspect ${cleared ? 'cleared' : ''} ${charged ? 'charged' : ''} ${fresh ? 'fresh' : ''} ${accusing ? 'selectable' : ''} ${cur.accusing === id && accusing ? 'selected' : ''}" data-id="${id}" aria-label="${esc(p.name)}${cleared ? ', cleared' : ''}">
+      <div class="photo">${mugshot(id)}<span class="sstamp">${charged ? 'CHARGED' : 'CLEARED'}</span></div>
+      <span class="nm">${esc(p.name)}</span><span class="meta">#${id} · ${esc(p.occupation)}</span></button>`;
+  }).join('');
+  cur.freshClears = []; cur.freshCulprit = false;
+}
+$('#lineup').addEventListener('click', e => {
+  const b = e.target.closest('.suspect'); if (!b) return; const id = +b.dataset.id, c = caseById(cur.cid), cs = CS(cur.cid);
+  if (!cs.closed && cs.step >= c.steps.length) {
+    cur.accusing = id; Sound.pin(); renderLineup(); const n = $('#accName'); if (n) n.textContent = PEOPLE[id].name;
+    say(cs.cleared.includes(id) ? `${PEOPLE[id].name}? Your own evidence cleared them. Sure about that?` : `${PEOPLE[id].name}. Now show me the query that proves it.`);
+  } else {
+    say(c.notes[id] + (cs.cleared.includes(id) ? ' Cleared.' : ''));
+  }
+});
+
+/* ---------- evidence board ---------- */
+function renderBoard(){
+  const c = caseById(cur.cid), cs = CS(cur.cid), board = $('#board');
+  const W = Math.max(board.clientWidth - 20, 0) || 320; const cols = W < 420 ? 2 : 3; const gap = 12;
+  const cw = Math.min(200, Math.floor((W - (cols + 1) * gap) / cols)); const ch = cw < 150 ? 168 : 146;
+  const slots = c.steps.map((s, i) => ({kind:'clue', i, s})); slots.push({kind:'culprit'});
+  const pos = slots.map((_, k) => { const r = rng(k * 31 + c.num)(); const col = k % cols, row = Math.floor(k / cols);
+    return {x:gap + col * (cw + gap) + (r - .5) * 10, y:gap + 6 + row * (ch + gap + 6) + (r - .5) * 12, rot:(r - .5) * 6}; });
+  const rows = Math.ceil(slots.length / cols); board.style.height = (rows * (ch + gap + 6) + gap + 12) + 'px';
+  let html = '';
+  slots.forEach((sl, k) => {
+    const p = pos[k];
+    if (sl.kind === 'clue') {
+      const solved = sl.i < cs.step || cs.closed; const fresh = cur.freshClue === sl.i;
+      html += `<div class="clue ${solved && !fresh ? 'revealed instant' : ''}" data-k="${k}" style="left:${p.x}px;top:${p.y}px;width:${cw}px;height:${ch}px;transform:rotate(${p.rot}deg)">
+        <span class="pin"></span><div class="inner"><div class="face back">Evidence #${sl.i + 1}<small>${solved ? '' : esc(sl.s.concept) + ' needed'}</small></div>
+        <div class="face front"><span class="cno">Exhibit ${sl.i + 1} · ${esc(sl.s.concept)}</span><h4>${esc(sl.s.clue.title)}</h4><p>${esc(sl.s.clue.text)}</p></div></div></div>`;
+    } else {
+      const cp = PEOPLE[c.culprit]; const done = cs.closed;
+      html += `<div class="clue culprit ${done && !cur.freshCulpritCard ? 'revealed instant' : ''}" data-k="${k}" style="left:${p.x}px;top:${p.y}px;width:${cw}px;height:${ch}px;transform:rotate(${p.rot}deg)">
+        <span class="pin"></span><div class="inner"><div class="face back">The culprit<small>Accuse to reveal</small></div>
+        <div class="face front"><span class="cno">Charged</span><h4>${esc(cp.name)}</h4><p>#${cp.id} · ${esc(cp.occupation)}. ${c.num === 1 ? 'Opened the door for someone else.' : 'The voice on the phone. Just a post box.'}</p></div></div></div>`;
+    }
+  });
+  // strings
+  const pinAt = k => [pos[k].x + cw / 2, pos[k].y + 10];
+  let paths = '';
+  const solvedCount = cs.closed ? c.steps.length : cs.step;
+  c.steps.forEach((s, i) => { if (i >= solvedCount) return; s.clue.links.forEach(j => { if (j >= solvedCount) return;
+    const [x1, y1] = pinAt(i), [x2, y2] = pinAt(j); const sag = Math.min(40, Math.hypot(x2 - x1, y2 - y1) * .15);
+    paths += `<path class="${cur.freshClue === i ? 'new' : ''}" d="M${x1} ${y1} Q${(x1 + x2) / 2} ${(y1 + y2) / 2 + sag} ${x2} ${y2}"/>`; }); });
+  if (cs.closed) { const k = c.steps.length; c.culpritLinks.forEach(j => { const [x1, y1] = pinAt(k), [x2, y2] = pinAt(j); const sag = Math.min(40, Math.hypot(x2 - x1, y2 - y1) * .15);
+    paths += `<path class="${cur.freshCulpritCard ? 'new' : ''}" d="M${x1} ${y1} Q${(x1 + x2) / 2} ${(y1 + y2) / 2 + sag} ${x2} ${y2}"/>`; }); }
+  board.innerHTML = html + `<svg class="strings" aria-hidden="true">${paths}</svg>` + (solvedCount === 0 ? `<div class="board-empty">Solve a lead to pin your first clue.</div>` : '');
+  $('#boardCount').textContent = `${solvedCount}/${c.steps.length} exhibits`;
+  if (cur.freshClue >= 0 || cur.freshCulpritCard) {
+    const sel = cur.freshCulpritCard ? '.clue.culprit' : `.clue[data-k="${cur.freshClue}"]`; const el = board.querySelector(sel);
+    cur.freshClue = -1; cur.freshCulpritCard = false;
+    if (el) setTimeout(() => { el.classList.add('revealed'); Sound.flip(); setTimeout(() => Sound.pin(), 500); }, 350);
+  }
+}
+let boardW = 0;
+new ResizeObserver(() => { const w = $('#board').clientWidth; if (cur.cid && w !== boardW) { boardW = w; renderBoard(); } }).observe($('#board'));
+
+/* ---------- results + feedback ---------- */
+function renderResults(res, extra, note){
+  const box = $('#results'); box.hidden = false;
+  if (!res.columns.length) { box.innerHTML = `<div class="results-cap"><span>Result</span><span>0 rows</span></div><div class="empty">Nothing came back. An empty drawer.</div>`; return; }
+  const shown = res.values.slice(0, 300);
+  box.innerHTML = `<div class="results-cap"><span>Result${note ? ' · ' + esc(note) : ''}</span><span>${res.values.length} row${res.values.length === 1 ? '' : 's'}${res.values.length > 300 ? ' (first 300 shown)' : ''}</span></div>
+    <div class="results-scroll">${res.values.length ? `<table><thead><tr>${res.columns.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>
+    ${shown.map((r, i) => `<tr class="${extra && extra.has(i) ? 'extra' : ''}">${r.map(v => v === null ? '<td class="null">NULL</td>' : `<td>${esc(typeof v === 'number' ? Math.round(v * 100) / 100 : v)}</td>`).join('')}</tr>`).join('')}
+    </tbody></table>` : `<table><thead><tr>${res.columns.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead></table><div class="empty">No rows match. An empty drawer.</div>`}</div>`;
+}
+// While a solved lead is waiting for "Next lead", new messages go under it so the Next button never disappears
+function fb(html){ if (cur.pending) $('#feedbackLate').innerHTML = html; else { $('#feedback').innerHTML = html; $('#feedbackLate').innerHTML = ''; } }
+
+/* =========================================================
+   running queries
+   ========================================================= */
+function runQuery(){
+  if (!db) return;
+  const c = caseById(cur.cid), cs = CS(cur.cid);
+  const sql = ed.value.trim(); cs.draft = ed.value; save();
+  Sound.clack();
+  if (!strip(sql).trim()) { say("Blank page, rookie. Write something."); return; }
+  if (!isReadOnly(sql)) { Sound.buzz(); say("The records room is read-only. We look. We don't touch."); fb(`<div class="fb err"><div class="fb-title">Read-only</div><p>Only SELECT and WITH queries run here. Nothing in the records can be changed or deleted.</p></div>`); return; }
+  if (isRunaway(sql)) { Sound.buzz(); say("Recursive queries and giant blobs are off the menu. The records room is old and it will not survive them."); fb(`<div class="fb err"><div class="fb-title">Not allowed here</div><p>RECURSIVE, RANDOMBLOB and ZEROBLOB are blocked because they can freeze the page. Nothing in the cases needs them.</p></div>`); return; }
+  const parts = strip(sql).split(';').filter(s => s.trim()); const multi = parts.length > 1;
+  let res;
+  try { res = runSQL(sql); }
+  catch (e) { onError(e.message, activeStep(c, cs)); return; }
+  noteTables(tablesIn(sql));
+  const note = multi ? 'only the first statement ran' : '';
+  if (cs.closed || cur.pending || cs.step >= c.steps.length) { renderResults(res, null, note); if (!cs.closed && !cur.pending) say(cur.accusing ? "Happy with that? Press Accuse when it points at them." : "Evidence gathered. Now pick someone from the lineup."); return; }
+  checkStep(c, cs, c.steps[cs.step], res, sql, note);
+}
+// a lead is "live" only while it is being worked on: not after it is solved, not during the accusation, not once the case is closed
+function activeStep(c, cs){ return !cs.closed && !cur.pending && cs.step < c.steps.length; }
+function onError(msg, live){
+  const cs = CS(cur.cid); if (live) { cs.stepErrors++; save(); } Sound.buzz();
+  const plain = translateError(msg);
+  say(plain);
+  fb(`<div class="fb err"><div class="fb-title">The query didn't run</div><p>${esc(plain)}</p><div class="raw">SQLite: ${esc(msg)}</div></div>`);
+  $('#results').hidden = true;
+}
+function checkStep(c, cs, st, res, sql, note){
+  const exp = expectedFor(c.id + st.id, st.expected);
+  if (matchResult(res, exp, st.ordered)) { renderResults(res, null, note); solveStep(c, cs, st, sql); return; }
+  for (const h of st.herrings || []) {
+    const hr = expectedFor(c.id + st.id + h.sql, h.sql);
+    if (matchResult(res, hr, st.ordered)) {
+      cs.stepFails++; cs.herring = true; save(); breakStreak(); Sound.buzz(); renderResults(res, null, note); say(h.msg);
+      fb(`<div class="fb herring"><div class="fb-title">Red herring</div><p>${esc(h.msg)}</p></div>`); shakeEl($('#feedback')); return;
+    }
+  }
+  cs.stepFails++; save(); breakStreak(); Sound.buzz();
+  const d = diffResult(res, exp, st.ordered); renderResults(res, d.extra, note);
+  const rowsOk = res.values.length === exp.values.length, colsOk = res.columns.length >= exp.columns.length;
+  const tips = [];
+  if (d.orderOnly) tips.push('Right rows, wrong order. Check your ORDER BY.');
+  else {
+    if (d.extra.size) tips.push(`${d.extra.size} row${d.extra.size === 1 ? " doesn't" : "s don't"} belong (marked red below).`);
+    if (d.missing) tips.push(`${d.missing} row${d.missing === 1 ? ' is' : 's are'} missing.`);
+    if (!colsOk) tips.push(`You need at least ${exp.columns.length} column${exp.columns.length === 1 ? '' : 's'}.`);
+  }
+  const line = d.orderOnly ? "Everything's there. It's just in the wrong order." : cs.stepFails >= 3 && cs.stepHints === 0 ? "You're circling. Ask me for a hint if you want one." : pickLine(MISS);
+  say(line);
+  fb(`<div class="fb miss"><div class="fb-title">${d.orderOnly ? 'Nearly' : 'Not our result'}</div>
+    <div class="shape"><div><span>Your result</span><b class="${rowsOk && colsOk ? 'good' : 'bad'}">${res.values.length} rows × ${res.columns.length} cols</b></div>
+    <div><span>Expected shape</span><b>${exp.values.length} rows × ${exp.columns.length} cols</b></div></div>
+    <div class="colchips">Expected columns: ${exp.columns.map((col, j) => `<code class="${d.map[j] >= 0 ? 'good' : 'bad'}">${esc(col)}</code>`).join('')}</div>
+    ${tips.length ? `<ul>${tips.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}</div>`);
+}
+function shakeEl(el){ el.classList.remove('shake-s'); void el.offsetWidth; el.classList.add('shake-s'); }
+
+function solveStep(c, cs, st, sql){
+  const elapsed = (Date.now() - cur.stepStart) / 1000;
+  const firstTry = cs.stepFails === 0 && cs.stepErrors === 0, noHints = cs.stepHints === 0;
+  const hintCost = HINT_COST.slice(0, cs.stepHints).reduce((a, b) => a + b, 0);
+  const parts = [['Lead solved', 100]];
+  if (firstTry) parts.push(['First try', 40]); if (elapsed < 90) parts.push(['Speed', 20]); if (noHints) parts.push(['No hints', 20]); if (hintCost) parts.push(['Hints', -hintCost]);
+  S.streak++; S.bestStreak = Math.max(S.bestStreak, S.streak);
+  const mult = streakMult(S.streak); const sub = Math.max(20, parts.reduce((a, p) => a + p[1], 0));
+  let xp = Math.round(sub * mult); const key = c.id + ':' + st.id; const replay = S.ever.includes(key);
+  if (replay) xp = Math.round(xp * .25); else S.ever.push(key);
+  // notebook
+  S.notebook = S.notebook.filter(n => n.key !== key); S.notebook.unshift({key, cid:c.id, title:st.title, concept:st.concept, sql});
+  cs.queries[st.id] = sql;
+  // clears
+  const clears = (st.clears || []).filter(x => !cs.cleared.includes(x.id)); clears.forEach(x => cs.cleared.push(x.id)); cur.freshClears = clears.map(x => x.id);
+  if (cs.herring) award('herring');
+  cur.freshClue = cs.step; cs.step++; cs.stepHints = 0; cs.stepFails = 0; cs.stepErrors = 0; cs.herring = false; cs.draft = ''; cur.pending = true;
+  save(); addXP(xp); floatXP(xp);
+  award('first_lead'); if (S.streak >= 5) award('hot_lead'); if (elapsed < 30) award('quick_draw');
+  Sound.ding();
+  const clearTxt = clears.map(x => `${PEOPLE[x.id].name}: cleared. ${x.why}`).join(' ');
+  say(st.win + (clearTxt ? ' ' + clearTxt : ''));
+  const last = cs.step >= c.steps.length;
+  $('#feedbackLate').innerHTML = '';
+  $('#feedback').innerHTML = (`<div class="fb ok"><div class="fb-title">Lead confirmed · clue pinned</div>
+    <div class="xp-lines">${parts.map(p => `<span class="${p[1] < 0 ? 'neg' : ''}">${esc(p[0])} ${p[1] > 0 ? '+' : ''}${p[1]}</span>`).join('')}</div>
+    <div class="xp-total">+${xp} XP<small>${mult > 1 ? `×${mult.toFixed(1)} hot lead` : ''}${replay ? ' · replay rate 25%' : ''}</small></div>
+    ${clears.length ? `<p>${esc(clearTxt)}</p>` : ''}
+    <div><button class="btn btn-run" id="nextBtn">${last ? 'Make the accusation →' : 'Next lead →'}</button></div></div>`);
+  $('#nextBtn').onclick = () => { cur.pending = false; fb(''); $('#results').hidden = true; setEditor(''); renderStep(); renderLineup();
+    say(last ? c.accusation.text : pickLine(["Next.", "Keep pulling the thread.", "Good. Don't get cocky."]) + ' ' + c.steps[cs.step].task);
+    Sound.shuffle(); $('#stepCard').scrollIntoView({behavior: RM ? 'auto' : 'smooth', block:'start'}); };
+  // the card keeps showing the solved lead until "Next lead" is pressed
+  $('#hints').innerHTML = ''; $('#hintBtn').hidden = true;
+  renderLineup(); renderBoard();
+  if (window.innerWidth < 1000) toast('Clue pinned to the evidence board.', 2200);
+}
+
+/* ---------- accusation ---------- */
+function mentions(row, cols, sid){
+  const p = PEOPLE[sid]; const hasName = cols.some(c => /^name$/i.test(c));
+  return row.some((v, i) => {
+    if (v === null) return false;
+    if (typeof v === 'string') { const s = v.toLowerCase(); if (s.includes(p.name.toLowerCase()) || v === p.phone || v === p.account) return true; }
+    const col = cols[i]; if (/^(person_id|owner_id|suspect_id)$/i.test(col) || (hasName && /^id$/i.test(col))) return Number(v) === sid;
+    return false;
+  });
+}
+// verdict: 'wrong' (innocent person), 'thin' (right person, evidence rejected, with a reason) or 'ok'
+function judgeAccusation(c, sid, sql, res){
+  if (sid !== c.culprit) return {v:'wrong'};
+  const others = c.suspects.filter(x => x !== sid);
+  const all = res.values.length && res.values.every(r => mentions(r, res.columns, sid));
+  const any = res.values.some(r => mentions(r, res.columns, sid));
+  const dirty = res.values.some(r => others.some(o => mentions(r, res.columns, o)));
+  if (!res.values.length) return {v:'thin', m:"Empty result. The DA wants evidence, not a hunch."};
+  if (!c.accusation.evidence.test(sql)) return {v:'thin', m:`Right name, but that query only looks them up. ${c.accusation.needs}`};
+  if (dirty) return {v:'thin', m:"Right name. But your results drag other suspects in too. Tighten it until it points only at them."};
+  if (!all) return {v:'thin', m: any ? "Right name. Some rows point elsewhere though. Filter until every row is about them." : "Maybe the right name. But nothing in those results points at them. Show me their name, id, phone or account."};
+  return {v:'ok'};
+}
+$('#accuseBtn').addEventListener('click', () => {
+  const c = caseById(cur.cid), cs = CS(cur.cid); const sid = cur.accusing;
+  if (!sid) { Sound.buzz(); say("Pick someone from the lineup first. Tap a photo."); shakeEl($('#lineup')); return; }
+  const sql = ed.value.trim();
+  if (!/\bfrom\b/i.test(strip(sql))) { Sound.buzz(); say("An accusation needs evidence. Write a query against the records that points at them."); fb(`<div class="fb miss"><div class="fb-title">No evidence</div><p>Write a query that points at your suspect, then press Accuse.</p></div>`); return; }
+  if (!isReadOnly(sql) || isRunaway(sql)) { Sound.buzz(); say("That query isn't allowed in the records room. Read-only, and nothing recursive."); return; }
+  let res; try { res = runSQL(sql); } catch (e) { onError(e.message, false); return; }
+  noteTables(tablesIn(sql)); renderResults(res);
+  const verdict = judgeAccusation(c, sid, sql, res);
+  if (verdict.v === 'wrong') {
+    cs.wrongAcc++; S.cred = Math.max(0, S.cred - 20); save(); breakStreak(); renderTop(); Sound.thud();
+    const app = $('#app'); app.classList.remove('shake'); void app.offsetWidth; app.classList.add('shake');
+    const msg = (c.wrong[sid] || `${PEOPLE[sid].name} was cleared by your own evidence.`);
+    say(msg + ' Credibility −20.');
+    fb(`<div class="fb herring"><div class="fb-title">Wrong accusation</div><p>${esc(msg)}</p><p>Credibility −20. It's now ${S.cred}.</p></div>`);
+    return;
+  }
+  if (verdict.v === 'thin') {
+    Sound.buzz(); say(verdict.m);
+    fb(`<div class="fb miss"><div class="fb-title">Evidence too thin</div><p>${esc(verdict.m)}</p><p>No credibility lost. The DA just sent it back.</p></div>`); return;
+  }
+  closeCase(c, cs, sql);
+});
+
+function closeCase(c, cs, sql){
+  const clean = cs.wrongAcc === 0; const stars = 1 + (clean ? 1 : 0) + (cs.hints <= 1 ? 1 : 0);
+  S.streak++; S.bestStreak = Math.max(S.bestStreak, S.streak);
+  const mult = streakMult(S.streak); let xp = Math.round((150 + (clean ? 50 : 0)) * mult);
+  const key = c.id + ':accuse'; const replay = S.ever.includes(key); if (replay) xp = Math.round(xp * .25); else S.ever.push(key);
+  if (clean) S.cred = Math.min(100, S.cred + 10);
+  cs.closed = true; cs.bestStars = Math.max(cs.bestStars, stars); cs.draft = '';
+  S.notebook = S.notebook.filter(n => n.key !== key); S.notebook.unshift({key, cid:c.id, title:'The accusation', concept:'Evidence', sql});
+  c.suspects.forEach(id => { if (id !== c.culprit && !cs.cleared.includes(id)) cs.cleared.push(id); });
+  save();
+  cur.freshCulprit = true; cur.freshCulpritCard = true; cur.accusing = null;
+  renderLineup(); renderBoard(); renderStep(); fb('');
+  say("That's our thief. Pour yourself something. Then read this.");
+  Sound.ding();
+  setTimeout(() => { openClosed(c, cs, stars, xp, mult, replay); addXP(xp);
+    if (clean) award('clean_accusation'); if (cs.hints === 0) award('by_the_book'); if (stars === 3) award('perfect');
+    if (c.id === 'c1') award('case_cracker'); if (c.id === 'c2') award('count_on_me'); }, 1300);
+}
+
+/* =========================================================
+   folder overlay: briefing + case closed
+   ========================================================= */
+let typingTok = null, folderSession = 0, folderMode = null;
+// returns false if the overlay was closed (or replaced) while typing, so callers can stop
+async function typeLines(el, lines){
+  const sess = folderSession, tok = {skip:false}; typingTok = tok; el.innerHTML = '';
+  for (const line of lines) {
+    const p = document.createElement('p'); if (/^["“]/.test(line) || /^Calloway:/.test(line)) p.className = 'q'; el.appendChild(p);
+    if (RM || tok.skip) { p.textContent = line; continue; }
+    for (let i = 0; i < line.length; i++) {
+      if (sess !== folderSession) return false;
+      if (tok.skip) { p.textContent = line; break; }
+      p.textContent = line.slice(0, i + 1); if (i % 2 === 0 && line[i] !== ' ') Sound.clack(.7); await wait(17);
+    }
+    if (!tok.skip) await wait(160);
+    if (sess !== folderSession) return false;
+  }
+  if (typingTok === tok) typingTok = null;
+  return true;
+}
+$('#paper').addEventListener('click', e => { if (typingTok && !e.target.closest('button')) typingTok.skip = true; });
+function closeFolder(){
+  if ($('#folderOv').hidden) return;
+  folderSession++; typingTok = null; $('#folderOv').hidden = true;
+  if (folderMode === 'briefing') showHome();       // left the briefing without taking the case
+  folderMode = null;
+}
+$('#folderClose').addEventListener('click', closeFolder);
+$('#folderOv').addEventListener('click', e => { if (e.target === $('#folderOv')) closeFolder(); });
+function openBriefing(c){
+  const ov = $('#folderOv'), folder = $('#folder'), sess = ++folderSession; folderMode = 'briefing';
+  ov.hidden = false; folder.classList.remove('open');
+  $('#fCover').dataset.tab = `CASE ${pad(c.num)}`; $('#fcTitle').textContent = c.title; $('#fcSkills').textContent = `Skills on file: ${c.skills.join(', ')}`;
+  $('#fCaseNo').textContent = `Case ${pad(c.num)} · Briefing`; $('#fTitle').textContent = c.title; $('#fTop').innerHTML = ''; $('#fBody').innerHTML = '';
+  $('#bigStamp').classList.remove('slam'); $('#bigStamp').style.opacity = 0; $('#fActions').innerHTML = ''; $('#fSkip').hidden = false;
+  const open = $('#openFileBtn'); open.disabled = false; open.focus();
+  open.onclick = async () => {
+    open.disabled = true; Sound.shuffle(); folder.classList.add('open');
+    await wait(RM ? 0 : 650); if (sess !== folderSession) return;
+    if (!(await typeLines($('#fBody'), c.briefing))) return;
+    $('#fSkip').hidden = true;
+    $('#fActions').innerHTML = `<button class="btn btn-red" id="takeCase">Take the case</button><button class="btn btn-ink" id="notYet">Not yet</button>`;
+    $('#takeCase').focus();
+    $('#takeCase').onclick = () => { const cs = CS(c.id); cs.started = true; save(); folderMode = null; folderSession++; ov.hidden = true; Sound.shuffle(); enterCase(c.id); };
+    $('#notYet').onclick = closeFolder;
+  };
+}
+async function openClosed(c, cs, stars, xp, mult, replay){
+  const ov = $('#folderOv'), folder = $('#folder'), sess = ++folderSession; folderMode = 'report'; ov.hidden = false; folder.classList.add('open');
+  $('#fCaseNo').textContent = `Case ${pad(c.num)} · Report`; $('#fTitle').textContent = c.title;
+  const culprit = PEOPLE[c.culprit];
+  const crit = [['Case closed', true], ['No wrong accusations', cs.wrongAcc === 0], ['One hint or fewer', cs.hints <= 1]];
+  $('#fTop').innerHTML = `<div class="close-summary">
+    <div class="row"><span>Charged</span><b>${esc(culprit.name)} (#${culprit.id})</b></div>
+    <div class="row"><span>Hints used</span><b>${cs.hints}</b></div>
+    <div class="row"><span>Wrong accusations</span><b>${cs.wrongAcc}</b></div>
+    <div class="row"><span>Accusation XP</span><b>+${xp}${mult > 1 ? ` (×${mult.toFixed(1)})` : ''}${replay ? ' · replay' : ''}</b></div>
+    ${crit.map(([t, on]) => `<div class="crit"><span class="st ${on ? 'on' : 'off'}">★</span>${esc(t)}</div>`).join('')}</div>`;
+  $('#fBody').innerHTML = ''; $('#fActions').innerHTML = ''; $('#fSkip').hidden = false;
+  const stamp = $('#bigStamp'); stamp.classList.remove('slam'); stamp.style.opacity = 0; void stamp.offsetWidth;
+  await wait(300); if (sess !== folderSession) return;
+  stamp.style.opacity = ''; stamp.classList.add('slam');
+  setTimeout(() => { if (sess !== folderSession) return; Sound.thud(); const f = $('#folder'); f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake');
+    const app = $('#app'); app.classList.remove('shake'); void app.offsetWidth; app.classList.add('shake'); }, RM ? 0 : 300);
+  await wait(900); if (sess !== folderSession) return;
+  if (!(await typeLines($('#fBody'), c.twist))) return;
+  $('#fSkip').hidden = true;
+  const n = nextCase(c);
+  $('#fActions').innerHTML = `${n ? `<button class="btn btn-red" id="fNext">${n.sealed ? `Case ${pad(n.num)}: sealed for now` : `Next case: ${esc(n.title)} →`}</button>` : ''}
+    <button class="btn btn-ink" id="fBoard">See the board</button>${stars < 3 ? `<button class="btn btn-ink" id="fReplay">Replay for 3 stars</button>` : ''}`;
+  const leave = () => { folderMode = null; folderSession++; ov.hidden = true; };
+  if ($('#fNext')) $('#fNext').onclick = () => { leave(); goNextCase(c); };
+  $('#fBoard').onclick = () => { leave(); $('#board').scrollIntoView({behavior: RM ? 'auto' : 'smooth'}); };
+  if ($('#fReplay')) $('#fReplay').onclick = () => { leave(); replayCase(c); };
+}
+
+/* ---------- promotion ---------- */
+function showPromotion(){
+  if (!promoQueue.length || !$('#promoOv').hidden) return;
+  const i = promoQueue.shift(); const r = RANKS[i];
+  $('#promoRank').textContent = r.name; $('#promoLine').textContent = r.line;
+  let marks = ''; for (let k = 0; k < i; k++) marks += `<path d="M22 ${70 - k * 13} L50 ${56 - k * 13} L78 ${70 - k * 13}" stroke="#e8b04b" stroke-width="6" fill="none" stroke-linejoin="round"/>`;
+  $('#insignia').innerHTML = `<circle cx="50" cy="50" r="46" fill="#1f262f" stroke="#e8b04b" stroke-width="3"/><circle cx="50" cy="50" r="38" fill="none" stroke="#e8b04b" stroke-width="1" stroke-dasharray="3 4"/>${marks}
+    <path d="M50 16 l3.5 7 7.7 1.1-5.6 5.4 1.3 7.6-6.9-3.6-6.9 3.6 1.3-7.6-5.6-5.4 7.7-1.1z" fill="#e8b04b"/>`;
+  $('#promoOv').hidden = false; Sound.fanfare(); $('#promoOk').focus();
+}
+$('#promoOk').addEventListener('click', () => { $('#promoOv').hidden = true; setTimeout(showPromotion, 300); });
+
+/* ---------- drawer: records room / notebook / badges ---------- */
+function openDrawer(kind){
+  const d = $('#drawer'), body = $('#drawerBody'); d.hidden = false; Sound.shuffle();
+  if (kind === 'schema') {
+    $('#drawerTitle').textContent = 'Records room';
+    if (!db) { body.innerHTML = `<p class="drawer-note">The records room is still warming up.</p>`; return; }
+    body.innerHTML = `<p class="drawer-note">Eleven drawers. Every table in the city's database, its columns and how many records it holds. Peek shows the first five rows. Inside a case you can also send a starter query to your editor.</p>` +
+      TABLES.map(t => { const cols = runSQL(`PRAGMA table_info(${t})`).values; const n = runSQL(`SELECT COUNT(*) FROM ${t}`).values[0][0];
+        return `<div class="tcard"><div class="tcard-head"><h3>${t}</h3><span class="cnt">${n} rows</span></div><p>${esc(TABLE_INFO[t])}</p>
+          <div class="cols">${cols.map(c => `<span>${esc(c[1])}<i>${esc(c[2].toLowerCase())}</i></span>`).join('')}</div>
+          <button class="peek" data-peek="${t}">Peek at ${t}</button></div>`; }).join('');
+  } else if (kind === 'notebook') {
+    $('#drawerTitle').textContent = "Detective's notebook";
+    body.innerHTML = S.notebook.length ? `<p class="drawer-note">Every query that cracked a lead. Load one to reuse it.</p>` + S.notebook.map((n, i) => `<div class="nb-entry">
+      <div class="nb-t">${esc(n.title)}<span>Case ${caseById(n.cid).num} · ${esc(n.concept)}</span></div><pre>${highlight(n.sql)}</pre>
+      <button data-load="${i}">Load into editor</button></div>`).join('') : `<p class="drawer-note">Empty. Solve a lead and the query lands here.</p>`;
+  } else {
+    $('#drawerTitle').textContent = 'Badges';
+    body.innerHTML = `<p class="drawer-note">${S.badges.length} of ${BADGES.length} earned. Best hot-lead streak: ${S.bestStreak}.</p><div class="badges">` +
+      BADGES.map(b => { const got = S.badges.includes(b.id); return `<div class="badge ${got ? '' : 'locked'}"><div class="medal">${esc(b.mark)}</div><b>${esc(b.name)}</b><small>${esc(b.desc)}</small></div>`; }).join('') + `</div>`;
+  }
+  $('#drawerClose').focus();
+}
+function miniTable(r){
+  return `<table><thead><tr>${r.columns.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${r.values.map(row => `<tr>${row.map(v => `<td title="${esc(v === null ? 'NULL' : v)}">${v === null ? 'NULL' : esc(v)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+}
+$('#drawerBody').addEventListener('click', e => {
+  const p = e.target.closest('[data-peek]'), u = e.target.closest('[data-use]'), l = e.target.closest('[data-load]');
+  if (p) {                                                  // preview rows right inside the records room
+    const card = p.closest('.tcard'), open = card.querySelector('.peekbox'), t = p.dataset.peek;
+    if (open) { open.remove(); p.textContent = `Peek at ${t}`; return; }
+    noteTables([t]); const box = document.createElement('div'); box.className = 'peekbox';
+    box.innerHTML = miniTable(runSQL(`SELECT * FROM ${t} LIMIT 5`)) + (cur.cid ? `<button class="peek" data-use="${t}">Use in my query</button>` : '');
+    card.appendChild(box); p.textContent = 'Hide rows'; return;
+  }
+  if (u) { setEditor(`SELECT * FROM ${u.dataset.use} LIMIT 10;`); $('#drawer').hidden = true; return; }
+  if (l) { if (!cur.cid) { toast('Open a case first, then load queries into the editor.'); return; } setEditor(S.notebook[+l.dataset.load].sql); $('#drawer').hidden = true; }
+});
+$('#drawerClose').addEventListener('click', () => { $('#drawer').hidden = true; });
+$('#navSchema').addEventListener('click', () => openDrawer('schema'));
+$('#navNotebook').addEventListener('click', () => openDrawer('notebook'));
+$('#navBadges').addEventListener('click', () => openDrawer('badges'));
+$('#navMute').addEventListener('click', () => { S.muted = !S.muted; save(); renderTop(); Sound.init(); Music.sync(); if (!S.muted) Sound.pin(); });
+$('#navMusic').addEventListener('click', () => { S.music = !S.music; save(); renderTop(); Sound.init(); Music.sync(); if (S.music && S.muted) toast('Sound is muted. Turn Sound on to hear the music.'); });
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (!$('#promoOv').hidden) $('#promoOk').click();
+  else if (!$('#folderOv').hidden) closeFolder();
+  else if (!$('#drawer').hidden) $('#drawer').hidden = true;
+});
+$('#homeBtn').addEventListener('click', () => { Sound.shuffle(); showHome(); });
+$('#backBtn').addEventListener('click', () => { Sound.shuffle(); showHome(); });
+$('#runBtn').addEventListener('click', runQuery);
+$('#clearBtn').addEventListener('click', () => setEditor(''));
+
+/* =========================================================
+   self-test: open the console and run  __selfTest()
+   Checks every playable case: answers exist, red herrings never collide with real answers, the lineup can be fully cleared,
+   clue strings point at real exhibits, and the reference accusation passes while wrong people and thin evidence fail.
+   ========================================================= */
+window.__selfTest = function(){
+  const fails = []; const ok = (cond, msg) => { if (!cond) fails.push(msg); }; let checks = 0; const chk = (cond, msg) => { checks++; ok(cond, msg); };
+  TABLES.forEach(t => { const n = runSQL(`SELECT COUNT(*) FROM ${t}`).values[0][0]; chk(n >= 50 && n <= 150, `${t} has ${n} rows, wanted 50-150`); });
+  for (const c of CASES.filter(x => !x.sealed)) {
+    const cleared = new Set();
+    c.steps.forEach((s, i) => {
+      const tag = `${c.id}${s.id}`; let e;
+      try { e = runSQL(s.expected); } catch (err) { chk(false, `${tag}: expected SQL fails: ${err.message}`); return; }
+      chk(e.values.length > 0, `${tag}: expected result is empty`);
+      chk(!!matchResult(e, e, s.ordered), `${tag}: expected result does not match itself`);
+      chk((s.tables || tablesIn(s.expected)).length > 0, `${tag}: no table for the free tip`);
+      chk(s.hints.length === 3, `${tag}: needs 3 hints`);
+      chk(s.clue.links.every(j => Number.isInteger(j) && j >= 0 && j < c.steps.length && j !== i), `${tag}: bad clue links`);
+      (s.herrings || []).forEach((h, k) => { let r; try { r = runSQL(h.sql); } catch (err) { chk(false, `${tag} herring ${k}: SQL fails`); return; }
+        chk(!matchResult(r, e, s.ordered), `${tag} herring ${k}: collides with the real answer`); });
+      (s.clears || []).forEach(x => { chk(c.suspects.includes(x.id), `${tag}: clears someone not in the lineup`); cleared.add(x.id); });
+    });
+    c.suspects.filter(id => id !== c.culprit).forEach(id => chk(cleared.has(id), `${c.id}: suspect #${id} is never cleared by evidence`));
+    chk(c.suspects.includes(c.culprit) && !cleared.has(c.culprit), `${c.id}: culprit missing from lineup or cleared by mistake`);
+    chk(c.culpritLinks.every(j => j >= 0 && j < c.steps.length), `${c.id}: bad culprit links`);
+    chk(c.accusation.hints.length === 2 && c.accusation.tables.length > 0, `${c.id}: accusation needs 2 hints and tables`);
+    const proof = runSQL(c.accusation.proof);
+    chk(judgeAccusation(c, c.culprit, c.accusation.proof, proof).v === 'ok', `${c.id}: reference accusation is rejected`);
+    c.suspects.filter(id => id !== c.culprit).forEach(id => { chk(judgeAccusation(c, id, c.accusation.proof, proof).v === 'wrong', `${c.id}: wrong suspect #${id} accepted`); chk(!!c.wrong[id], `${c.id}: no rebuttal text for #${id}`); });
+    const bare = `SELECT * FROM people WHERE id = ${c.culprit}`;
+    chk(judgeAccusation(c, c.culprit, bare, runSQL(bare)).v === 'thin', `${c.id}: a bare people lookup should not count as evidence`);
+  }
+  const r = {checks, failures: fails.length, details: fails};
+  console[fails.length ? 'error' : 'log'](fails.length ? `Self-test: ${fails.length} failure(s) in ${checks} checks` : `Self-test passed: ${checks} checks`, fails);
+  return r;
+};
+
+/* =========================================================
+   boot
+   ========================================================= */
+renderTop(); showHome(); syncEditor();
+(async function boot(){
+  try {
+    if (typeof initSqlJs !== 'function') throw new Error('sql.js failed to load');
+    const SQL = await initSqlJs();
+    buildDB(SQL); SQLREADY = true;
+    $('#engineNote').textContent = 'Records room open. 11 tables, ready for your questions.';
+    showHome();
+  } catch (e) {
+    $('#engineNote').textContent = "Couldn't load the SQL engine. Check your connection and reload the page."; $('#engineNote').classList.add('err');
+  }
+})();
+</script>
+</body>
+</html>
