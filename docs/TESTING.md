@@ -8,7 +8,7 @@ Open the game, open the browser console, run:
 __selfTest()
 ```
 
-Expected output: `Self-test passed: 107 checks`. A failure lists exactly which case, step or table broke.
+Expected output: `Self-test passed: 273 checks`. A failure lists exactly which case, step, lesson or table broke.
 
 It verifies:
 
@@ -20,8 +20,11 @@ It verifies:
 - Every non-culprit suspect is cleared by some step, and the culprit never is.
 - The reference accusation is accepted, every wrong suspect is rejected, and each wrong suspect has a rebuttal line.
 - A bare `SELECT * FROM people WHERE id = <culprit>` is rejected as evidence.
+- Academy: lesson ids are unique, every lesson has a body, at least two examples, at least two slips and a practice question, every example returns rows, every practice answer runs, matches itself and satisfies its own required pattern, no slip would be blocked by the read-only guard, and every lead topic in `CASES` has a lesson in `CONCEPT_LESSON`.
 
-Run it after any edit to `CASES`, the seeded data, or `judgeAccusation`.
+The self-test cannot check that a slip's explanation is true. When you add one, run it from the lesson ("See what happens") and make sure the result or error matches what the text says. See [ACADEMY.md](ACADEMY.md).
+
+Run it after any edit to `CASES`, `ACADEMY`, the seeded data, or `judgeAccusation`.
 
 ## Manual UI checklist
 
@@ -73,9 +76,28 @@ This is the list of paths that were exercised, with the expected result. Use it 
 - [ ] **Records room** lists 11 tables with row counts and columns. **Peek** shows 5 rows in place, on the home screen too. **Use in my query** appears inside a case.
 - [ ] Peeking all 11 tables awards No Stone Unturned.
 - [ ] **Notebook** lists solved queries and **Load into editor** works inside a case.
-- [ ] **Badges** shows 13, earned ones lit.
+- [ ] **Badges** shows 14, earned ones lit.
 - [ ] **Esc** closes the drawer. The folder and promotion overlays also close with **Esc**.
 - [ ] **Music** toggles the loop. **Sound** mutes everything. Turning Music on while muted explains why you hear nothing.
+
+### SQL Academy
+- [ ] **Academy** in the top bar opens a wide drawer with 14 lesson cards in three groups and a progress bar. Cards lean toward the mouse.
+- [ ] A lesson shows the explanation, the syntax pattern, examples, slips and a practice question, with Previous and Next buttons and **← All lessons**.
+- [ ] **Run** shows a result table (first 8 rows and a row count). Editing the SQL and running again shows the new result. **Reset** restores the original.
+- [ ] Running an example marks the lesson studied (a toast, "studied" in the heading, a STUDIED stamp on the list card).
+- [ ] **See what happens** on a slip runs it and shows the error in plain English, or the misleading result.
+- [ ] The practice check says how many rows you returned against how many are expected, shows a hint after two misses, requires `WITH`, `CASE` or `OVER` where the question is about them, and shows PASSED when the rows match. **Ctrl+Enter** checks.
+- [ ] Studying all 14 lessons awards Top of the Class.
+- [ ] Inside a lead, the topic chip (for example `WHERE ↗`) opens that lesson. Inside a case, **Use in my query** copies an example into the editor and closes the drawer.
+- [ ] Esc closes the drawer. At 375 px wide the drawer fills the screen with no sideways scroll.
+
+### XP pop-out and 3D
+- [ ] Solving a lead pops a spinning 3D coin out of the "+N XP" total, then it flies to the rank bar with mini coins. The top bar and rank only update when it lands, then pulse and count up.
+- [ ] Closing a case does the same from the report. A rank-up shows the promotion screen after the coin lands, with the insignia spinning in.
+- [ ] Asking for a hint floats a red "Hint −N XP" label.
+- [ ] A new lead flips in. Evidence cards flip when pinned and the pin drops. Stamps tilt in. The CASE CLOSED stamp slams in 3D.
+- [ ] Case tiles, suspects, evidence cards and the home title lean toward a mouse pointer. Sealed tiles do not. Nothing tilts on touch.
+- [ ] With "reduce motion" on, there is no coin, tilt or flip. XP simply updates.
 
 ### Save and restore
 - [ ] XP, rank, stars, badges, notebook, case progress, the unsent query draft, and the Music and Sound settings survive a reload.
@@ -90,5 +112,5 @@ This is the list of paths that were exercised, with the expected result. Use it 
 
 ### Audio
 - [ ] Nothing plays before the first click or key press.
-- [ ] After the first click the music fades in. Measured level is steady and quiet, with no clipping.
+- [ ] After the first click the music fades in. Measured level is steady and quiet, with no clipping. There is no continuous rain or hiss under it, only the brush drums on the beat.
 - [ ] Switching tabs pauses audio and resumes it when you return.

@@ -45,7 +45,12 @@ code,kbd,pre{font-family:var(--mono)}
 .rankbox{display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 220px;max-width:360px}
 .rank-name{font:800 16px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--lamp);white-space:nowrap}
 .xpbar{flex:1;height:8px;background:var(--slate3);border-radius:8px;overflow:hidden;min-width:60px}
-.xpbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--manila3),var(--lamp));transition:width .6s ease}
+.xpbar{position:relative}
+.xpbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--manila3),var(--lamp))}   /* width is tweened in JS when XP lands */
+.xpbar.pulse{animation:barPulse .5s ease}
+@keyframes barPulse{0%{box-shadow:0 0 0 0 rgba(232,176,75,.7)}100%{box-shadow:0 0 0 10px rgba(232,176,75,0)}}
+.xp-text.bump,.rank-name.bump{animation:bump .45s ease}
+@keyframes bump{40%{transform:scale(1.18);color:var(--lamp)}}
 .xp-text{font:500 12px/1 var(--mono);color:var(--dim);white-space:nowrap;font-variant-numeric:tabular-nums}
 .chips{display:flex;gap:8px;align-items:center}
 .chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--slate);
@@ -65,7 +70,8 @@ code,kbd,pre{font-family:var(--mono)}
 .hero{padding-block:34px 26px;display:grid;gap:14px;max-width:760px}
 .eyebrow{font:600 11px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--manila)}
 .hero h1{margin:0;font:900 clamp(64px,13vw,150px)/.82 var(--display);letter-spacing:.02em;color:var(--paper);
-  text-shadow:0 0 40px rgba(232,176,75,.15)}
+  text-shadow:0 1px 0 #d9d1bd,0 2px 0 #c2baa5,0 3px 0 #aaa28d,0 4px 0 #928a76,0 10px 24px rgba(0,0,0,.55),0 0 40px rgba(232,176,75,.15);   /* extruded letters */
+  transform-origin:20% 60%}
 .hero h1 span{color:var(--red2)}
 .lede{margin:0;font:17px/1.55 var(--type);color:var(--paper2);max-width:58ch}
 .hero-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
@@ -74,10 +80,10 @@ code,kbd,pre{font-family:var(--mono)}
 .cases{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:30px 18px;padding-top:22px}
 .tile{position:relative;background:var(--manila);color:var(--ink);border-radius:2px 8px 8px 8px;padding:18px 16px 16px;
   box-shadow:0 14px 30px rgba(0,0,0,.45);display:flex;flex-direction:column;gap:8px;min-height:230px;text-align:left;border:0;
-  transition:transform .2s ease, box-shadow .2s ease}
+  }
 .tile::before{content:attr(data-tab);position:absolute;top:-22px;left:0;background:inherit;padding:4px 14px 2px;border-radius:7px 7px 0 0;
   font:600 11px/1.4 var(--sans);letter-spacing:.14em;color:var(--ink2)}
-.tile:not(.sealed):hover{transform:translateY(-4px) rotate(-.4deg);box-shadow:0 20px 36px rgba(0,0,0,.55)}
+.tile:not(.sealed):hover{--ty:-5px;box-shadow:0 24px 40px rgba(0,0,0,.6)}
 .tile h3{margin:0;font:800 30px/.95 var(--display);letter-spacing:.02em;text-transform:uppercase}
 .tile .tag{font:14px/1.4 var(--type);color:var(--ink2);flex:1}
 .tile .skills{display:flex;flex-wrap:wrap;gap:4px}
@@ -118,7 +124,9 @@ code,kbd,pre{font-family:var(--mono)}
 .dots{display:flex;gap:6px;align-items:center}
 .dot{width:22px;height:6px;border-radius:3px;background:var(--paper2)}
 .dot.done{background:var(--ink2)} .dot.now{background:var(--red)} .dot.acc{width:10px;height:10px;border-radius:50%}
-.concept{font:600 11px/1 var(--mono);letter-spacing:.06em;background:var(--ink);color:var(--paper);padding:5px 8px;border-radius:3px}
+.concept{font:600 11px/1 var(--mono);letter-spacing:.06em;background:var(--ink);color:var(--paper);padding:5px 8px;border-radius:3px;border:0}
+button.concept{cursor:pointer;transition:background .15s,transform .15s}
+button.concept:hover{background:var(--red);transform:translateY(-1px)}
 .stepcard h2{margin:2px 0 8px;font:800 30px/1 var(--display);letter-spacing:.02em;text-transform:uppercase;text-wrap:balance}
 .lesson{margin:0 0 10px;font:15px/1.55 var(--sans);color:var(--ink);max-width:65ch}
 .example{background:#ebe2cc;border-left:3px solid var(--ink2);padding:8px 12px;border-radius:2px;margin-bottom:12px;overflow-x:auto}
@@ -155,9 +163,6 @@ code,kbd,pre{font-family:var(--mono)}
 .btn-red:hover{background:var(--red2)}
 .btn-ink{background:var(--ink);color:var(--paper)}
 .btn[disabled]{opacity:.45;cursor:not-allowed}
-.xp-float{position:fixed;z-index:80;font:900 28px/1 var(--display);color:var(--lamp);pointer-events:none;text-shadow:0 2px 12px rgba(0,0,0,.6);
-  animation:floatUp 1.3s ease-out forwards}
-@keyframes floatUp{0%{opacity:0;transform:translateY(10px) scale(.8)}15%{opacity:1;transform:translateY(0) scale(1.1)}100%{opacity:0;transform:translateY(-60px) scale(1)}}
 
 .hints{display:flex;flex-direction:column;gap:6px}
 .hint{background:var(--slate2);border:1px dashed var(--manila3);border-radius:8px;padding:8px 12px;font:14px/1.45 var(--type);color:var(--paper2)}
@@ -206,8 +211,8 @@ code,kbd,pre{font-family:var(--mono)}
 .wall h3 small{font:500 12px/1 var(--mono);letter-spacing:0;color:var(--dim);text-transform:none}
 .lineup{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 .suspect{position:relative;background:var(--slate2);border:1px solid var(--line);border-radius:6px;padding:6px 6px 8px;text-align:left;display:flex;flex-direction:column;gap:4px;
-  transition:transform .15s ease, border-color .15s ease}
-.suspect:hover{border-color:var(--manila3)}
+  }
+.suspect:hover{border-color:var(--manila3);box-shadow:0 14px 24px rgba(0,0,0,.5)}
 .suspect .photo{position:relative;aspect-ratio:5/6;max-width:100%;border-radius:3px;overflow:hidden;background:#d8d2c4}
 .suspect .photo svg{display:block;width:100%;height:100%}
 .suspect .nm{font:600 13px/1.15 var(--sans);color:var(--paper)}
@@ -219,9 +224,45 @@ code,kbd,pre{font-family:var(--mono)}
 .suspect.cleared.fresh .sstamp{animation:stampIn .45s cubic-bezier(.2,.8,.3,1.2)}
 .suspect.charged .sstamp{color:var(--red);border-color:var(--red);opacity:.95;transform:translate(-50%,-50%) rotate(-10deg) scale(1);background:rgba(243,236,219,.6)}
 .suspect.charged.fresh .sstamp{animation:stampIn .45s cubic-bezier(.2,.8,.3,1.2)}
-@keyframes stampIn{0%{opacity:0;transform:translate(-50%,-50%) rotate(-24deg) scale(2.6)}70%{opacity:1;transform:translate(-50%,-50%) rotate(-14deg) scale(.92)}100%{opacity:.92;transform:translate(-50%,-50%) rotate(-16deg) scale(1)}}
+@keyframes stampIn{0%{opacity:0;transform:translate(-50%,-50%) perspective(400px) rotateX(55deg) rotate(-24deg) scale(2.6)}70%{opacity:1;transform:translate(-50%,-50%) perspective(400px) rotateX(-8deg) rotate(-14deg) scale(.92)}100%{opacity:.92;transform:translate(-50%,-50%) rotate(-16deg) scale(1)}}
 .suspect.selectable{border-color:var(--manila3)}
-.suspect.selected{border-color:var(--red2);box-shadow:0 0 0 2px var(--red2);transform:translateY(-3px)}
+.suspect.selected{border-color:var(--red2);box-shadow:0 0 0 2px var(--red2);--ty:-3px}
+
+/* ---------- little 3D: pointer tilt on cards, tiles, suspects, badges ---------- */
+.t3{transform:perspective(800px) translateY(var(--ty,0px)) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transform-style:preserve-3d;
+  transition:transform .16s ease-out,box-shadow .2s ease,border-color .15s ease;will-change:transform}
+.t3 > .glare{position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .2s;
+  background:radial-gradient(circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.26),rgba(255,255,255,0) 58%)}
+.t3:hover > .glare{opacity:1}
+.t3 .lift{transform:translateZ(18px)}
+.clue .tw{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .16s ease-out;
+  transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}
+.step-in{animation:stepIn .5s cubic-bezier(.2,.8,.3,1)}
+@keyframes stepIn{from{opacity:.2;transform:perspective(900px) rotateX(-16deg) translateY(12px)}to{opacity:1;transform:none}}
+.pin.drop{animation:pinDrop .45s cubic-bezier(.3,1.5,.5,1)}
+@keyframes pinDrop{0%{opacity:0;transform:translateY(-30px) scale(2.2)}60%{opacity:1;transform:translateY(2px) scale(1.1)}100%{opacity:1;transform:none}}
+.badge:not(.locked):hover .medal{animation:medalSpin .9s ease}
+@keyframes medalSpin{to{transform:rotateY(360deg)}}
+.badge{perspective:500px}
+
+/* ---------- XP pop-out: a spinning 3D coin that flies to the rank bar ---------- */
+.xp-pop{position:fixed;z-index:95;pointer-events:none;display:flex;align-items:center;gap:12px;perspective:700px;left:0;top:0;will-change:transform,opacity}
+.xp-coin{position:relative;width:58px;height:58px;transform-style:preserve-3d;animation:coinSpin 1s linear infinite;flex:none}
+.xp-coin i{position:absolute;inset:0;border-radius:50%;display:grid;place-items:center;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  background:radial-gradient(circle at 35% 30%,#ffe9b4,var(--lamp) 55%,#8a5d12);box-shadow:inset 0 0 0 4px rgba(138,93,18,.55),inset 0 0 0 7px rgba(255,236,180,.25)}
+.xp-coin i b{font:900 20px/1 var(--display);letter-spacing:.04em;color:#4a300a;text-shadow:0 1px 0 rgba(255,236,180,.6)}
+.xp-coin .f{transform:translateZ(4px)}
+.xp-coin .k{transform:rotateY(180deg) translateZ(4px)}
+.xp-coin .r1{transform:translateZ(2px);filter:brightness(.7)}.xp-coin .r2{transform:translateZ(0);filter:brightness(.6)}.xp-coin .r3{transform:translateZ(-2px);filter:brightness(.7)}
+.xp-coin .r1,.xp-coin .r2,.xp-coin .r3{backface-visibility:visible;-webkit-backface-visibility:visible}
+.xp-coin .r1 b,.xp-coin .r2 b,.xp-coin .r3 b{display:none}
+@keyframes coinSpin{to{transform:rotateY(360deg)}}
+.xp-num{font:900 clamp(40px,8vw,64px)/1 var(--display);letter-spacing:.02em;color:var(--lamp);white-space:nowrap;
+  text-shadow:0 2px 0 #8a5d12,0 6px 18px rgba(0,0,0,.65),0 0 24px rgba(232,176,75,.55)}
+.xp-num.neg{color:var(--red2);text-shadow:0 2px 0 #5a0f0a,0 6px 14px rgba(0,0,0,.6)}
+.xp-mini{position:fixed;z-index:94;left:0;top:0;width:18px;height:18px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at 35% 30%,#ffe9b4,var(--lamp) 60%,#8a5d12);box-shadow:0 0 10px rgba(232,176,75,.7);will-change:transform,opacity}
+.mini-pop{position:fixed;z-index:95;pointer-events:none;left:0;top:0;font:800 18px/1 var(--display);letter-spacing:.06em;color:var(--red2);text-shadow:0 2px 8px rgba(0,0,0,.7);white-space:nowrap}
 
 /* evidence board */
 .board{position:relative;background:
@@ -279,7 +320,7 @@ code,kbd,pre{font-family:var(--mono)}
 .big-stamp{position:absolute;right:18px;top:70px;z-index:6;pointer-events:none;opacity:0;font:900 clamp(40px,9vw,64px)/.9 var(--display);letter-spacing:.06em;color:rgba(179,38,30,.85);
   border:6px double rgba(179,38,30,.8);padding:6px 14px;transform:rotate(-12deg);mix-blend-mode:multiply;text-align:center}
 .big-stamp.slam{animation:slam .5s cubic-bezier(.2,.9,.3,1.15) forwards}
-@keyframes slam{0%{opacity:0;transform:rotate(-24deg) scale(3.2)}62%{opacity:1;transform:rotate(-12deg) scale(.9)}100%{opacity:1;transform:rotate(-12deg) scale(1)}}
+@keyframes slam{0%{opacity:0;transform:perspective(700px) rotateX(58deg) rotate(-24deg) scale(3.2)}62%{opacity:1;transform:perspective(700px) rotateX(-9deg) rotate(-12deg) scale(.9)}100%{opacity:1;transform:rotate(-12deg) scale(1)}}
 .close-summary{display:grid;gap:10px;margin:6px 0 14px;padding:12px;background:#ebe2cc;border-radius:3px}
 .close-summary .row{display:flex;justify-content:space-between;gap:10px;font:14px/1.3 var(--sans)}
 .crit{display:flex;gap:8px;align-items:center;font:14px/1.3 var(--sans)}
@@ -291,12 +332,13 @@ code,kbd,pre{font-family:var(--mono)}
 
 .promo{width:min(440px,100%);background:var(--slate);border:1px solid var(--lamp);border-radius:12px;padding:28px 24px;text-align:center;display:grid;gap:10px;
   box-shadow:0 0 60px rgba(232,176,75,.25);animation:promoIn .6s cubic-bezier(.2,.9,.3,1.2)}
-@keyframes promoIn{from{transform:scale(.7);opacity:0}to{transform:none;opacity:1}}
+@keyframes promoIn{from{transform:perspective(900px) rotateX(24deg) scale(.7);opacity:0}to{transform:none;opacity:1}}
 .promo .eyebrow{justify-self:center}
 .promo h2{margin:0;font:900 64px/.9 var(--display);text-transform:uppercase;color:var(--paper);letter-spacing:.03em}
 .promo .rk{font:800 30px/1 var(--display);color:var(--lamp);letter-spacing:.08em;text-transform:uppercase}
 .promo p{margin:0;font:16px/1.5 var(--type);color:var(--paper2)}
-.insignia{justify-self:center;width:110px;height:110px}
+.insignia{justify-self:center;width:110px;height:110px;animation:insigniaSpin 1.3s cubic-bezier(.2,.8,.3,1) .15s both;filter:drop-shadow(0 10px 16px rgba(0,0,0,.5))}
+@keyframes insigniaSpin{from{transform:perspective(500px) rotateY(-720deg) scale(.4)}to{transform:perspective(500px) rotateY(0) scale(1)}}
 
 .drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,100%);z-index:65;background:var(--slate);border-left:1px solid var(--line);
   display:flex;flex-direction:column;box-shadow:-20px 0 50px rgba(0,0,0,.5);animation:slideIn .28s ease}
@@ -334,6 +376,60 @@ code,kbd,pre{font-family:var(--mono)}
   box-shadow:0 10px 30px rgba(0,0,0,.5);animation:toastIn .3s ease}
 .toast b{color:var(--lamp)}
 @keyframes toastIn{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+
+/* ---------- SQL Academy ---------- */
+.drawer.wide{width:min(820px,100%)}
+.acad-progress{display:flex;align-items:center;gap:12px;font:500 12px/1 var(--mono);color:var(--dim)}
+.acad-progress .xpbar{flex:1;max-width:320px}
+.acad-group{margin:8px 0 0;font:800 20px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--manila)}
+.acad-group small{font:500 11px/1 var(--sans);letter-spacing:.04em;text-transform:none;color:var(--dim);margin-left:8px}
+.acad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.acad-card{position:relative;text-align:left;background:var(--paper);color:var(--ink);border:0;border-radius:3px 8px 8px 8px;padding:14px 14px 12px;display:grid;gap:6px;
+  box-shadow:0 8px 18px rgba(0,0,0,.4)}
+.acad-card:hover{--ty:-4px;box-shadow:0 14px 26px rgba(0,0,0,.5)}
+.acad-card .no{font:600 11px/1 var(--mono);letter-spacing:.1em;color:var(--red)}
+.acad-card h3{margin:0;font:800 22px/1 var(--display);letter-spacing:.02em;text-transform:uppercase}
+.acad-card p{margin:0;font:13px/1.35 var(--type);color:var(--ink2)}
+.acad-card .done{position:absolute;right:10px;top:10px;font:900 13px/1 var(--display);letter-spacing:.1em;color:var(--blueink);border:2px solid var(--blueink);padding:2px 6px;transform:rotate(-8deg);opacity:.85}
+.acad-card .ahead{font:600 10px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
+.acad-back{justify-self:start;background:var(--slate2);border:1px solid var(--line);border-radius:8px;padding:7px 11px;font:500 13px/1 var(--sans);color:var(--fog)}
+.acad-back:hover{border-color:var(--manila2)}
+.lesson-head{display:grid;gap:6px}
+.lesson-head .eyebrow{color:var(--manila)}
+.lesson-head h3{margin:0;font:900 clamp(34px,6vw,48px)/.95 var(--display);letter-spacing:.02em;text-transform:uppercase;color:var(--paper)}
+.lesson-head p{margin:0;font:15px/1.4 var(--type);color:var(--paper2)}
+.lesson-body{display:grid;gap:8px;max-width:68ch}
+.lesson-body p{margin:0;font:15px/1.55 var(--sans);color:var(--fog)}
+.syntax{background:#0b0e12;border:1px solid var(--line);border-left:3px solid var(--lamp);border-radius:6px;padding:10px 14px;overflow-x:auto}
+.syntax .lbl,.acad-sec{font:600 10px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--manila);margin:0 0 6px}
+.syntax pre{margin:0;font:14px/1.55 var(--mono);color:#d8dee6;white-space:pre-wrap}
+.syntax pre .k{color:#f0a85a}.syntax pre .f{color:#c39bf0}.syntax pre .s{color:#9fd39a}.syntax pre .n{color:#7fc4f5}.syntax pre .t{color:#f3d58c}
+.acad-ex{display:grid;gap:8px;background:var(--slate2);border:1px solid var(--line);border-radius:10px;padding:12px}
+.acad-ex .note{font:14px/1.4 var(--type);color:var(--paper2)}
+.acad-ex .row{display:flex;flex-wrap:wrap;gap:8px}
+.btn-sm{padding:8px 13px;font-size:13px}
+.editor-shell.mini .editor{min-height:64px}
+.editor-shell.mini .editor pre,.editor-shell.mini .editor textarea{padding:10px 12px;font-size:14px}
+.acad-res{background:var(--paper);color:var(--ink);border-radius:6px;overflow:hidden}
+.acad-res .cap{display:flex;justify-content:space-between;gap:8px;padding:6px 10px;background:var(--paper2);font:600 10px/1.2 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
+.acad-res .sc{overflow:auto;max-height:260px}
+.acad-res table{border-collapse:collapse;width:100%;font:12.5px/1.4 var(--mono);font-variant-numeric:tabular-nums}
+.acad-res th{text-align:left;background:#e9dfc7;padding:5px 9px;white-space:nowrap}
+.acad-res td{padding:4px 9px;border-bottom:1px solid #e3d9c1;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acad-res .more{padding:6px 10px;font:12px/1.3 var(--mono);color:var(--ink2)}
+.acad-err{background:#2a1715;border:1px solid #7a2a24;border-radius:6px;padding:9px 12px;font:14px/1.45 var(--sans);color:var(--fog)}
+.acad-err small{display:block;margin-top:4px;font:12px/1.4 var(--mono);color:var(--dim)}
+.acad-ok{background:var(--okbg);border:1px solid #3f6b4c;border-radius:6px;padding:9px 12px;font:14px/1.45 var(--sans);color:var(--ok);display:flex;align-items:center;gap:10px}
+.acad-ok .st{font:900 15px/1 var(--display);letter-spacing:.1em;border:2px solid var(--ok);padding:2px 7px;transform:rotate(-6deg);animation:stampIn2 .4s cubic-bezier(.2,.8,.3,1.2)}
+@keyframes stampIn2{from{opacity:0;transform:perspective(300px) rotateX(55deg) rotate(-12deg) scale(2.2)}to{opacity:1;transform:rotate(-6deg) scale(1)}}
+.acad-miss{background:var(--slate);border:1px solid var(--line);border-radius:6px;padding:9px 12px;font:14px/1.45 var(--sans);color:var(--fog)}
+.mistakes{display:grid;gap:8px}
+.mistake{background:var(--slate2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:grid;gap:5px}
+.mistake pre{margin:0;font:13px/1.45 var(--mono);color:#f0a1a1;white-space:pre-wrap}
+.mistake p{margin:0;font:13.5px/1.45 var(--sans);color:var(--fog)}
+.lesson-nav{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.challenge{display:grid;gap:8px;background:linear-gradient(160deg,var(--slate2),var(--slate));border:1px dashed var(--manila3);border-radius:10px;padding:12px}
+.challenge .task{margin:0;font:15px/1.45 var(--type);color:var(--paper)}
 
 /* free records-room tip on every lead */
 .tip{margin-top:12px;background:#ebe2cc;border:1px dashed var(--ink2);border-radius:3px;padding:9px 12px;display:grid;gap:6px}
@@ -389,6 +485,7 @@ code,kbd,pre{font-family:var(--mono)}
       <span class="chip" id="credChip" title="Credibility. Wrong accusations cost 20.">Cred <b id="credVal">100</b></span>
     </div>
     <nav class="nav">
+      <button class="navbtn" id="navAcademy" title="Short SQL lessons with live examples">Academy</button>
       <button class="navbtn" id="navSchema">Records room</button>
       <button class="navbtn" id="navNotebook">Notebook</button>
       <button class="navbtn" id="navBadges">Badges</button>
@@ -400,7 +497,7 @@ code,kbd,pre{font-family:var(--mono)}
   <main class="wrap" id="homeScreen">
     <section class="hero">
       <p class="eyebrow">Greyhaven Police · Records Division</p>
-      <h1>The Ledger<span>.</span></h1>
+      <h1 class="t3" data-tilt="3">The Ledger<span>.</span></h1>
       <p class="lede">A rain-soaked port. Thefts, fake invoices, one disappearance. Every thread ends at a mastermind nobody has seen. You have a keyboard and the city's records. Query your way to the truth.</p>
       <div class="hero-stats" id="heroStats"></div>
       <div class="engine-note" id="engineNote">Warming up the records room…</div>
@@ -983,6 +1080,7 @@ const BADGES = [
   {id:'by_the_book', name:'By the Book', mark:'BB', desc:'Close a case without a single hint.'},
   {id:'perfect', name:'Perfect Record', mark:'★★★', desc:'Earn 3 stars on a case.'},
   {id:'no_stone', name:'No Stone Unturned', mark:'11', desc:'Query all 11 tables in the records room.'},
+  {id:'top_of_class', name:'Top of the Class', mark:'A+', desc:'Study every lesson in the SQL Academy.'},
   {id:'case_cracker', name:'Case Cracker', mark:'I', desc:'Close Case 1.'},
   {id:'count_on_me', name:'Count On Me', mark:'Σ', desc:'Close Case 2 with aggregates.'},
   {id:'join_master', name:'Join Master', mark:'⋈', desc:'Close Case 3. (Case file sealed.)'},
@@ -994,7 +1092,7 @@ const BADGES = [
    save state
    ========================================================= */
 const SAVE_KEY = 'ledger-casebook-v1';
-const freshSave = () => ({xp:0, cred:100, streak:0, bestStreak:0, badges:[], cases:{}, notebook:[], tables:[], ever:[], muted:false, music:true});
+const freshSave = () => ({xp:0, cred:100, streak:0, bestStreak:0, badges:[], cases:{}, notebook:[], tables:[], ever:[], academy:[], muted:false, music:true});
 function freshCase(best){ return {step:0, cleared:[], hints:0, wrongAcc:0, closed:false, started:false, bestStars:best || 0, stepHints:0, stepFails:0, stepErrors:0, herring:false, queries:{}, draft:''}; }
 let S = (() => {
   try {
@@ -1003,7 +1101,7 @@ let S = (() => {
       const s = Object.assign(freshSave(), JSON.parse(raw));
       if (!s.cases || typeof s.cases !== 'object') s.cases = {};
       Object.keys(s.cases).forEach(k => { s.cases[k] = Object.assign(freshCase(), s.cases[k]); });   // heal saves that miss newer fields
-      ['badges', 'notebook', 'tables', 'ever'].forEach(k => { if (!Array.isArray(s[k])) s[k] = []; });
+      ['badges', 'notebook', 'tables', 'ever', 'academy'].forEach(k => { if (!Array.isArray(s[k])) s[k] = []; });
       s.streak = 0;   // a hot-lead streak lasts one sitting
       return s;
     }
@@ -1040,6 +1138,8 @@ const Sound = {
   buzz(){ if (!this.on()) return; this.tone(120, .16, 'sawtooth', .05); this.tone(96, .22, 'sawtooth', .045, .1); },
   flip(){ if (!this.on()) return; this.noise(.18, 'bandpass', 1200, .12, .8); },
   fanfare(){ if (!this.on()) return; [523, 659, 784, 1046].forEach((f, i) => this.tone(f, .5, 'triangle', .13, i * .13)); },
+  pop(){ if (!this.on()) return; this.tone(520, .14, 'triangle', .12, 0, 900); this.noise(.07, 'highpass', 3200, .05, 1); },
+  coin(){ if (!this.on()) return; this.tone(1320, .12, 'triangle', .1); this.tone(1760, .32, 'triangle', .09, .07); },
 };
 /* ---------- background music: a slow noir loop, synthesised live ---------- */
 const Music = (() => {
@@ -1054,7 +1154,7 @@ const Music = (() => {
   // eight bars, two chords per bar
   const PROG = ['Am9','Am9','Dm9','Dm9','Bm7b5','E7b9','Am9','Am9','Fmaj7','Fmaj7','Dm9','Dm9','Bm7b5','E7b9','Am9','E7b9'];
   const hz = m => 440 * Math.pow(2, (m - 69) / 12);
-  const m = {playing:false, timer:null, nextT:0, n:0, mel:2, bus:null, send:null, rain:null, rainBuf:null, level:.7};
+  const m = {playing:false, timer:null, nextT:0, n:0, mel:2, bus:null, send:null, level:.7};
 
   function build(c){
     m.bus = c.createGain(); m.bus.gain.value = 0;
@@ -1063,8 +1163,6 @@ const Music = (() => {
     const fbk = c.createGain(); fbk.gain.value = .36; const dlp = c.createBiquadFilter(); dlp.type = 'lowpass'; dlp.frequency.value = 1900;
     const wet = c.createGain(); wet.gain.value = .55;
     m.send = c.createGain(); m.send.connect(dly); dly.connect(dlp); dlp.connect(fbk); fbk.connect(dly); dlp.connect(wet); wet.connect(m.bus);
-    const len = c.sampleRate * 4; m.rainBuf = c.createBuffer(1, len, c.sampleRate); const d = m.rainBuf.getChannelData(0);
-    let last = 0; for (let i = 0; i < len; i++) { const w = Math.random() * 2 - 1; last = (last + .08 * w) / 1.08; d[i] = w * .6 + last * 6; }   // hissy rain
   }
   function osc(c, t, f, dur, type, gain, attack, dests){
     const o = c.createOscillator(), g = c.createGain(); o.type = type; o.frequency.value = f;
@@ -1109,15 +1207,11 @@ const Music = (() => {
       const c = Sound.ctx; if (!c || m.playing) return; if (!m.bus) build(c);
       m.playing = true; m.nextT = c.currentTime + .15; m.n = 0;
       m.bus.gain.cancelScheduledValues(c.currentTime); m.bus.gain.setTargetAtTime(m.level, c.currentTime, 1.4);
-      m.rain = c.createBufferSource(); m.rain.buffer = m.rainBuf; m.rain.loop = true;
-      const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1500; bp.Q.value = .35; const g = c.createGain(); g.gain.value = .05;
-      m.rain.connect(bp); bp.connect(g); g.connect(m.bus); m.rain.start();
       m.timer = setInterval(tick, 120); tick();
     },
     stop(){
       const c = Sound.ctx; if (!m.playing) return; m.playing = false; clearInterval(m.timer);
       if (c && m.bus) m.bus.gain.setTargetAtTime(0, c.currentTime, .25);
-      const r = m.rain; m.rain = null; if (r) setTimeout(() => { try { r.stop(); } catch (e) {} }, 1500);
     },
     sync(){ (Sound.ctx && S.music && !S.muted && !document.hidden) ? this.start() : this.stop(); },
   };
@@ -1152,7 +1246,11 @@ function noteTables(list){ let added = false; list.forEach(t => { if (!S.tables.
   if (added) { save(); if (S.tables.length >= TABLES.length) award('no_stone'); } }
 function runSQL(sql){
   const stmt = db.prepare(sql);
-  try { const columns = stmt.getColumnNames(), values = []; while (stmt.step()) { values.push(stmt.get()); if (values.length > 5000) break; } return {columns, values}; }
+  try {
+    const columns = stmt.getColumnNames(), values = []; let truncated = false;
+    while (stmt.step()) { if (values.length >= 5000) { truncated = true; break; } values.push(stmt.get()); }   // cap very large results; `truncated` says so
+    return {columns, values, truncated};
+  }
   finally { stmt.free(); }
 }
 const EXPCACHE = {};
@@ -1200,7 +1298,7 @@ function diffResult(user, exp, ordered){
 function translateError(msg){
   let m;
   if ((m = msg.match(/no such table: (\S+)/i))) return `There's no drawer marked "${m[1]}" in the records room. Check the spelling, or open the Records Room.`;
-  if ((m = msg.match(/no such column: (\S+)/i))) return `"${m[1]}" isn't a column on that table. If you meant a piece of text, wrap it in single quotes: '${m[1]}'.`;
+  if ((m = msg.match(/no such column: (\S+)/i))) return `"${m[1]}" isn't a column here. Check the spelling against the Records Room. If you meant a piece of text, wrap it in single quotes: '${m[1]}'.`;
   if (/misuse of aggregate/i.test(msg)) return "COUNT, SUM and AVG can't go in WHERE. WHERE runs before anything is counted. Filter groups with HAVING instead.";
   if (/GROUP BY clause is required before HAVING|HAVING clause on a non-aggregate/i.test(msg)) return "HAVING filters groups, so it needs a GROUP BY in front of it.";
   if ((m = msg.match(/ambiguous column name: (\S+)/i))) return `Two tables both have "${m[1]}". Say which one you mean, like table.${m[1]}.`;
@@ -1280,11 +1378,12 @@ $('#partnerAvatar').innerHTML = PARTNER_SVG;
    ========================================================= */
 const rankIdx = xp => { let i = 0; RANKS.forEach((r, j) => { if (xp >= r.xp) i = j; }); return i; };
 const streakMult = n => n <= 1 ? 1 : Math.min(2, 1 + .2 * (n - 1));
+let xpShown = S.xp, xpTween = 0;     // what the top bar displays; it catches up to S.xp when the coin lands
 function renderTop(){
-  const i = rankIdx(S.xp), cur = RANKS[i], nxt = RANKS[i + 1];
+  const i = rankIdx(xpShown), cur = RANKS[i], nxt = RANKS[i + 1];
   $('#rankName').textContent = cur.name;
-  $('#xpFill').style.width = nxt ? `${Math.round((S.xp - cur.xp) / (nxt.xp - cur.xp) * 100)}%` : '100%';
-  $('#xpText').textContent = nxt ? `${S.xp} / ${nxt.xp} XP` : `${S.xp} XP`;
+  $('#xpFill').style.width = nxt ? `${Math.round((xpShown - cur.xp) / (nxt.xp - cur.xp) * 100)}%` : '100%';
+  $('#xpText').textContent = nxt ? `${xpShown} / ${nxt.xp} XP` : `${xpShown} XP`;
   const m = streakMult(S.streak);
   $('#streakText').textContent = S.streak >= 2 ? `Hot lead ×${m.toFixed(1)} · ${S.streak}` : `Hot lead ×${m.toFixed(1)}`;
   $('#streakChip').classList.toggle('hot', S.streak >= 2);
@@ -1295,9 +1394,61 @@ function renderTop(){
 function toast(html, ms){ const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = html; $('#toasts').appendChild(t); setTimeout(() => t.remove(), ms || 3600); }
 function award(id){ if (S.badges.includes(id)) return; const b = BADGES.find(x => x.id === id); if (!b) return; S.badges.push(id); save(); Sound.fanfare(); toast(`Badge earned: <b>${esc(b.name)}</b><br>${esc(b.desc)}`, 4200); }
 const promoQueue = [];
-function addXP(n){ const before = rankIdx(S.xp); S.xp = Math.max(0, S.xp + n); const after = rankIdx(S.xp); save(); renderTop(); if (after > before) { promoQueue.push(after); setTimeout(showPromotion, 900); } }
-function floatXP(n){ if (!n) return; const b = $('#runBtn').getBoundingClientRect(); const f = document.createElement('div'); f.className = 'xp-float'; f.textContent = `+${n} XP`;
-  f.style.left = (b.left + 10) + 'px'; f.style.top = (b.top - 30) + 'px'; document.body.appendChild(f); setTimeout(() => f.remove(), 1400); }
+// XP is added to the save at once. The top bar then catches up when the coin lands (or immediately with reduced motion).
+function addXP(n, from){
+  const before = rankIdx(S.xp); S.xp = Math.max(0, S.xp + n); const after = rankIdx(S.xp); save();
+  if (n > 0 && !RM) { xpBurst(n, from); setTimeout(settleXP, 3600); } else settleXP();       // the timeout is a safety net if the animation never finishes
+  if (after > before) { promoQueue.push(after); setTimeout(showPromotion, RM ? 900 : 2100); }
+}
+function settleXP(){
+  cancelAnimationFrame(xpTween); const from = xpShown, to = S.xp;
+  if (from === to) { renderTop(); return; }
+  if (RM) { xpShown = to; renderTop(); return; }
+  const t0 = performance.now(), dur = 750;
+  const tick = now => {
+    const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3); xpShown = Math.round(from + (to - from) * e); renderTop();
+    if (k < 1) xpTween = requestAnimationFrame(tick);
+    else { xpShown = to; renderTop(); ['#xpText', '#rankName'].forEach(s => { const el = $(s); el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }); }
+  };
+  xpTween = requestAnimationFrame(tick);
+}
+function pulseBar(){ const b = $('.xpbar'); b.classList.remove('pulse'); void b.offsetWidth; b.classList.add('pulse'); }
+// A 3D coin spins up out of `from` showing "+N", holds a beat, then flies to the rank bar while mini coins arc after it.
+function xpBurst(n, from){
+  const fr = from && from.isConnected ? from.getBoundingClientRect() : null, ok = fr && fr.width > 0;
+  const ox = ok ? fr.left + fr.width / 2 : innerWidth / 2, oy = ok ? fr.top + fr.height / 2 : innerHeight * .45;
+  const bar = $('.rankbox').getBoundingClientRect(), tx = bar.left + bar.width / 2, ty = Math.max(28, bar.top + bar.height / 2);
+  const pop = document.createElement('div'); pop.className = 'xp-pop';
+  pop.innerHTML = `<span class="xp-coin"><i class="r1"></i><i class="r2"></i><i class="r3"></i><i class="k"><b>XP</b></i><i class="f"><b>XP</b></i></span><span class="xp-num">+${n}</span>`;
+  document.body.appendChild(pop);
+  const w = pop.offsetWidth, h = pop.offsetHeight;
+  const x0 = Math.min(Math.max(ox - w / 2, 8), Math.max(8, innerWidth - w - 8)), y0 = Math.min(Math.max(oy - h / 2, 8), Math.max(8, innerHeight - h - 8));
+  const dx = tx - (x0 + w / 2), dy = ty - (y0 + h / 2);
+  Sound.pop();
+  const a = pop.animate([
+    {transform:`translate(${x0}px,${y0 + 36}px) scale(.2)`, opacity:0},
+    {transform:`translate(${x0}px,${y0 - 16}px) scale(1.2)`, opacity:1, offset:.2},
+    {transform:`translate(${x0}px,${y0}px) scale(1)`, opacity:1, offset:.52},
+    {transform:`translate(${x0 + dx}px,${y0 + dy}px) scale(.22)`, opacity:.9}
+  ], {duration:1700, easing:'cubic-bezier(.4,0,.2,1)', fill:'forwards'});
+  a.onfinish = () => { pop.remove(); pulseBar(); Sound.coin(); settleXP(); };
+  const minis = Math.min(8, Math.max(3, Math.round(n / 30)));
+  for (let i = 0; i < minis; i++) {
+    const c = document.createElement('i'); c.className = 'xp-mini'; document.body.appendChild(c);
+    const ang = Math.random() * Math.PI * 2, rad = 50 + Math.random() * 80, sx = ox + Math.cos(ang) * rad, sy = oy + Math.sin(ang) * rad - 24;
+    const m = c.animate([
+      {transform:`translate(${ox}px,${oy}px) scale(.2)`, opacity:0},
+      {transform:`translate(${sx}px,${sy}px) scale(1)`, opacity:1, offset:.3},
+      {transform:`translate(${tx}px,${ty}px) scale(.4)`, opacity:.9}
+    ], {duration:850 + i * 60, delay:420 + i * 70, easing:'cubic-bezier(.5,0,.3,1)', fill:'both'});
+    m.onfinish = () => { c.remove(); pulseBar(); };
+  }
+}
+function miniPop(text, near){
+  const r = near.getBoundingClientRect(), el = document.createElement('div'); el.className = 'mini-pop'; el.textContent = text; document.body.appendChild(el);
+  const x = r.left + r.width / 2 - el.offsetWidth / 2, y = r.top - 8;
+  el.animate([{transform:`translate(${x}px,${y}px)`, opacity:0}, {transform:`translate(${x}px,${y - 22}px)`, opacity:1, offset:.2}, {transform:`translate(${x}px,${y - 54}px)`, opacity:0}], {duration:1100, easing:'ease-out'}).onfinish = () => el.remove();
+}
 function breakStreak(){ if (S.streak >= 3) toast(`Hot lead lost at <b>${S.streak}</b>. Back to ×1.0.`); S.streak = 0; save(); renderTop(); }
 
 /* =========================================================
@@ -1322,8 +1473,8 @@ function showHome(){
     else if (cs && cs.bestStars) { status = 'Replaying'; btn = 'Continue'; }
     else if (cs && cs.started) { status = cs.step >= c.steps.length ? 'Accusation pending' : `Lead ${cs.step + 1} of ${c.steps.length}`; btn = 'Continue'; }
     const stars = cs ? cs.bestStars : 0;
-    return `<button class="tile ${c.sealed || !open ? 'sealed' : ''} ${cs && cs.bestStars ? 'closed-t' : ''}" data-case="${c.id}" data-tab="CASE ${pad(c.num)}" ${c.sealed || !open ? 'aria-disabled="true"' : ''}>
-      <h3>${esc(c.title)}</h3><div class="tag">${esc(c.tagline)}</div>
+    return `<button class="tile t3 ${c.sealed || !open ? 'sealed' : ''} ${cs && cs.bestStars ? 'closed-t' : ''}" data-tilt="7" data-case="${c.id}" data-tab="CASE ${pad(c.num)}" ${c.sealed || !open ? 'aria-disabled="true"' : ''}>
+      <i class="glare" aria-hidden="true"></i><h3>${esc(c.title)}</h3><div class="tag">${esc(c.tagline)}</div>
       <div class="skills">${c.skills.map(s => `<span>${esc(s)}</span>`).join('')}</div>
       <div class="foot"><span class="status">${esc(status)}</span>${c.sealed ? '' : starsHTML(stars)}</div>
       ${btn && SQLREADY ? `<span class="btn btn-ink" style="align-self:flex-start;padding:8px 12px;font-size:13px">${btn}</span>` : ''}</button>`;
@@ -1366,7 +1517,10 @@ function previewTable(t){
   noteTables([t]); renderResults(runSQL(`SELECT * FROM ${t} LIMIT 5`), null, `peek at ${t}, first 5 rows`);
   $('#results').scrollIntoView({behavior: RM ? 'auto' : 'smooth', block:'nearest'});
 }
-$('#stepCard').addEventListener('click', e => { const b = e.target.closest('[data-peek]'); if (b) { Sound.shuffle(); previewTable(b.dataset.peek); } });
+$('#stepCard').addEventListener('click', e => {
+  const b = e.target.closest('[data-peek]'); if (b) { Sound.shuffle(); previewTable(b.dataset.peek); return; }
+  const l = e.target.closest('[data-lesson]'); if (l) openDrawer('academy', l.dataset.lesson);
+});
 
 /* ---------- step card ---------- */
 function renderStep(){
@@ -1396,11 +1550,13 @@ function renderStep(){
     $('#accuseBtn').hidden = false; renderHints(); renderLineup(); return;
   }
   const st = c.steps[cs.step];
-  card.innerHTML = `<div class="step-top"><div class="dots">${dots}</div><span class="concept">${esc(st.concept)}</span></div>
+  const lessonId = CONCEPT_LESSON[st.concept];
+  card.innerHTML = `<div class="step-top"><div class="dots">${dots}</div>${lessonId ? `<button class="concept" data-lesson="${lessonId}" title="Open the SQL Academy lesson on ${esc(st.concept)}">${esc(st.concept)} ↗</button>` : `<span class="concept">${esc(st.concept)}</span>`}</div>
     <h2>${esc(st.title)}</h2><p class="lesson">${esc(st.lesson)}</p>
     <div class="example"><div class="lbl">Example</div><pre>${highlight(st.example)}</pre></div>
     <p class="task"><b>Your move</b>${esc(st.task)}</p>
     ${tipHTML(st.tables || tablesIn(st.expected))}`;
+  card.classList.remove('step-in'); void card.offsetWidth; card.classList.add('step-in');      // new lead flips in
   cur.stepStart = Date.now(); renderHints();
 }
 const nextCase = c => CASES.find(x => x.num === c.num + 1);
@@ -1422,7 +1578,7 @@ function renderHints(){
 $('#hints').addEventListener('click', e => { const b = e.target.closest('[data-paste]'); if (b) setEditor(b.dataset.paste); });
 $('#hintBtn').addEventListener('click', () => {
   const cs = CS(cur.cid), hs = currentHints(); if (cs.stepHints >= hs.length) return;
-  cs.stepHints++; cs.hints++; save(); Sound.shuffle();
+  cs.stepHints++; cs.hints++; save(); Sound.shuffle(); miniPop(`Hint −${HINT_COST[Math.min(cs.stepHints, HINT_COST.length) - 1]} XP`, $('#hintBtn'));
   const lines = ["Fine. But I'm writing this down.", "You owe me a coffee.", "Here. Don't tell the Inspector."];
   say(`${lines[Math.min(cs.stepHints - 1, 2)]} ${hs[cs.stepHints - 1]}`); renderHints();
 });
@@ -1434,8 +1590,8 @@ function renderLineup(){
   $('#lineup').innerHTML = c.suspects.map(id => {
     const p = PEOPLE[id], cleared = cs.cleared.includes(id), charged = cs.closed && id === c.culprit;
     const fresh = cur.freshClears.includes(id) || (charged && cur.freshCulprit);
-    return `<button class="suspect ${cleared ? 'cleared' : ''} ${charged ? 'charged' : ''} ${fresh ? 'fresh' : ''} ${accusing ? 'selectable' : ''} ${cur.accusing === id && accusing ? 'selected' : ''}" data-id="${id}" aria-label="${esc(p.name)}${cleared ? ', cleared' : ''}">
-      <div class="photo">${mugshot(id)}<span class="sstamp">${charged ? 'CHARGED' : 'CLEARED'}</span></div>
+    return `<button class="suspect t3 ${cleared ? 'cleared' : ''} ${charged ? 'charged' : ''} ${fresh ? 'fresh' : ''} ${accusing ? 'selectable' : ''} ${cur.accusing === id && accusing ? 'selected' : ''}" data-tilt="9" data-id="${id}" aria-label="${esc(p.name)}${cleared ? ', cleared' : ''}">
+      <i class="glare" aria-hidden="true"></i><div class="photo lift">${mugshot(id)}<span class="sstamp">${charged ? 'CHARGED' : 'CLEARED'}</span></div>
       <span class="nm">${esc(p.name)}</span><span class="meta">#${id} · ${esc(p.occupation)}</span></button>`;
   }).join('');
   cur.freshClears = []; cur.freshCulprit = false;
@@ -1464,14 +1620,14 @@ function renderBoard(){
     const p = pos[k];
     if (sl.kind === 'clue') {
       const solved = sl.i < cs.step || cs.closed; const fresh = cur.freshClue === sl.i;
-      html += `<div class="clue ${solved && !fresh ? 'revealed instant' : ''}" data-k="${k}" style="left:${p.x}px;top:${p.y}px;width:${cw}px;height:${ch}px;transform:rotate(${p.rot}deg)">
-        <span class="pin"></span><div class="inner"><div class="face back">Evidence #${sl.i + 1}<small>${solved ? '' : esc(sl.s.concept) + ' needed'}</small></div>
-        <div class="face front"><span class="cno">Exhibit ${sl.i + 1} · ${esc(sl.s.concept)}</span><h4>${esc(sl.s.clue.title)}</h4><p>${esc(sl.s.clue.text)}</p></div></div></div>`;
+      html += `<div class="clue ${solved && !fresh ? 'revealed instant' : ''}" data-tilt="10" data-k="${k}" style="left:${p.x}px;top:${p.y}px;width:${cw}px;height:${ch}px;transform:rotate(${p.rot}deg)">
+        <span class="pin"></span><div class="tw"><div class="inner"><div class="face back">Evidence #${sl.i + 1}<small>${solved ? '' : esc(sl.s.concept) + ' needed'}</small></div>
+        <div class="face front"><span class="cno">Exhibit ${sl.i + 1} · ${esc(sl.s.concept)}</span><h4>${esc(sl.s.clue.title)}</h4><p>${esc(sl.s.clue.text)}</p></div></div></div></div>`;
     } else {
       const cp = PEOPLE[c.culprit]; const done = cs.closed;
-      html += `<div class="clue culprit ${done && !cur.freshCulpritCard ? 'revealed instant' : ''}" data-k="${k}" style="left:${p.x}px;top:${p.y}px;width:${cw}px;height:${ch}px;transform:rotate(${p.rot}deg)">
-        <span class="pin"></span><div class="inner"><div class="face back">The culprit<small>Accuse to reveal</small></div>
-        <div class="face front"><span class="cno">Charged</span><h4>${esc(cp.name)}</h4><p>#${cp.id} · ${esc(cp.occupation)}. ${c.num === 1 ? 'Opened the door for someone else.' : 'The voice on the phone. Just a post box.'}</p></div></div></div>`;
+      html += `<div class="clue culprit ${done && !cur.freshCulpritCard ? 'revealed instant' : ''}" data-tilt="10" data-k="${k}" style="left:${p.x}px;top:${p.y}px;width:${cw}px;height:${ch}px;transform:rotate(${p.rot}deg)">
+        <span class="pin"></span><div class="tw"><div class="inner"><div class="face back">The culprit<small>Accuse to reveal</small></div>
+        <div class="face front"><span class="cno">Charged</span><h4>${esc(cp.name)}</h4><p>#${cp.id} · ${esc(cp.occupation)}. ${c.num === 1 ? 'Opened the door for someone else.' : 'The voice on the phone. Just a post box.'}</p></div></div></div></div>`;
     }
   });
   // strings
@@ -1488,7 +1644,7 @@ function renderBoard(){
   if (cur.freshClue >= 0 || cur.freshCulpritCard) {
     const sel = cur.freshCulpritCard ? '.clue.culprit' : `.clue[data-k="${cur.freshClue}"]`; const el = board.querySelector(sel);
     cur.freshClue = -1; cur.freshCulpritCard = false;
-    if (el) setTimeout(() => { el.classList.add('revealed'); Sound.flip(); setTimeout(() => Sound.pin(), 500); }, 350);
+    if (el) setTimeout(() => { el.classList.add('revealed'); Sound.flip(); setTimeout(() => { Sound.pin(); const pn = el.querySelector('.pin'); if (pn) pn.classList.add('drop'); }, 500); }, 350);
   }
 }
 let boardW = 0;
@@ -1499,7 +1655,7 @@ function renderResults(res, extra, note){
   const box = $('#results'); box.hidden = false;
   if (!res.columns.length) { box.innerHTML = `<div class="results-cap"><span>Result</span><span>0 rows</span></div><div class="empty">Nothing came back. An empty drawer.</div>`; return; }
   const shown = res.values.slice(0, 300);
-  box.innerHTML = `<div class="results-cap"><span>Result${note ? ' · ' + esc(note) : ''}</span><span>${res.values.length} row${res.values.length === 1 ? '' : 's'}${res.values.length > 300 ? ' (first 300 shown)' : ''}</span></div>
+  box.innerHTML = `<div class="results-cap"><span>Result${note ? ' · ' + esc(note) : ''}</span><span>${res.values.length}${res.truncated ? '+' : ''} row${res.values.length === 1 ? '' : 's'}${res.values.length > 300 ? ' (first 300 shown)' : ''}</span></div>
     <div class="results-scroll">${res.values.length ? `<table><thead><tr>${res.columns.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>
     ${shown.map((r, i) => `<tr class="${extra && extra.has(i) ? 'extra' : ''}">${r.map(v => v === null ? '<td class="null">NULL</td>' : `<td>${esc(typeof v === 'number' ? Math.round(v * 100) / 100 : v)}</td>`).join('')}</tr>`).join('')}
     </tbody></table>` : `<table><thead><tr>${res.columns.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead></table><div class="empty">No rows match. An empty drawer.</div>`}</div>`;
@@ -1583,7 +1739,7 @@ function solveStep(c, cs, st, sql){
   const clears = (st.clears || []).filter(x => !cs.cleared.includes(x.id)); clears.forEach(x => cs.cleared.push(x.id)); cur.freshClears = clears.map(x => x.id);
   if (cs.herring) award('herring');
   cur.freshClue = cs.step; cs.step++; cs.stepHints = 0; cs.stepFails = 0; cs.stepErrors = 0; cs.herring = false; cs.draft = ''; cur.pending = true;
-  save(); addXP(xp); floatXP(xp);
+  save();
   award('first_lead'); if (S.streak >= 5) award('hot_lead'); if (elapsed < 30) award('quick_draw');
   Sound.ding();
   const clearTxt = clears.map(x => `${PEOPLE[x.id].name}: cleared. ${x.why}`).join(' ');
@@ -1601,6 +1757,7 @@ function solveStep(c, cs, st, sql){
   // the card keeps showing the solved lead until "Next lead" is pressed
   $('#hints').innerHTML = ''; $('#hintBtn').hidden = true;
   renderLineup(); renderBoard();
+  addXP(xp, $('#feedback .xp-total'));                       // the coin pops out of the "+N XP" total and flies to the rank bar
   if (window.innerWidth < 1000) toast('Clue pinned to the evidence board.', 2200);
 }
 
@@ -1665,7 +1822,7 @@ function closeCase(c, cs, sql){
   renderLineup(); renderBoard(); renderStep(); fb('');
   say("That's our thief. Pour yourself something. Then read this.");
   Sound.ding();
-  setTimeout(() => { openClosed(c, cs, stars, xp, mult, replay); addXP(xp);
+  setTimeout(() => { openClosed(c, cs, stars, xp, mult, replay); addXP(xp, $('#paper'));
     if (clean) award('clean_accusation'); if (cs.hints === 0) award('by_the_book'); if (stars === 3) award('perfect');
     if (c.id === 'c1') award('case_cracker'); if (c.id === 'c2') award('count_on_me'); }, 1300);
 }
@@ -1760,8 +1917,10 @@ function showPromotion(){
 $('#promoOk').addEventListener('click', () => { $('#promoOv').hidden = true; setTimeout(showPromotion, 300); });
 
 /* ---------- drawer: records room / notebook / badges ---------- */
-function openDrawer(kind){
+function openDrawer(kind, arg){
   const d = $('#drawer'), body = $('#drawerBody'); d.hidden = false; Sound.shuffle();
+  d.classList.toggle('wide', kind === 'academy');
+  if (kind === 'academy') { $('#drawerTitle').textContent = 'SQL Academy'; acadView = arg || null; renderAcademy(); $('#drawerClose').focus(); return; }
   if (kind === 'schema') {
     $('#drawerTitle').textContent = 'Records room';
     if (!db) { body.innerHTML = `<p class="drawer-note">The records room is still warming up.</p>`; return; }
@@ -1798,6 +1957,7 @@ $('#drawerBody').addEventListener('click', e => {
   if (l) { if (!cur.cid) { toast('Open a case first, then load queries into the editor.'); return; } setEditor(S.notebook[+l.dataset.load].sql); $('#drawer').hidden = true; }
 });
 $('#drawerClose').addEventListener('click', () => { $('#drawer').hidden = true; });
+$('#navAcademy').addEventListener('click', () => openDrawer('academy'));
 $('#navSchema').addEventListener('click', () => openDrawer('schema'));
 $('#navNotebook').addEventListener('click', () => openDrawer('notebook'));
 $('#navBadges').addEventListener('click', () => openDrawer('badges'));
@@ -1813,6 +1973,264 @@ $('#homeBtn').addEventListener('click', () => { Sound.shuffle(); showHome(); });
 $('#backBtn').addEventListener('click', () => { Sound.shuffle(); showHome(); });
 $('#runBtn').addEventListener('click', runQuery);
 $('#clearBtn').addEventListener('click', () => setEditor(''));
+
+/* =========================================================
+   pointer tilt: any element with data-tilt="maxDegrees" leans toward the mouse
+   (the .t3 class applies the transform; .clue cards pass the angles to an inner wrapper)
+   ========================================================= */
+(function tilt(){
+  if (RM) return;
+  let hot = null;
+  const rest = el => { el.style.setProperty('--rx', '0deg'); el.style.setProperty('--ry', '0deg'); };
+  document.addEventListener('pointermove', e => {
+    if (e.pointerType !== 'mouse') return;
+    const el = e.target.closest ? e.target.closest('[data-tilt]') : null;
+    if (hot && hot !== el) { rest(hot); hot = null; }
+    if (!el || el.classList.contains('sealed')) return;
+    hot = el; const r = el.getBoundingClientRect(), px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height, max = +el.dataset.tilt || 7;
+    el.style.setProperty('--ry', ((px - .5) * 2 * max).toFixed(2) + 'deg');
+    el.style.setProperty('--rx', ((.5 - py) * 2 * max).toFixed(2) + 'deg');
+    el.style.setProperty('--gx', (px * 100).toFixed(1) + '%'); el.style.setProperty('--gy', (py * 100).toFixed(1) + '%');
+  }, {passive:true});
+  document.addEventListener('pointerout', e => { if (!e.relatedTarget && hot) { rest(hot); hot = null; } }, {passive:true});
+})();
+
+/* =========================================================
+   SQL ACADEMY: short lessons with runnable examples, common slips and a practice question.
+   Opens in the wide drawer, from the top bar or from the concept chip on any lead.
+   ========================================================= */
+const ACAD_GROUPS = [['Case 1 toolkit', 'Select, filter, search, sort.'], ['Case 2 toolkit', 'Count, add up, group.'], ['Later cases', 'Sealed for now. Learn them early.']];
+const CONCEPT_LESSON = {SELECT:'select', WHERE:'where', LIKE:'like', 'ORDER BY':'sort', LIMIT:'sort', COUNT:'count', 'GROUP BY':'groupby', HAVING:'having', AVG:'agg', SUM:'agg'};
+const ACADEMY = [
+{id:'select', group:0, title:'SELECT and FROM', tag:'Pick the columns. Name the table.',
+  body:["A table is a grid. Rows are records and columns are facts about them. SELECT lists the columns you want back, and FROM names the table they live in.",
+        "Use * for every column. Put DISTINCT after SELECT to drop repeated rows."],
+  syntax:"SELECT column1, column2\nFROM table_name;",
+  examples:[{sql:"SELECT name, occupation FROM people;", note:"Two columns from every person."},
+            {sql:"SELECT DISTINCT type FROM crime_reports;", note:"Each crime type once, however often it appears."}],
+  mistakes:[{sql:"SELECT name occupation FROM people;", why:"No error, but you only get one column. Without a comma, SQLite reads occupation as a nickname for name."},
+            {sql:"SELECT name, FROM people;", why:"A comma with nothing after it. Remove the last comma."}],
+  challenge:{task:"Show every person's name and phone number.", expected:"SELECT name, phone FROM people", hint:"Two columns, one table: SELECT name, phone FROM …"},
+  usedIn:"Case 1, lead 1"},
+{id:'where', group:0, title:'WHERE', tag:'Keep only the rows that pass a test.',
+  body:["WHERE keeps the rows that pass a test. Compare with =, <>, <, >, <= and >=. Join tests with AND, OR and NOT, and use brackets when you mix them.",
+        "Text goes in single quotes. Numbers do not. IN (...) is short for \"one of these\". BETWEEN a AND b includes both ends."],
+  syntax:"SELECT columns\nFROM table_name\nWHERE condition AND condition;",
+  examples:[{sql:"SELECT name FROM people WHERE occupation = 'Pawnbroker';", note:"Text needs single quotes."},
+            {sql:"SELECT amount, date FROM bank_transactions WHERE amount > 1000 AND date >= '2026-03-10';", note:"Two tests joined with AND. Both must be true."},
+            {sql:"SELECT type, location FROM crime_reports WHERE type IN ('Fraud', 'Burglary');", note:"IN is shorthand for several ORs."}],
+  mistakes:[{sql:"SELECT name FROM people WHERE occupation = Pawnbroker;", why:"Without quotes SQLite looks for a column called Pawnbroker and fails."},
+            {sql:"SELECT type, location FROM crime_reports WHERE type = 'Fraud' OR type = 'Burglary' AND location = 'Customs House';", why:"AND is applied before OR. This means every Fraud, plus Burglaries at Customs House. Add brackets around the OR part."}],
+  challenge:{task:"Find the name of everyone whose occupation is 'Pawnbroker'.", expected:"SELECT name FROM people WHERE occupation = 'Pawnbroker'", hint:"WHERE occupation = followed by the text in single quotes."},
+  usedIn:"Case 1, lead 2"},
+{id:'like', group:0, title:'LIKE', tag:'Search inside text.',
+  body:["LIKE searches inside text. % stands for any run of characters, even none, and _ stands for exactly one character.",
+        "'M%' starts with M. '%tram%' contains tram anywhere. In SQLite, LIKE ignores upper and lower case for ordinary letters."],
+  syntax:"SELECT columns\nFROM table_name\nWHERE column LIKE '%word%';",
+  examples:[{sql:"SELECT name FROM people WHERE name LIKE 'M%';", note:"Names that start with M."},
+            {sql:"SELECT person_id, transcript FROM interviews WHERE transcript LIKE '%tram%';", note:"Witness statements that mention a tram."},
+            {sql:"SELECT plate FROM vehicles WHERE plate LIKE 'GH-1_ %';", note:"_ is exactly one character, so this finds plates GH-10 to GH-19."}],
+  mistakes:[{sql:"SELECT person_id, transcript FROM interviews WHERE transcript LIKE 'tram';", why:"No % signs, so it only matches a transcript that is exactly the word tram. You get 0 rows."},
+            {sql:"SELECT person_id, transcript FROM interviews WHERE transcript = '%tram%';", why:"= does not understand %. It looks for a transcript containing literal percent signs. Use LIKE."}],
+  challenge:{task:"Find the descriptions of crime reports that mention 'crate' anywhere.", expected:"SELECT description FROM crime_reports WHERE description LIKE '%crate%'", hint:"Put a % on both sides of the word."},
+  usedIn:"Case 1, lead 3"},
+{id:'sort', group:0, title:'ORDER BY and LIMIT', tag:'Sort the rows, then keep the top few.',
+  body:["ORDER BY sorts the rows. The default is smallest first, so A to Z and oldest to newest. Add DESC to flip it.",
+        "LIMIT n keeps only the first n rows. Sort first, then limit, and you get the top n."],
+  syntax:"SELECT columns\nFROM table_name\nORDER BY column DESC\nLIMIT 5;",
+  examples:[{sql:"SELECT name, occupation FROM people ORDER BY name LIMIT 5;", note:"The first five names alphabetically."},
+            {sql:"SELECT caller, duration FROM phone_calls ORDER BY duration DESC LIMIT 3;", note:"The three longest calls."}],
+  mistakes:[{sql:"SELECT name FROM people LIMIT 5 ORDER BY name;", why:"ORDER BY must come before LIMIT. This is a syntax error."},
+            {sql:"SELECT caller, duration FROM phone_calls ORDER BY duration LIMIT 3;", why:"No DESC, so these are the three shortest calls, not the longest."}],
+  challenge:{task:"Show the caller and duration of the 3 longest phone calls, longest first.", expected:"SELECT caller, duration FROM phone_calls ORDER BY duration DESC LIMIT 3", ordered:true, hint:"ORDER BY duration DESC, then LIMIT 3."},
+  usedIn:"Case 1, leads 4 and 5"},
+{id:'count', group:1, title:'COUNT', tag:'Count rows instead of listing them.',
+  body:["COUNT(*) counts rows instead of showing them. Add WHERE and it counts only the rows that pass.",
+        "COUNT(column) counts rows where that column is not empty (NULL). COUNT(DISTINCT column) counts different values."],
+  syntax:"SELECT COUNT(*)\nFROM table_name\nWHERE condition;",
+  examples:[{sql:"SELECT COUNT(*) FROM people;", note:"Everyone on file."},
+            {sql:"SELECT COUNT(*) FROM crime_reports WHERE type = 'Theft';", note:"Only the thefts."},
+            {sql:"SELECT COUNT(DISTINCT location) FROM cctv_sightings;", note:"How many different places the cameras saw someone."}],
+  mistakes:[{sql:"SELECT type, COUNT(*) FROM crime_reports;", why:"No error, but you get a single row. COUNT collapsed the whole table and type came from some arbitrary row. To count per type, add GROUP BY type."},
+            {sql:"SELECT COUNT(*) FROM phone_calls WHERE caller = '555-0193';", why:"This counts the calls Silas made. To count the calls he received, filter on receiver."}],
+  challenge:{task:"How many crime reports are thefts?", expected:"SELECT COUNT(*) FROM crime_reports WHERE type = 'Theft'", hint:"COUNT(*) with a WHERE on type."},
+  usedIn:"Case 2, lead 1"},
+{id:'agg', group:1, title:'SUM, AVG, MIN, MAX', tag:'Add up, average, find the extremes.',
+  body:["SUM adds a column up and AVG takes the mean. MIN and MAX find the smallest and largest value.",
+        "Wrap AVG in ROUND(…, 1) for fewer decimals. Aggregates skip empty (NULL) values."],
+  syntax:"SELECT SUM(column), AVG(column)\nFROM table_name\nWHERE condition;",
+  examples:[{sql:"SELECT SUM(amount) FROM bank_transactions WHERE to_account = 'ACC-1093';", note:"Everything paid into one account."},
+            {sql:"SELECT AVG(duration), MIN(duration), MAX(duration) FROM phone_calls;", note:"Three aggregates in one query."},
+            {sql:"SELECT ROUND(AVG(amount), 1) AS average_payment FROM bank_transactions;", note:"ROUND tidies the decimals and AS names the column."}],
+  mistakes:[{sql:"SELECT caller FROM phone_calls WHERE AVG(duration) < 60;", why:"Aggregates cannot go in WHERE, which runs before anything is calculated. Group the rows and use HAVING."},
+            {sql:"SELECT AVG(duration) FROM phone_calls WHERE caller = 555-0193;", why:"Phone numbers are text. Without quotes, 555-0193 is the sum 555 minus 193, so nothing matches and AVG has nothing to average."}],
+  challenge:{task:"What is the total amount paid into account 'ACC-3317'?", expected:"SELECT SUM(amount) FROM bank_transactions WHERE to_account = 'ACC-3317'", hint:"SUM(amount), filtered on to_account."},
+  usedIn:"Case 2, leads 4 and 5"},
+{id:'groupby', group:1, title:'GROUP BY', tag:'Sort rows into piles and count each pile.',
+  body:["GROUP BY sorts rows into piles, one pile per value, and the aggregate then works on each pile separately.",
+        "Every column in SELECT must be in GROUP BY or inside an aggregate like COUNT or SUM. Filter rows with WHERE first, then group."],
+  syntax:"SELECT column, COUNT(*)\nFROM table_name\nWHERE condition\nGROUP BY column;",
+  examples:[{sql:"SELECT type, COUNT(*) FROM crime_reports GROUP BY type;", note:"One row per crime type."},
+            {sql:"SELECT location, COUNT(*) AS sightings FROM cctv_sightings GROUP BY location ORDER BY sightings DESC;", note:"Busiest cameras first. ORDER BY can use your alias."},
+            {sql:"SELECT caller, COUNT(*) FROM phone_calls WHERE receiver = '555-0193' GROUP BY caller;", note:"WHERE trims the rows, then GROUP BY makes the piles."}],
+  mistakes:[{sql:"SELECT location, COUNT(*) FROM cctv_sightings;", why:"Without GROUP BY you get one row for the whole table, and location is an arbitrary pick."},
+            {sql:"SELECT caller, COUNT(*) FROM phone_calls GROUP BY receiver;", why:"You grouped by one column but showed another, so each caller shown is an arbitrary pick. Group by what you show."}],
+  challenge:{task:"Count the CCTV sightings at each location. Show location and the count.", expected:"SELECT location, COUNT(*) FROM cctv_sightings GROUP BY location", hint:"GROUP BY location, with COUNT(*) next to it."},
+  usedIn:"Case 2, lead 2"},
+{id:'having', group:1, title:'HAVING', tag:'Filter the piles, not the rows.',
+  body:["WHERE filters rows before they are grouped. HAVING filters the piles afterwards, so it can test COUNT, SUM or AVG.",
+        "Rule of thumb: if the test needs a calculated number, use HAVING. If it tests a plain column, use WHERE."],
+  syntax:"SELECT column, COUNT(*)\nFROM table_name\nGROUP BY column\nHAVING COUNT(*) >= 3;",
+  examples:[{sql:"SELECT type, COUNT(*) FROM crime_reports GROUP BY type HAVING COUNT(*) >= 9;", note:"Crime types with at least nine reports."},
+            {sql:"SELECT receiver, COUNT(*) FROM phone_calls GROUP BY receiver HAVING COUNT(*) >= 3;", note:"Phones that received three or more calls."}],
+  mistakes:[{sql:"SELECT type, COUNT(*) FROM crime_reports GROUP BY type WHERE COUNT(*) >= 9;", why:"WHERE goes before GROUP BY and cannot see COUNT. Use HAVING after GROUP BY."},
+            {sql:"SELECT type, COUNT(*) FROM crime_reports GROUP BY type HAVING COUNT(*) > 9;", why:"> 9 means 10 or more, so the types with exactly 9 reports vanish. \"At least 9\" is >= 9. Off-by-one slips hide suspects."}],
+  challenge:{task:"Which crime types have at least 9 reports? Show type and count.", expected:"SELECT type, COUNT(*) FROM crime_reports GROUP BY type HAVING COUNT(*) >= 9", hint:"GROUP BY type, then HAVING COUNT(*) >= 9."},
+  usedIn:"Case 2, lead 3"},
+{id:'join', group:2, title:'INNER JOIN', tag:'Stitch two tables together.',
+  body:["Data is split across tables so nothing is stored twice. A join stitches tables back together by matching a column in one to a column in the other.",
+        "INNER JOIN keeps only the rows that match on both sides. Give tables short aliases, and write table.column when two tables share a column name."],
+  syntax:"SELECT a.column, b.column\nFROM table_a a\nINNER JOIN table_b b ON a.key = b.key;",
+  examples:[{sql:"SELECT p.name, a.street FROM people p INNER JOIN addresses a ON p.address_id = a.id LIMIT 8;", note:"Each person next to their street."},
+            {sql:"SELECT v.plate, v.colour, p.name FROM vehicles v JOIN people p ON v.owner_id = p.id WHERE v.colour = 'Red';", note:"JOIN on its own means INNER JOIN. WHERE still works afterwards."}],
+  mistakes:[{sql:"SELECT p.name, a.street FROM people p JOIN addresses a;", why:"No ON, so every person is paired with every address. 120 people times 80 addresses is 9,600 rows of nonsense. The table below only shows the first few."},
+            {sql:"SELECT id FROM people p JOIN addresses a ON p.address_id = a.id;", why:"Both tables have an id column. Say which one you mean: p.id."}],
+  challenge:{task:"List each vehicle's plate with its owner's name.", expected:"SELECT v.plate, p.name FROM vehicles v INNER JOIN people p ON v.owner_id = p.id", hint:"vehicles.owner_id matches people.id."},
+  usedIn:"Coming in Case 3"},
+{id:'leftjoin', group:2, title:'LEFT JOIN', tag:'Keep everything on the left, match what you can.',
+  body:["LEFT JOIN keeps every row from the left table, even when nothing matches on the right. The missing side shows as NULL.",
+        "That makes it the tool for \"who has no match?\": join, then test the right-hand key with IS NULL."],
+  syntax:"SELECT a.column, b.column\nFROM table_a a\nLEFT JOIN table_b b ON a.key = b.key;",
+  examples:[{sql:"SELECT p.name, v.plate FROM people p LEFT JOIN vehicles v ON v.owner_id = p.id LIMIT 10;", note:"A plate where there is one, NULL where there is not."},
+            {sql:"SELECT p.name FROM people p LEFT JOIN vehicles v ON v.owner_id = p.id WHERE v.plate IS NULL LIMIT 8;", note:"People who own no registered vehicle."}],
+  mistakes:[{sql:"SELECT p.name, v.plate FROM people p LEFT JOIN vehicles v ON v.owner_id = p.id WHERE v.colour = 'Red';", why:"A WHERE on the right-hand table throws away the NULL rows, so your LEFT JOIN quietly turns into an INNER JOIN. Put that test in the ON clause."},
+            {sql:"SELECT p.name FROM people p LEFT JOIN vehicles v ON v.owner_id = p.id WHERE v.plate = NULL;", why:"Nothing equals NULL, not even NULL. Use IS NULL."}],
+  challenge:{task:"List every person's name and their vehicle plate, keeping people who own no vehicle.", expected:"SELECT p.name, v.plate FROM people p LEFT JOIN vehicles v ON v.owner_id = p.id", hint:"FROM people, LEFT JOIN vehicles ON v.owner_id = p.id."},
+  usedIn:"Coming in Case 3"},
+{id:'subquery', group:2, title:'Subqueries', tag:'A query inside a query.',
+  body:["A subquery is a query inside brackets. It runs first and hands its answer to the outer query.",
+        "Use IN (subquery) when it returns a list, and a comparison like > (subquery) when it returns one number."],
+  syntax:"SELECT columns\nFROM table_name\nWHERE column IN (\n  SELECT column FROM other_table WHERE condition\n);",
+  examples:[{sql:"SELECT name FROM people WHERE id IN (SELECT person_id FROM cctv_sightings WHERE location = 'Warehouse 9');", note:"People the Warehouse 9 camera has seen."},
+            {sql:"SELECT date, amount FROM bank_transactions WHERE amount > (SELECT AVG(amount) FROM bank_transactions);", note:"The inner query returns one number, the average."}],
+  mistakes:[{sql:"SELECT name FROM people WHERE id IN (SELECT person_id, timestamp FROM cctv_sightings);", why:"A subquery used with IN must return exactly one column."},
+            {sql:"SELECT name FROM people WHERE id = (SELECT person_id FROM cctv_sightings WHERE location = 'Warehouse 9');", why:"= expects one value. SQLite quietly uses the first row of a longer answer, so you lose people without any warning. Use IN."}],
+  challenge:{task:"Find the names of people seen on camera at 'Dock Gate'. Each person once.", expected:"SELECT name FROM people WHERE id IN (SELECT person_id FROM cctv_sightings WHERE location = 'Dock Gate')", hint:"WHERE id IN (a subquery on cctv_sightings)."},
+  usedIn:"Coming in Case 4"},
+{id:'case', group:2, title:'CASE WHEN and dates', tag:'If-then in a column, and date ranges.',
+  body:["CASE WHEN builds a new column from rules, like an if-then. The first rule that is true wins, ELSE catches the rest, and END closes it.",
+        "Dates are stored as text like '2026-03-14', so BETWEEN and ordinary comparisons work for ranges. Both ends of BETWEEN are included."],
+  syntax:"SELECT column,\n  CASE WHEN condition THEN 'label'\n       ELSE 'other' END AS new_column\nFROM table_name;",
+  examples:[{sql:"SELECT id, amount, CASE WHEN amount >= 10000 THEN 'big' WHEN amount >= 1000 THEN 'medium' ELSE 'small' END AS size FROM invoices LIMIT 10;", note:"Three bands from one column."},
+            {sql:"SELECT COUNT(*) FROM crime_reports WHERE date BETWEEN '2026-03-10' AND '2026-03-16';", note:"One week of reports, both ends included."}],
+  mistakes:[{sql:"SELECT CASE WHEN amount >= 1000 THEN 'big' ELSE 'small' FROM invoices;", why:"Missing END. SQLite reaches FROM and reports a syntax error."},
+            {sql:"SELECT COUNT(*) FROM cctv_sightings WHERE timestamp BETWEEN '2026-03-14' AND '2026-03-15';", why:"Timestamps like '2026-03-15 08:00' sort after '2026-03-15', so the last day is cut off. Use < '2026-03-16', or compare date(timestamp)."}],
+  challenge:{task:"Show each invoice's id and the word 'big' if the amount is 10000 or more, otherwise 'small'.", expected:"SELECT id, CASE WHEN amount >= 10000 THEN 'big' ELSE 'small' END FROM invoices", must:/\bcase\b/i, mustMsg:"Use CASE WHEN for this one.", hint:"CASE WHEN amount >= 10000 THEN 'big' ELSE 'small' END."},
+  usedIn:"Coming in Case 4"},
+{id:'cte', group:2, title:'CTEs (WITH)', tag:'Give a query a name and build in steps.',
+  body:["A common table expression (CTE) gives a query a name so you can use it like a table. It starts with WITH and sits above the main query.",
+        "CTEs break a hard question into readable steps. Chain several with commas after one WITH."],
+  syntax:"WITH step_one AS (\n  SELECT ...\n)\nSELECT ...\nFROM step_one;",
+  examples:[{sql:"WITH calls_in AS (\n  SELECT caller, COUNT(*) AS n\n  FROM phone_calls\n  WHERE receiver = '555-0193'\n  GROUP BY caller\n)\nSELECT caller, n FROM calls_in WHERE n >= 3;", note:"Group first, then filter with a plain WHERE."},
+            {sql:"WITH big AS (\n  SELECT * FROM invoices WHERE amount >= 10000\n), by_vendor AS (\n  SELECT vendor, COUNT(*) AS n, SUM(amount) AS total FROM big GROUP BY vendor\n)\nSELECT * FROM by_vendor ORDER BY total DESC;", note:"Two steps chained. The second reads from the first."}],
+  mistakes:[{sql:"WITH a AS (SELECT 1 AS x) WITH b AS (SELECT 2 AS y) SELECT * FROM a, b;", why:"There is only one WITH. Separate extra CTEs with a comma: WITH a AS (...), b AS (...)."},
+            {sql:"SELECT * FROM calls_in;", why:"A CTE exists only inside the one statement that defines it. It is not a stored table."}],
+  challenge:{task:"Use a WITH clause. Count calls per caller into '555-0193', then keep callers with 3 or more calls.", expected:"WITH t AS (SELECT caller, COUNT(*) AS n FROM phone_calls WHERE receiver = '555-0193' GROUP BY caller) SELECT caller, n FROM t WHERE n >= 3", must:/\bwith\b/i, mustMsg:"Use a WITH clause for this one.", hint:"Name the grouped query in WITH, then filter it with WHERE n >= 3."},
+  usedIn:"Coming in Case 5"},
+{id:'window', group:2, title:'Window functions', tag:'Calculate across rows without collapsing them.',
+  body:["A window function calculates across related rows without squashing them into one. OVER (...) says which rows to look at and in what order.",
+        "ROW_NUMBER numbers rows, RANK gives ties the same place, and SUM(...) OVER (ORDER BY ...) makes a running total. PARTITION BY restarts the calculation for each group."],
+  syntax:"SELECT column,\n  ROW_NUMBER() OVER (ORDER BY column) AS n\nFROM table_name;",
+  examples:[{sql:"SELECT person_id, timestamp, ROW_NUMBER() OVER (ORDER BY timestamp) AS n\nFROM cctv_sightings\nWHERE location = 'Warehouse 9' AND timestamp LIKE '2026-03-14%';", note:"Number the sightings in time order."},
+            {sql:"SELECT date, amount, SUM(amount) OVER (ORDER BY date, id) AS running_total\nFROM bank_transactions\nWHERE to_account = 'ACC-1093';", note:"A running total of everything paid into one account."},
+            {sql:"SELECT caller, COUNT(*) AS n, RANK() OVER (ORDER BY COUNT(*) DESC) AS place\nFROM phone_calls GROUP BY caller ORDER BY place LIMIT 5;", note:"Rank callers by how many calls they made. Ties share a place."}],
+  mistakes:[{sql:"SELECT person_id FROM cctv_sightings WHERE ROW_NUMBER() OVER (ORDER BY timestamp) = 1;", why:"Window functions cannot go in WHERE. Calculate them in a CTE or subquery, then filter that."},
+            {sql:"SELECT date, amount, SUM(amount) OVER () AS total FROM bank_transactions LIMIT 5;", why:"Without ORDER BY inside OVER, every row gets the same grand total. Add ORDER BY for a running total."}],
+  challenge:{task:"For Warehouse 9 sightings on 14 March, show person_id, timestamp and a row number (1, 2, 3 …) in time order.", expected:"SELECT person_id, timestamp, ROW_NUMBER() OVER (ORDER BY timestamp) FROM cctv_sightings WHERE location = 'Warehouse 9' AND timestamp LIKE '2026-03-14%'", must:/\bover\s*\(/i, mustMsg:"Use a window function with OVER (...).", hint:"ROW_NUMBER() OVER (ORDER BY timestamp)."},
+  usedIn:"Coming in Case 5"},
+];
+const lessonById = id => ACADEMY.find(l => l.id === id);
+let acadView = null; const acadFails = {};
+
+function markStudied(id){
+  if (S.academy.includes(id)) return;
+  S.academy.push(id); save();
+  toast(`Lesson studied: <b>${esc(lessonById(id).title)}</b> (${S.academy.length}/${ACADEMY.length})`, 2600);
+  const eb = $('#lessonEyebrow'); if (eb && !/studied/.test(eb.textContent)) eb.textContent += ' · studied';
+  if (ACADEMY.every(l => S.academy.includes(l.id))) award('top_of_class');
+}
+function syncMini(shell){
+  const ta = shell.querySelector('textarea'), pre = shell.querySelector('pre'), box = shell.querySelector('.editor');
+  pre.innerHTML = highlight(ta.value) + '\n'; ta.style.height = 'auto'; const h = Math.max(64, ta.scrollHeight); box.style.height = h + 'px'; ta.style.height = h + 'px';
+}
+const miniShell = (text, placeholder) => `<div class="editor-shell mini"><div class="editor"><pre aria-hidden="true"></pre><textarea spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="SQL" placeholder="${esc(placeholder || '')}">${esc(text || '')}</textarea></div></div>`;
+function lessonResult(res){
+  const shown = res.values.slice(0, 8), more = res.values.length - shown.length;
+  return `<div class="acad-res"><div class="cap"><span>Result</span><span>${res.values.length}${res.truncated ? '+' : ''} row${res.values.length === 1 ? '' : 's'}</span></div>
+    <div class="sc">${res.values.length ? miniTable({columns:res.columns, values:shown}) : '<div class="more">No rows match. An empty drawer.</div>'}</div>${more > 0 || res.truncated ? `<div class="more">…and ${res.truncated ? 'many' : more} more row${more === 1 && !res.truncated ? '' : 's'}.</div>` : ''}</div>`;
+}
+function runLessonSQL(sql, out){
+  sql = sql.trim();
+  if (!strip(sql).trim()) { out.innerHTML = `<div class="acad-miss">Nothing to run yet. Type a query first.</div>`; return null; }
+  if (!isReadOnly(sql) || isRunaway(sql)) { out.innerHTML = `<div class="acad-err">That statement isn't allowed here. Only read-only SELECT and WITH queries run.</div>`; return null; }
+  try { const res = runSQL(sql); noteTables(tablesIn(sql)); out.innerHTML = lessonResult(res); return res; }
+  catch (e) { out.innerHTML = `<div class="acad-err">${esc(translateError(e.message))}<small>SQLite: ${esc(e.message)}</small></div>`; return null; }
+}
+function checkChallenge(l, sql, out){
+  const ch = l.challenge, res = runLessonSQL(sql, out); if (!res) return; const table = out.innerHTML;
+  if (ch.must && !ch.must.test(sql)) { out.innerHTML = `<div class="acad-miss">${esc(ch.mustMsg)}</div>` + table; return; }
+  const exp = expectedFor('acad:' + l.id, ch.expected), plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+  if (matchResult(res, exp, ch.ordered)) { out.innerHTML = `<div class="acad-ok"><span class="st">PASSED</span>That's the answer. Same rows as the reference query.</div>` + table; Sound.ding(); markStudied(l.id); return; }
+  acadFails[l.id] = (acadFails[l.id] || 0) + 1;
+  const near = res.values.length === exp.values.length ? "The number of rows is right, so check the values or the order." : `You returned ${plural(res.values.length, 'row')} and ${plural(res.columns.length, 'column')}. The answer has ${plural(exp.values.length, 'row')}.`;
+  out.innerHTML = `<div class="acad-miss">${esc(near)}${acadFails[l.id] >= 2 ? ` <b>Hint:</b> ${esc(ch.hint)}` : ''}</div>` + table;
+}
+function renderAcademy(){
+  const body = $('#drawerBody'); body.scrollTop = 0;
+  const done = S.academy.filter(id => lessonById(id)).length;
+  if (!acadView || !lessonById(acadView)) {
+    acadView = null;
+    body.innerHTML = `<p class="drawer-note">Short lessons with examples you can run and edit. Each ends with a practice question. Run an example or pass the practice to mark a lesson studied.</p>
+      <div class="acad-progress"><div class="xpbar"><i style="width:${Math.round(done / ACADEMY.length * 100)}%"></i></div><span>${done} of ${ACADEMY.length} studied</span></div>` +
+      ACAD_GROUPS.map((g, gi) => `<h3 class="acad-group">${esc(g[0])}<small>${esc(g[1])}</small></h3><div class="acad-grid">${
+        ACADEMY.map((l, i) => ({l, i})).filter(x => x.l.group === gi).map(({l, i}) => `<button class="acad-card t3" data-tilt="5" data-lesson="${l.id}"><i class="glare" aria-hidden="true"></i>
+          <span class="no">LESSON ${String(i + 1).padStart(2, '0')}</span><h3>${esc(l.title)}</h3><p>${esc(l.tag)}</p>
+          ${S.academy.includes(l.id) ? '<span class="done">STUDIED</span>' : ''}</button>`).join('')}</div>`).join('');
+    return;
+  }
+  const l = lessonById(acadView), idx = ACADEMY.indexOf(l), prev = ACADEMY[idx - 1], next = ACADEMY[idx + 1];
+  body.innerHTML = `<button class="acad-back" data-lesson="">← All lessons</button>
+    <div class="lesson-head"><span class="eyebrow" id="lessonEyebrow">Lesson ${idx + 1} of ${ACADEMY.length} · ${esc(ACAD_GROUPS[l.group][0])}${S.academy.includes(l.id) ? ' · studied' : ''}</span><h3>${esc(l.title)}</h3><p>${esc(l.tag)}</p></div>
+    <div class="lesson-body">${l.body.map(p => `<p>${esc(p)}</p>`).join('')}</div>
+    <div class="syntax"><div class="lbl">The pattern</div><pre>${highlight(l.syntax)}</pre></div>
+    <div class="acad-sec">Try it. Edit the SQL and run it.</div>
+    ${l.examples.map((e, i) => `<div class="acad-ex" data-ex="${i}"><div class="note">${esc(e.note)}</div>${miniShell(e.sql)}
+      <div class="row"><button class="btn btn-run btn-sm" data-run>Run</button><button class="btn btn-ghost btn-sm" data-reset>Reset</button>${cur.cid ? '<button class="btn btn-ghost btn-sm" data-useq>Use in my query</button>' : ''}</div><div class="out"></div></div>`).join('')}
+    <div class="acad-sec">Common slips</div>
+    <div class="mistakes">${l.mistakes.map((m, i) => `<div class="mistake" data-bad="${i}"><pre>${esc(m.sql)}</pre><p>${esc(m.why)}</p><div class="row"><button class="btn btn-ghost btn-sm" data-runbad>See what happens</button></div><div class="out"></div></div>`).join('')}</div>
+    <div class="challenge"><div class="acad-sec">Your turn</div><p class="task">${esc(l.challenge.task)}</p>${miniShell('', 'Write your query here. Ctrl+Enter to check.')}
+      <div class="row"><button class="btn btn-run btn-sm" data-check>Check my answer</button></div><div class="out"></div></div>
+    <p class="drawer-note">Used in: ${esc(l.usedIn)}.</p>
+    <div class="lesson-nav">${prev ? `<button class="acad-back" data-lesson="${prev.id}">← ${esc(prev.title)}</button>` : '<span></span>'}${next ? `<button class="acad-back" data-lesson="${next.id}">${esc(next.title)} →</button>` : '<span></span>'}</div>`;
+  body.querySelectorAll('.editor-shell.mini').forEach(syncMini);
+}
+$('#drawerBody').addEventListener('input', e => { if (e.target.matches('.mini textarea')) syncMini(e.target.closest('.editor-shell')); });
+$('#drawerBody').addEventListener('keydown', e => {
+  if (!e.target.matches('.mini textarea')) return;
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); const btn = e.target.closest('.acad-ex, .challenge').querySelector('[data-run], [data-check]'); if (btn) btn.click(); }
+  else if (e.key.length === 1 || e.key === 'Backspace') Sound.clack(.4);
+});
+$('#drawerBody').addEventListener('click', e => {
+  if (!$('#drawerTitle').textContent.includes('Academy')) return;
+  const t = e.target; let b;
+  if ((b = t.closest('[data-lesson]'))) { acadView = b.dataset.lesson || null; Sound.shuffle(); renderAcademy(); return; }
+  const l = acadView && lessonById(acadView); if (!l) return;
+  if ((b = t.closest('[data-run]'))) { const blk = b.closest('.acad-ex'); if (runLessonSQL(blk.querySelector('textarea').value, blk.querySelector('.out'))) markStudied(l.id); return; }
+  if ((b = t.closest('[data-reset]'))) { const blk = b.closest('.acad-ex'), ta = blk.querySelector('textarea'); ta.value = l.examples[+blk.dataset.ex].sql; syncMini(blk.querySelector('.editor-shell')); blk.querySelector('.out').innerHTML = ''; return; }
+  if ((b = t.closest('[data-useq]'))) { setEditor(b.closest('.acad-ex').querySelector('textarea').value); $('#drawer').hidden = true; return; }
+  if ((b = t.closest('[data-runbad]'))) { const blk = b.closest('.mistake'); runLessonSQL(l.mistakes[+blk.dataset.bad].sql, blk.querySelector('.out')); return; }
+  if ((b = t.closest('[data-check]'))) { const blk = b.closest('.challenge'); checkChallenge(l, blk.querySelector('textarea').value, blk.querySelector('.out')); }
+});
 
 /* =========================================================
    self-test: open the console and run  __selfTest()
@@ -1846,6 +2264,23 @@ window.__selfTest = function(){
     const bare = `SELECT * FROM people WHERE id = ${c.culprit}`;
     chk(judgeAccusation(c, c.culprit, bare, runSQL(bare)).v === 'thin', `${c.id}: a bare people lookup should not count as evidence`);
   }
+  // academy: every example runs and shows rows, every practice answer is valid, every lead's concept links to a lesson
+  const seen = new Set();
+  ACADEMY.forEach(l => {
+    chk(!seen.has(l.id), `academy: duplicate lesson id ${l.id}`); seen.add(l.id);
+    chk(!!ACAD_GROUPS[l.group], `academy ${l.id}: bad group`);
+    chk(l.body.length >= 1 && l.examples.length >= 2 && l.mistakes.length >= 2 && !!l.challenge, `academy ${l.id}: needs body, two examples, two slips and a practice question`);
+    l.examples.forEach((e, i) => { try { chk(runSQL(e.sql).values.length > 0, `academy ${l.id} example ${i}: returns no rows`); } catch (err) { chk(false, `academy ${l.id} example ${i}: ${err.message}`); } });
+    l.mistakes.forEach((m, i) => chk(isReadOnly(m.sql) && !isRunaway(m.sql), `academy ${l.id} slip ${i}: would be refused by the read-only guard`));
+    try {
+      const e = runSQL(l.challenge.expected);
+      chk(e.values.length > 0, `academy ${l.id}: practice answer returns no rows`);
+      chk(!!matchResult(e, e, l.challenge.ordered), `academy ${l.id}: practice answer does not match itself`);
+      chk(!l.challenge.must || l.challenge.must.test(l.challenge.expected), `academy ${l.id}: reference answer breaks its own required pattern`);
+    } catch (err) { chk(false, `academy ${l.id}: practice answer fails: ${err.message}`); }
+  });
+  Object.entries(CONCEPT_LESSON).forEach(([c, id]) => chk(!!lessonById(id), `academy: concept ${c} points at missing lesson ${id}`));
+  CASES.filter(x => !x.sealed).forEach(c => c.steps.forEach(s => chk(!!CONCEPT_LESSON[s.concept], `${c.id}${s.id}: no Academy lesson for concept ${s.concept}`)));
   const r = {checks, failures: fails.length, details: fails};
   console[fails.length ? 'error' : 'log'](fails.length ? `Self-test: ${fails.length} failure(s) in ${checks} checks` : `Self-test passed: ${checks} checks`, fails);
   return r;

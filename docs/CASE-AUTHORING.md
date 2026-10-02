@@ -52,6 +52,7 @@ A sealed placeholder looks like this. Replace it with a full case object to make
 Design guidance:
 
 - **One idea per step.** The lesson is 2 to 3 lines plus one example. Do not teach a second concept in the task.
+- **Link the concept to an Academy lesson.** The `concept` string (for example `'INNER JOIN'`) becomes a clickable chip on the lead. Add it to `CONCEPT_LESSON` so it opens the matching lesson. The self-test fails if a lead's concept has no lesson. See [ACADEMY.md](ACADEMY.md).
 - **Make the mistake teach.** A red herring should be the query a learner actually writes, and its `msg` should say what they missed, not just "wrong".
 - **Check what the wrong query returns.** The red herring's result must differ from the expected result, otherwise the step cannot be told apart from the mistake. `__selfTest()` checks this.
 - **Hide clues among innocents.** Add noise rows so that filtering matters.
@@ -94,7 +95,7 @@ All rows come from `buildData()`, using a seeded generator (`rng(314159)`).
 ## Checklist before you ship a case
 
 1. Run `__selfTest()` in the console. Fix anything it reports.
-2. Play the case start to finish, once with the reference queries and once making the common mistakes.
+2. Play the case start to finish, once with the reference queries and once making the common mistakes. Check that each lead's concept chip opens the right Academy lesson.
 3. Check the phone width.
 4. Walk through [TESTING.md](TESTING.md).
 5. Add the solutions to [WALKTHROUGH.md](WALKTHROUGH.md).
