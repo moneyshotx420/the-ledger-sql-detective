@@ -1,10 +1,15 @@
 # The Ledger
 
+[![Play online](https://img.shields.io/badge/play-online-e8b04b)](https://moneyshotx420.github.io/the-ledger-sql-detective/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
 **A noir detective game that teaches SQL.** You are a rookie detective in Greyhaven, a rain-soaked port city. Thefts, fake invoices and one disappearance all trace back to a mastermind known only as *The Ledger*. You solve cases by querying the city's records database, and every query you write is real SQL running against a real SQLite database in your browser.
 
 ![The Ledger, mid-case: briefing, suspect lineup, evidence board and query editor](docs/img/screenshot.jpg)
 
 It is one HTML file. No build step, no backend, no accounts. Open it and play.
+
+**Contents:** [Play](#play) · [What you get](#what-you-get) · [How to play](#how-to-play) · [Scoring](#scoring) · [The city's records](#the-citys-records) · [How it works](#how-it-works) · [Testing](#testing) · [Known limitations](#known-limitations) · [Roadmap](#roadmap) · [Repository layout](#repository-layout) · [Documentation](#documentation) · [Contributing](#contributing)
 
 ## Play
 
@@ -39,6 +44,10 @@ Works on desktop and phone. Progress is saved in your browser, so use the same b
 | **Notebook** | Every query you solve is saved so you can reuse it. |
 | **Records room** | A drawer listing every table, its columns and a live row preview, available at any time. |
 | **Atmosphere** | Falling rain, a folder that flips open, a case-closed stamp with a thud and screen shake, typewriter clacks, a synthesised noir jazz loop, and little 3D touches: cards, suspects and tiles lean toward your pointer, evidence cards flip, pins drop, stamps tilt in, and rank insignia spin. |
+
+The SQL Academy, open on the `GROUP BY` lesson:
+
+![The SQL Academy open on a lesson, with an example's result showing](docs/img/academy.jpg)
 
 ## How to play
 
@@ -203,6 +212,49 @@ localStorage.removeItem('ledger-casebook-v1'); location.reload();
 6. A short end-of-lesson quiz in the Academy with an XP reward the first time it is passed.
 
 To add a case, read [docs/CASE-AUTHORING.md](docs/CASE-AUTHORING.md). To add or edit a lesson, read [docs/ACADEMY.md](docs/ACADEMY.md).
+
+## Repository layout
+
+```
+.
+├── index.html                  The whole game: styles, markup and script
+├── README.md                   This file
+├── CHANGELOG.md                What changed in each version
+├── CONTRIBUTING.md             How to help
+├── SECURITY.md                 How to report a vulnerability
+├── CODE_OF_CONDUCT.md          Community standards
+├── LICENSE                     MIT
+├── docs/
+│   ├── README.md               Index of the documentation
+│   ├── ARCHITECTURE.md         How the code works
+│   ├── ACADEMY.md              The SQL Academy and its lesson format
+│   ├── CASE-AUTHORING.md       How to add a case
+│   ├── TESTING.md              Self-test and the manual UI checklist
+│   ├── WALKTHROUGH.md          Solutions (spoilers)
+│   └── img/                    Screenshots used in the docs
+└── .github/
+    ├── ISSUE_TEMPLATE/         Bug report, content error and feature request forms
+    └── PULL_REQUEST_TEMPLATE.md
+```
+
+The game is deployed straight from the `main` branch with GitHub Pages. There is no build, so pushing `index.html` is publishing it.
+
+## Documentation
+
+| If you want to | Read |
+|---|---|
+| Get past a lead | [docs/WALKTHROUGH.md](docs/WALKTHROUGH.md) (spoilers) |
+| Learn how the code is organised | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
+| Add or edit an Academy lesson | [docs/ACADEMY.md](docs/ACADEMY.md) |
+| Add a case | [docs/CASE-AUTHORING.md](docs/CASE-AUTHORING.md) |
+| Check a change | [docs/TESTING.md](docs/TESTING.md) |
+| See what changed | [CHANGELOG.md](CHANGELOG.md) |
+
+The full index is in [docs/README.md](docs/README.md).
+
+## Contributing
+
+Bug reports, lesson fixes and new content are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md). Please follow the [Code of Conduct](CODE_OF_CONDUCT.md). Report security problems privately, as described in [SECURITY.md](SECURITY.md).
 
 ## Credits
 

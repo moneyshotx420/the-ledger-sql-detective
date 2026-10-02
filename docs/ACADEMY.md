@@ -1,5 +1,7 @@
 # SQL Academy
 
+![The SQL Academy drawer open on the GROUP BY lesson, with an example's result showing](img/academy.jpg)
+
 The Academy is a set of short lessons inside the game. It opens from **Academy** in the top bar, or from the topic chip on a lead (for example `WHERE ↗`), in a wide drawer so you never lose your place in a case.
 
 Every lesson has the same parts:

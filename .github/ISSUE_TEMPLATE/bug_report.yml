@@ -1,0 +1,60 @@
+name: Bug report
+description: Something in the game does not work as it should.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting this. If it is a security problem, please do not use this form. See the [security policy](https://github.com/moneyshotx420/the-ledger-sql-detective/security/policy).
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the problem in a sentence or two.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Which case and lead were you on, and what did you click or type? If a query was involved, paste it.
+      placeholder: |
+        1. Open Case 2
+        2. On lead 3, run: SELECT ...
+        3. See the problem
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where is it?
+      options:
+        - A case (leads, hints, clues, accusation)
+        - The SQL Academy
+        - XP, ranks, stars or badges
+        - Sound or music
+        - Layout or animation
+        - Saving and loading progress
+        - Something else
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device
+      description: For example, Chrome 130 on Windows, or Safari on an iPhone 14.
+    validations:
+      required: true
+  - type: textarea
+    id: console
+    attributes:
+      label: Console output (optional)
+      description: Open the browser console (F12), run `__selfTest()`, and paste the result. Paste any red errors too.
+      render: shell

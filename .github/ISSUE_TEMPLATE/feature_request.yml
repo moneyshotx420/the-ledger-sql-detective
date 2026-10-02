@@ -1,0 +1,39 @@
+name: Feature request
+description: Suggest an idea for the game.
+title: "[Idea]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What would you like to be able to do?
+      description: Describe the problem or the wish, not just the solution.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea
+      description: How could it work? Sketches and examples help.
+    validations:
+      required: false
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What is it closest to?
+      options:
+        - A new case or story
+        - A new SQL Academy lesson
+        - A game mechanic (scoring, hints, badges)
+        - Look, feel or animation
+        - Sound or music
+        - Accessibility
+        - Something else
+    validations:
+      required: true
+  - type: checkboxes
+    id: help
+    attributes:
+      label: Can you help?
+      options:
+        - label: I would like to work on this myself.
